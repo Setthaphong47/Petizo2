@@ -570,10 +570,13 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
                 const priority = { overdue: 1, due: 2, upcoming: 3, completed: 4 };
                 recommendations.sort((a, b) => (priority[a.status] || 5) - (priority[b.status] || 5));
                 
+                // กรองเฉพาะวัคซีนที่ยังไม่ได้ฉีด (ไม่รวม completed)
+                const activeVaccines = recommendations.filter(v => v.status !== 'completed');
+                
                 res.json({
                     pet_age_weeks: ageInWeeks,
-                    vaccines: recommendations,
-                    active_count: recommendations.filter(v => v.status !== 'completed').length,
+                    vaccines: activeVaccines,
+                    active_count: activeVaccines.length,
                     completed_count: recommendations.filter(v => v.status === 'completed').length
                 });
             });
@@ -582,13 +585,33 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
 });
 
 app.post('/api/pets/:petId/vaccinations', authenticateToken, upload.single('proof'), (req, res) => {
-    const { vaccine_name, vaccine_type, vaccination_date, next_due_date, veterinarian, clinic_name, batch_number, notes, schedule_id } = req.body;
+    const { 
+        vaccine_name, 
+        vaccine_type, 
+        vaccination_date, 
+        next_due_date, 
+        veterinarian, 
+        clinic_name, 
+        batch_number, 
+        registration_number,
+        manufacture_date,
+        expiry_date,
+        notes, 
+        schedule_id 
+    } = req.body;
     const proof_image = req.file ? `/uploads/${req.file.filename}` : null;
     
     db.run(
-        `INSERT INTO vaccinations (pet_id, vaccine_name, vaccine_type, vaccination_date, next_due_date, veterinarian, clinic_name, batch_number, notes, schedule_id, proof_image, status) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'completed')`,
-        [req.params.petId, vaccine_name, vaccine_type, vaccination_date, next_due_date, veterinarian, clinic_name, batch_number, notes, schedule_id, proof_image],
+        `INSERT INTO vaccinations (
+            pet_id, vaccine_name, vaccine_type, vaccination_date, next_due_date, 
+            veterinarian, clinic_name, batch_number, registration_number, 
+            manufacture_date, expiry_date, notes, schedule_id, proof_image, status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'completed')`,
+        [
+            req.params.petId, vaccine_name, vaccine_type, vaccination_date, next_due_date, 
+            veterinarian, clinic_name, batch_number, registration_number,
+            manufacture_date, expiry_date, notes, schedule_id, proof_image
+        ],
         function(err) {
             if (err) return res.status(500).json({ error: 'ไม่สามารถบันทึกได้' });
             res.json({ message: 'บันทึกสำเร็จ', vaccinationId: this.lastID });

@@ -771,7 +771,8 @@
 
         function getPetIdFromURL() {
             const params = new URLSearchParams(window.location.search);
-            return params.get('petId');
+            // รองรับทั้ง ?petId=xxx และ ?id=xxx
+            return params.get('petId') || params.get('id');
         }
 
         async function loadPetInfo() {
@@ -859,7 +860,7 @@
 
         async function loadVaccinationHistory() {
             try {
-                const response = await fetch(`${API_URL}/pets/${currentPetId}/vaccination-history`, {
+                const response = await fetch(`${API_URL}/pets/${currentPetId}/vaccinations`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
