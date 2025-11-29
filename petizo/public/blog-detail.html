@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บทความ - Petizo</title>
+
+    <link rel="preload" href="/js/navbar.js" as="script">
+    <link rel="preload" href="/icon/logo.png" as="image">
+    <link rel="stylesheet" href="/css/navbar.css">
+
+    <style id="article-improved-ui">
+        :root{
+            --primary: #00bcd4;
+            --muted: #6b7280;
+            --card-bg: #fff;
+            --surface: #f8fafc;
+        }
+
+        body { background: var(--surface); font-family: 'Inter','Kanit',sans-serif; color:#0f172a; }
+        .article-container { max-width: 980px; margin: 28px auto; padding: 0 20px 60px; box-sizing: border-box; }
+
+        .breadcrumb {
+            padding: 20px 40px;
+            background: white;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #00bcd4;
+            text-decoration: none;
+        }
+
+        .breadcrumbs { color: var(--muted); font-size:13px; margin-bottom:12px; }
+
+        .article-header { margin-bottom: 18px; }
+        .article-title { font-size: 30px; line-height:1.2; margin: 6px 0 10px; font-weight:800; color:#0b1220; }
+
+        .article-meta { display:flex; gap:12px; align-items:center; color:var(--muted); font-size:13px; flex-wrap:wrap; }
+        .meta-item { display:flex; gap:6px; align-items:center; padding:6px 10px; background:#fff; border-radius:999px; box-shadow:0 4px 12px rgba(2,6,23,0.04); font-weight:600; }
+
+        .article-tags { display:flex; gap:8px; flex-wrap:wrap; }
+        .article-tags .tag {
+            background:#eef6f7;
+            color:var(--primary);
+            padding:6px 10px;
+            border-radius:999px;
+            font-size:12px;
+            font-weight:700;
+        }
+
+        .article-featured {
+            margin:16px 0;
+            border-radius:12px;
+            overflow:hidden;
+            background:#fff;
+            box-shadow:0 8px 30px rgba(2,6,23,0.04);
+        }
+        .article-featured img { width:100%; height:600px; object-fit:cover; display:block; }
+
+        .article-content {
+            margin-top:18px;
+            font-size:16px;
+            line-height:1.9;
+            color:#111827;
+            background:#fff;
+            padding:22px;
+            border-radius:12px;
+            box-shadow:0 8px 30px rgba(2,6,23,0.03);
+        }
+
+        .article-content img { width:100%; border-radius:8px; margin:12px 0; }
+
+        .references a { display:inline-block; max-width: 72ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+        .ref-copy-btn { margin-left:8px; } 
+
+        .related-grid {
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:16px;
+            margin-top:14px;
+        }
+        .related-card {
+            background:#fff;
+            border-radius:10px;
+            overflow:hidden;
+            box-shadow:0 8px 24px rgba(2,6,23,0.05);
+            cursor:pointer;
+        }
+        .related-card img { width:100%; height:120px; object-fit:cover; }
+        .related-card .rc-body { padding:10px; font-size:14px; font-weight:700; color:#0b1220; }
+
+        @media (max-width:1100px){
+        .related-grid { grid-template-columns:repeat(2,1fr); }
+        .article-featured img { height:360px; }
+        }
+
+        @media (max-width:720px){
+        .related-grid { grid-template-columns:1fr; }
+        .article-featured img { height:240px; }
+        .article-title { font-size:22px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <script src="/js/config.js" defer></script>
+    <script src="/js/navbar.js"></script>
+
+    <script src="/js/profile-dropdown.js" defer></script>
+    <script src="/js/vaccine-notification.js" defer></script>
+    <script src="/js/auth-common.js" defer></script>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> >> <a href="blog.html">Blog</a> >> <span id="articleTitle">...</span>
+    </div>
+    <div id="articleContainer" class="article-container">
+        <div class="loading">กำลังโหลดบทความ</div>
+    </div>
+
+    <script>
+        window.CONFIG = window.CONFIG || { API_URL: (location.origin + '/api') };
+
+        function getIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            let ident = params.get('id') || params.get('id') || '';
+            ident = String(ident || '').trim();
+            ident = ident.replace(/^[-\s]+/, '');
+            return ident;
+        }
+
+        async function loadArticle() {
+            const id = getIdFromURL();
+            console.log('Resolved article id/ident =', id);
+            if (!id) {
+                document.getElementById('articleContainer').innerHTML = '<div class="error"><h2>ไม่พบบทความ</h2><p>ไม่พบ id ใน URL</p></div>';
+                return;
+            }
+
+            // safe API base
+            const API_BASE = (window.CONFIG && window.CONFIG.API_URL) ? String(window.CONFIG.API_URL).replace(/\/$/, '') : (location.origin + '/api');
+            const endpointSingle = `${API_BASE}/blog/${encodeURIComponent(id)}`;
+            const endpointList = `${API_BASE}/blog`;
+
+            console.log('Trying to fetch article from (single) ', endpointSingle);
+
+            try {
+                let res = await fetch(endpointSingle);
+                if (res.ok) {
+                    const article = await res.json();
+                    displayArticle(article);
+
+                    // เพิ่มยอดคนดู - ใช้ slug ถ้ามี ไม่งั้นใช้ id
+                    incrementViewCount(article.slug || id);
+                    return;
+                }
+
+                console.warn('Single endpoint failed, trying list endpoint:', res.status);
+                res = await fetch(endpointList);
+                if (!res.ok) {
+                    const body = await res.text().catch(()=>'');
+                    console.error('Fetch failed list', res.status, body);
+                    document.getElementById('articleContainer').innerHTML = '<div class="error"><h2>ไม่สามารถโหลดบทความได้</h2><p>ข้อผิดพลาดจากเซิร์ฟเวอร์: ' + res.status + '</p></div>';
+                    return;
+                }
+
+                const list = await res.json();
+                let article = null;
+                for (const it of (list || [])) {
+                    if (!it) continue;
+                    if (String(it.id) === String(id)) { article = it; break; }
+                    if (it.id && String(it.id) === String(id)) { article = it; break; }
+                    if (it.title && String(it.title).toLowerCase().replace(/\s+/g,'-').indexOf(String(id).toLowerCase()) !== -1) { article = it; break; }
+                }
+
+                if (!article) {
+                    document.getElementById('articleContainer').innerHTML = '<div class="error"><h2>บทความไม่พบ</h2><p>ไม่พบบทความที่ตรงกับ id/slug ที่ส่งมา</p></div>';
+                    return;
+                }
+
+                displayArticle(article);
+
+                // เพิ่มยอดคนดู - ใช้ slug ถ้ามี ไม่งั้นใช้ id
+                incrementViewCount(article.slug || article.id || id);
+
+            } catch (err) {
+                console.error('Network error loading article:', err);
+                document.getElementById('articleContainer').innerHTML = '<div class="error"><h2>ไม่สามารถเชื่อมต่อเพื่อโหลดบทความได้</h2><p>โปรดลองอีกครั้ง</p></div>';
+            }
+        }
+
+        // ฟังก์ชันเพิ่มยอดคนดู
+        async function incrementViewCount(identifier) {
+            const API_BASE = (window.CONFIG && window.CONFIG.API_URL) ? String(window.CONFIG.API_URL).replace(/\/$/, '') : (location.origin + '/api');
+            try {
+                await fetch(`${API_BASE}/blog/${encodeURIComponent(identifier)}/view`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log('✅ View count incremented for:', identifier);
+            } catch (err) {
+                console.log('Failed to increment view count:', err);
+            }
+        }
+
+        function displayArticle(article) {
+            const titleEl = document.getElementById('articleTitle');
+            if (titleEl && article && article.title) {
+                titleEl.textContent = article.title;
+            }
+
+            if (!article) {
+                document.getElementById('articleContainer').innerHTML = '<p>ไม่พบบทความ</p>';
+                return;
+            }
+
+            const title = article.title || '';
+            const image = article.featured_image || '/icon/stray-cat.png';
+            const content = article.content || article.excerpt || '';
+            const date = new Date(article.published_at || article.created_at || Date.now())
+                .toLocaleDateString('th-TH', { day:'2-digit', month:'short', year:'numeric' });
+            const views = article.views || 0;
+
+            // tags 
+            let tags = [];
+            try {
+                if (Array.isArray(article.tags)) tags = article.tags;
+                else if (article.tags) {
+                    const parsed = JSON.parse(String(article.tags));
+                    if (Array.isArray(parsed)) tags = parsed;
+                    else tags = String(article.tags).split(/[,;]/);
+                }
+            } catch {
+                tags = String(article.tags || "").split(/[,;]/).map(t=>t.trim()).filter(Boolean);
+            }
+            const tagsHtml = tags.map(t => `<span class="tag">${t}</span>`).join(' ');
+
+            // references
+            let references = [];
+            try {
+                if (Array.isArray(article.source)) references = article.source;
+                else if (article.source) {
+                    const parsed = JSON.parse(String(article.source));
+                    if (Array.isArray(parsed)) references = parsed;
+                    else references = String(article.source).split(/[,;]/);
+                }
+            } catch {
+                references = String(article.source || "").split(/[,;]/).map(t=>t.trim()).filter(Boolean);
+            }
+            const refsHtml = references.length
+                ? references.map((r,i)=> `<li><strong>[${i+1}]</strong> <a href="${r}" target="_blank" rel="noopener noreferrer">${r}</a></li>`).join('')
+                : '<li>ไม่มีการอ้างอิง</li>';
+
+            const html = `
+                <header class="article-header">
+                    <h1 class="article-title">${title}</h1>
+                    <div class="article-meta">
+                        <div class="meta-item"><img src="/icon/calendar (2).png" width="16" alt=""> ${date}</div>
+                        <div class="meta-item"><img src="/icon/view.png" width="16" alt=""> ${views}</div>
+                        <div class="article-tags">${tagsHtml}</div>
+                    </div>
+                </header>
+
+                <div class="article-featured">
+                    <img src="${image}" alt="${title}">
+                </div>
+
+                <article class="article-content">
+                    ${content}
+                </article>
+
+                <section class="references">
+                    <h3>อ้างอิง</h3>
+                    <ul>${refsHtml}</ul>
+                </section>
+            `;
+
+            const container = document.getElementById('articleContainer');
+            if (container) container.innerHTML = html;
+
+            // update small breadcrumb span if present
+            const bread = document.getElementById('articleTitleBread') || document.getElementById('articleTitle');
+            if (bread) {
+                const max = 80;
+                const t = title || '';
+                bread.textContent = (t.length > max) ? t.slice(0, max) + '...' : t;
+            }
+        }
+
+        function checkLoginStatus(){ /* noop if not present */ }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try { if (typeof checkLoginStatus === 'function') checkLoginStatus(); } catch(e){}
+            loadArticle();
+        });
+    </script>
+</body>
+</html>

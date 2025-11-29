@@ -1,0 +1,4655 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Petizo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            color: white;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                padding: 16px;
+            }
+
+            .logo-icon {
+                font-size: 1.8rem;
+            }
+
+            .logo-text {
+                font-size: 1.3rem;
+            }
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .menu-section {
+            margin-bottom: 10px;
+        }
+
+        .menu-title {
+            padding: 10px 20px;
+            color: #999;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background: #f5f7fa;
+        }
+
+        .menu-item.active {
+            background: #e6f7ff;
+            color: #1890ff;
+            border-right: 3px solid #1890ff;
+        }
+
+        .menu-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .user-info {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .profile-dropdown-toggle:hover {
+            background: #f5f5f5;
+        }
+
+        .profile-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .profile-dropdown-menu.active {
+            display: block;
+        }
+
+        .profile-dropdown-header {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-dropdown-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .profile-dropdown-info {
+            flex: 1;
+        }
+
+        .profile-dropdown-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .profile-dropdown-role {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .profile-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .profile-dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .profile-dropdown-item.logout {
+            color: #ff4d4f;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* Profile Modal */
+        .profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-modal.active {
+            display: flex;
+        }
+
+        .profile-modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 480px) {
+            .profile-modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .profile-modal-header {
+                padding: 16px;
+            }
+
+            .profile-modal-title {
+                font-size: 1.1rem;
+            }
+
+            .profile-modal-body {
+                padding: 20px 16px;
+            }
+
+            .profile-info-item {
+                padding: 12px;
+            }
+
+            .profile-info-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+        }
+
+        .profile-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .profile-modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .profile-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-modal-body {
+            padding: 30px;
+        }
+
+        .profile-info-section {
+            margin-bottom: 20px;
+        }
+
+        .profile-info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .profile-info-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .profile-info-content {
+            flex: 1;
+        }
+
+        .profile-info-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .profile-info-value {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .profile-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #00bcd4;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .profile-edit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .profile-edit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Edit Profile Form */
+        .profile-edit-form {
+            display: none;
+        }
+
+        .profile-edit-form.active {
+            display: block;
+        }
+
+        .form-group-profile {
+            margin-bottom: 20px;
+        }
+
+        .form-group-profile label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group-profile input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        .form-group-profile input:focus {
+            outline: none;
+            border-color: #00bcd4;
+        }
+
+        .profile-form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .profile-form-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save-profile {
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            color: white;
+        }
+
+        .btn-cancel-profile {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-save-profile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-cancel-profile:hover {
+            background: #d0d0d0;
+        }
+
+        .profile-dropdown-item img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .stat-card:nth-child(1) {
+            border-left-color: #00bcd4;
+        }
+
+        .stat-card:nth-child(2) {
+            border-left-color: #00bcd4;
+        }
+
+        .stat-card:nth-child(3) {
+            border-left-color: #ff9800;
+        }
+
+        .stat-card:nth-child(4) {
+            border-left-color: #4caf50;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive {
+            color: #52c41a;
+        }
+
+        .stat-change.negative {
+            color: #ff4d4f;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .search-box {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            width: 300px;
+            max-width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f5f7fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-hide {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-admin {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-right: 4px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit:hover {
+            background: #096dd9;
+        }
+
+        .btn-delete {
+            background: #ff4d4f;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #cf1322;
+        }
+
+        .btn-promote {
+            background: #52c41a;
+            color: white;
+        }
+
+        .btn-promote:hover {
+            background: #389e0d;
+        }
+
+        .btn-demote {
+            background: #faad14;
+            color: white;
+        }
+
+        .btn-demote:hover {
+            background: #d48806;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .table-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1890ff;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .mobile-menu-toggle span {
+            width: 20px;
+            height: 2px;
+            background: #333;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                top: 0;
+                height: 100vh;
+                width: 260px;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                overflow-y: auto;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .header {
+                padding: 15px;
+                flex-wrap: wrap;
+            }
+
+            .header-left {
+                width: 100%;
+            }
+
+            .header-title {
+                font-size: 1.2rem;
+                margin-left: 55px;
+            }
+
+            .header-right {
+                margin-left: auto;
+            }
+
+            .content-area {
+                padding: 20px 15px;
+            }
+
+            /* Cards */
+            .card {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            /* Stats Grid */
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+
+            /* Search Box */
+            .search-box {
+                width: 100%;
+                margin-top: 0;
+            }
+
+            /* Tables */
+            .user-table, .pet-table {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            }
+
+            table {
+                min-width: 650px;
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 12px 10px;
+            }
+
+            /* Buttons */
+            .btn-primary, .btn-secondary {
+                padding: 12px 20px;
+                font-size: 14px;
+                min-height: 44px;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .action-buttons button {
+                width: 100%;
+            }
+
+            /* Action Buttons in Table */
+            .action-btn {
+                padding: 8px 12px;
+                font-size: 0.75rem;
+                margin: 2px 0;
+                display: inline-block;
+                min-width: 60px;
+                text-align: center;
+            }
+
+            td .action-btn {
+                display: block;
+                width: 100%;
+                margin: 4px 0;
+            }
+
+            /* Form Groups */
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            /* Quill Editor */
+            .ql-toolbar {
+                border-radius: 8px 8px 0 0;
+            }
+
+            .ql-container {
+                border-radius: 0 0 8px 8px;
+                font-size: 15px;
+            }
+
+            .ql-editor {
+                min-height: 250px;
+            }
+
+            /* Profile Dropdown */
+            .profile-dropdown {
+                position: static;
+            }
+
+            .dropdown-menu {
+                right: 10px;
+                min-width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-title {
+                font-size: 1rem;
+                margin-left: 50px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.85rem;
+            }
+
+            .content-area {
+                padding: 15px 10px;
+            }
+
+            .card {
+                padding: 16px 12px;
+                margin-bottom: 16px;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            table {
+                min-width: 600px;
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+
+            .status-badge {
+                font-size: 0.75rem;
+                padding: 3px 8px;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            /* Quill Editor */
+            .ql-toolbar {
+                padding: 8px;
+            }
+
+            .ql-container {
+                font-size: 14px;
+            }
+
+            .ql-editor {
+                min-height: 200px;
+            }
+
+            /* Menu Items */
+            .menu-item {
+                padding: 14px 16px;
+                font-size: 14px;
+            }
+
+            .menu-icon {
+                font-size: 1.1rem;
+                width: 20px;
+            }
+
+            .menu-title {
+                padding: 8px 16px;
+                font-size: 0.75rem;
+            }
+
+            /* Sidebar Footer */
+            .sidebar-footer {
+                padding: 16px;
+            }
+
+            .sidebar-footer .menu-item {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="/icon/logo.png" alt="Logo" style="width:35px;height:35px;">
+            <div class="logo-text">Petizo</div>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <a href="#" class="menu-item active" onclick="showSection('users'); return false;">
+                    <img src="/icon/mentor.png" alt="User Manage" style="width:30px;height:30px;">
+                    <span>จัดการบัญชีผู้ใช้</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('pets'); initPetsSection();">
+                    <img src="/icon/dog.png" alt="Pet Manage" style="width:30px;height:30px;">
+                    <span>จัดการข้อมูลสัตว์เลี้ยง</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('blog'); return false;">
+                    <img src="/icon/like.png" alt="Blog Manage" style="width:30px;height:30px;">
+                    <span>จัดการข้อมูลดูแลสัตว์เลี้ยง</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('vaccines'); return false;">
+                    <img src="/icon/syringe.png" alt="Vaccine Manage" style="width:30px;height:30px;">
+                    <span>จัดการข้อมูลวัคซีน</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('stats'); return false;">
+                    <img src="/icon/chart.png" alt="Dashboard" style="width:30px;height:30px;">
+                    <span>รายงานและวิเคราะห์ข้อมูล</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title" id="pageTitle">จัดการบัญชีผู้ใช้</div>
+            <div class="user-info">
+                <div class="profile-dropdown-toggle" id="profileDropdownToggle">
+                    <span id="adminName">Admin</span>
+                    <img src="/icon/profile.png" alt="Profile" style="width:35px;height:35px;border-radius:50%;">
+                </div>
+                
+                <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                    <a href="#" class="profile-dropdown-item" onclick="openProfileModal(event)">
+                        <img src="/icon/profile.png" alt="Profile" style="width:30px;height:30px;">
+                        <span>ข้อมูลผู้ใช้</span>
+                    </a>
+                    
+                    <a href="#" class="profile-dropdown-item logout" onclick="handleLogout(event)">
+                        <img src="/icon/logout.png" alt="Logout" style="width:30px;height:30px;">
+                        <span>ออกจากระบบ</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Users Section -->
+            <div id="usersSection">
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="stat-label">ผู้ใช้งานเปิดบริการ</div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">ผู้ใช้งานที่ซ่อน</div>
+                        <div class="stat-value" id="hiddenUsers">0</div>
+                    </div>
+                </div>
+
+                <!-- Admins Table -->
+                <div class="card table-section">
+                    <div class="card-header">
+                        <h2 class="section-title" style="margin: 0; border: none;">Admin (ผู้ดูแลระบบ)</h2>
+                        <input type="text" class="search-box" id="searchAdminInput" placeholder="ค้นหา" oninput="filterAdmins()">
+                    </div>
+                    <div id="adminsTableContainer">
+                        <div class="loading">กำลังโหลดข้อมูล</div>
+                    </div>
+                </div>
+
+                <!-- Members Table -->
+                <div class="card table-section">
+                    <div class="card-header">
+                        <h2 class="section-title" style="margin: 0; border: none;">Member (สมาชิก)</h2>
+                        <input type="text" class="search-box" id="searchMemberInput" placeholder="ค้นหา" oninput="filterMembers()">
+                    </div>
+                    <div id="membersTableContainer">
+                        <div class="loading">กำลังโหลดข้อมูล</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pets Section -->
+            <div id="petsSection" style="display: none;">
+                <div id="userListView">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">เลือกผู้ใช้</h3>
+                            <input type="text" class="search-box" id="searchUserPets" placeholder="ค้นหาผู้ใช้" onkeyup="filterUserPets()">
+                        </div>
+
+                        <div id="userPetsListContainer">
+                            <div class="loading">กำลังโหลดข้อมูล</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="petListView" style="display: none;">
+                    <div style="margin-bottom: 20px;">
+                        <button onclick="backToUserList()" style="padding: 8px 16px; background: #f0f0f0; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer;">
+                            <img src="/icon/left-arrow.png" alt="Show User" style="width:20px;height:20px;"> รายชื่อผู้ใช้
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" id="petListTitle">สัตว์เลี้ยงของ</h3>
+                        </div>
+
+                        <div id="petGridContainer">
+                            <div class="loading">กำลังโหลดข้อมูล</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="petDetailView" style="display: none;">
+                    <div style="margin-bottom: 20px;">
+                        <button onclick="backToPetList()" style="padding: 8px 16px; background: #f0f0f0; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer;">
+                            <img src="/icon/left-arrow.png" alt="Show Pet" style="width:20px;height:20px;"> รายการสัตว์เลี้ยง
+                        </button>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-header">
+                            <h3 class="card-title" id="petDetailTitle">ข้อมูลสัตว์เลี้ยง</h3>
+                        </div>
+
+                        <div id="petDetailContainer">
+                            <div class="loading">กำลังโหลดข้อมูล</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><img src="/icon/medical-book.png" alt="Show Vaccine Book" style="width:30px;height:30px;">สมุดบันทึกวัคซีน</h3>
+                        </div>
+
+                        <div id="vaccinationHistoryContainer">
+                            <div class="loading">กำลังโหลดข้อมูล</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+            .pet-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+                margin-top: 20px;
+            }
+
+            .pet-card {
+                background: white;
+                border: 1px solid #e8e8e8;
+                border-radius: 12px;
+                overflow: hidden;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .pet-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+                border-color: #1890ff;
+            }
+
+            .pet-card-image {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            }
+
+            .pet-card-content {
+                padding: 20px;
+            }
+
+            .pet-card-name {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 8px;
+            }
+
+            .pet-card-breed {
+                color: #666;
+                font-size: 0.9rem;
+                margin-bottom: 12px;
+            }
+
+            .pet-card-info {
+                display: flex;
+                gap: 15px;
+                font-size: 0.85rem;
+                color: #999;
+            }
+
+            .pet-card-info-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            /* User List Table */
+            .user-pet-table {
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .user-pet-table th,
+            .user-pet-table td {
+                padding: 15px;
+                text-align: left;
+            }
+
+            .user-pet-row {
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+            .user-pet-row:hover {
+                background: #f5f5f5;
+            }
+
+            .pet-count-badge {
+                display: inline-block;
+                padding: 4px 10px;
+                background: #e6f7ff;
+                color: #1890ff;
+                border-radius: 12px;
+                font-size: 0.85rem;
+                font-weight: 600;
+            }
+
+            .pet-detail-grid {
+                display: grid;
+                grid-template-columns: 300px 1fr;
+                gap: 30px;
+                padding: 20px;
+            }
+
+            .pet-detail-image {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+                border-radius: 12px;
+                background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            }
+
+            .pet-detail-info {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .pet-info-item {
+                padding: 15px;
+                background: #f9f9f9;
+                border-radius: 8px;
+            }
+
+            .pet-info-label {
+                font-size: 0.85rem;
+                color: #999;
+                margin-bottom: 5px;
+            }
+
+            .pet-info-value {
+                font-size: 1rem;
+                color: #333;
+                font-weight: 500;
+            }
+
+            /* Vaccination History */
+            .vaccination-timeline {
+                padding: 20px;
+            }
+
+            .vaccination-item {
+                display: flex;
+                gap: 20px;
+                padding: 20px;
+                background: #f9f9f9;
+                border-radius: 12px;
+                margin-bottom: 15px;
+                position: relative;
+            }
+
+            .vaccination-date {
+                min-width: 120px;
+                text-align: center;
+            }
+
+            .vaccination-date-day {
+                font-size: 2rem;
+                font-weight: bold;
+                color: #1890ff;
+            }
+
+            .vaccination-date-month {
+                font-size: 0.9rem;
+                color: #666;
+            }
+
+            .vaccination-content {
+                flex: 1;
+            }
+
+            .vaccination-vaccine-name {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 8px;
+            }
+
+            .vaccination-details {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .vaccination-detail-item {
+                font-size: 0.9rem;
+                color: #666;
+            }
+
+            .vaccination-proof {
+                width: 150px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .vaccination-proof-image {
+                width: 120px;
+                height: 120px;
+                object-fit: cover;
+                border-radius: 8px;
+                border: 2px solid #e8e8e8;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .vaccination-proof-image:hover {
+                border-color: #1890ff;
+                transform: scale(1.05);
+            }
+
+            .view-proof-btn {
+                padding: 5px 12px;
+                background: #1890ff;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.85rem;
+            }
+
+            .view-proof-btn:hover {
+                background: #096dd9;
+            }
+
+            .image-modal {
+                display: none;
+                position: fixed;
+                z-index: 9999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                justify-content: center;
+                align-items: center;
+            }
+
+            .image-modal.show {
+                display: flex;
+            }
+
+            .image-modal-content {
+                max-width: 90%;
+                max-height: 90%;
+                border-radius: 8px;
+            }
+
+            .image-modal-close {
+                position: absolute;
+                top: 20px;
+                right: 35px;
+                color: white;
+                font-size: 40px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .image-modal-close:hover {
+                color: #ccc;
+            }
+
+            .no-data {
+                text-align: center;
+                padding: 60px 20px;
+                color: #999;
+            }
+
+            .no-data-icon {
+                font-size: 4rem;
+                margin-bottom: 20px;
+            }
+
+            .no-data-text {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+
+            .no-data-subtext {
+                font-size: 0.9rem;
+                color: #ccc;
+            }
+
+            @media (max-width: 768px) {
+                .pet-detail-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .pet-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .vaccination-item {
+                    flex-direction: column;
+                }
+                
+                .vaccination-proof {
+                    width: 100%;
+                    flex-direction: row;
+                    justify-content: center;
+                }
+            }
+            </style>
+
+            <!-- Image -->
+            <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+                <span class="image-modal-close">&times;</span>
+                <img class="image-modal-content" id="modalImage">
+            </div>
+
+        <script>
+            // Global Variables
+            let allUserPets = [];
+            let selectedUser = null;
+            let selectedUserPets = [];
+            let selectedPet = null;
+
+            // Profile Dropdown
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropdownToggle = document.getElementById('profileDropdownToggle');
+                const dropdownMenu = document.getElementById('profileDropdownMenu');
+                
+                if (dropdownToggle && dropdownMenu) {
+                    // Toggle dropdown
+                    dropdownToggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdownMenu.classList.toggle('active');
+                    });
+                    
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', function(e) {
+                        if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                            dropdownMenu.classList.remove('active');
+                        }
+                    });
+                    
+                    // Update user name
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    if (user) {
+                    
+                        const userName = fullName || user.username || 'Admin';
+                        const adminNameEl = document.getElementById('adminName');
+                        const dropdownNameEl = document.getElementById('dropdownUserName');
+
+                        if (adminNameEl) adminNameEl.textContent = userName;
+                        if (dropdownNameEl) dropdownNameEl.textContent = userName;
+                        
+                        if (adminNameEl) adminNameEl.textContent = userName;
+                        if (dropdownNameEl) dropdownNameEl.textContent = userName;
+                    }
+                }
+            });
+
+            // Profile Modal Functions
+            function openProfileModal(event) {
+                event.preventDefault();
+                
+                // ซ่อน dropdown
+                document.getElementById('profileDropdownMenu').classList.remove('active');
+                
+                // โหลดข้อมูลผู้ใช้
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user) {
+                    document.getElementById('modalUsername').textContent = user.username || '-';
+                    document.getElementById('modalEmail').textContent = user.email || '-';
+                    document.getElementById('modalFullName').textContent = user.full_name || '-';
+                    document.getElementById('modalPhone').textContent = user.phone || '-';
+                    document.getElementById('modalRole').textContent = user.role === 'admin' ? 'ผู้ดูแลระบบ' : 'สมาชิก';
+                    
+                    // Set edit form values
+                    document.getElementById('editUsername').value = user.username || '';
+                    document.getElementById('editEmail').value = user.email || '';
+                    document.getElementById('editFullName').value = user.full_name || '';
+                    document.getElementById('editPhone').value = user.phone || '';
+                }
+                
+                // แสดง modal
+                document.getElementById('profileModal').classList.add('active');
+                toggleEditMode(false);
+            }
+
+            function closeProfileModal() {
+                document.getElementById('profileModal').classList.remove('active');
+            }
+
+            function toggleEditMode(isEdit) {
+                const viewMode = document.getElementById('profileViewMode');
+                const editMode = document.getElementById('profileEditMode');
+                
+                if (isEdit) {
+                    viewMode.style.display = 'none';
+                    editMode.classList.add('active');
+                } else {
+                    viewMode.style.display = 'block';
+                    editMode.classList.remove('active');
+                }
+            }
+
+            async function saveProfile(event) {
+                event.preventDefault();
+                
+                const fullName = document.getElementById('editFullName').value;
+                const phone = document.getElementById('editPhone').value;
+                
+                try {
+                    const response = await fetch('http://localhost:3000/api/profile', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        },
+                        body: JSON.stringify({
+                            full_name: fullName,
+                            phone: phone
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // อัปเดต localStorage
+                        const user = JSON.parse(localStorage.getItem('user'));
+                        user.full_name = fullName;
+                        user.phone = phone;
+                        localStorage.setItem('user', JSON.stringify(user));
+                        
+                        // อัปเดตการแสดงผลใน modal
+                        const modalFullName = document.getElementById('modalFullName');
+                        const modalPhone = document.getElementById('modalPhone');
+                        
+                        if (modalFullName) modalFullName.textContent = fullName || '-';
+                        if (modalPhone) modalPhone.textContent = phone || '-';
+                        
+                        // อัปเดตชื่อใน dropdown (ถ้ามี)
+                        const userName = fullName || user.username || 'Admin';
+                        const adminNameEl = document.getElementById('adminName');
+                        const dropdownNameEl = document.getElementById('dropdownUserName');
+                        
+                        if (adminNameEl) adminNameEl.textContent = userName;
+                        if (dropdownNameEl) dropdownNameEl.textContent = userName;
+                        
+                        alert('บันทึกข้อมูลสำเร็จ');
+                        toggleEditMode(false);
+                    } else {
+                        alert(data.error || 'ไม่สามารถบันทึกข้อมูลได้');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                }
+            }
+
+            // Close modal when clicking outside
+            document.addEventListener('click', function(e) {
+                const modal = document.getElementById('profileModal');
+                if (modal && e.target === modal) {
+                    closeProfileModal();
+                }
+            });
+
+            // Logout function
+            function handleLogout(event) {
+                event.preventDefault();
+                
+                if (confirm('ต้องการออกจากระบบหรือไม่?')) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/login.html';
+                }
+            }
+
+            // Load Users with pet count
+            async function loadUserPets() {
+                try {
+                    const response = await fetch(`${API_URL}/admin/users-with-pets`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to load users');
+                    allUserPets = await response.json();
+                    displayUserPetsList(allUserPets);
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                    document.getElementById('userPetsListContainer').innerHTML = 
+                        '<div class="no-data"><div class="no-data-text">ไม่สามารถโหลดข้อมูลได้</div></div>';
+                }
+            }
+
+            // Display Users list
+            function displayUserPetsList(users) {
+                const container = document.getElementById('userPetsListContainer');
+            
+                if (users.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-data">
+                            <div class="no-data-text">ไม่มีผู้ใช้ในระบบ</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <table class="user-pet-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>ชื่อผู้ใช้</th>
+                                <th>อีเมล</th>
+                                <th>จำนวนสัตว์เลี้ยง</th>
+                                <th>เพิ่มล่าสุด</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                // Show Date (Add Pet)
+                users.forEach((user, index) => {
+                    const latestPetDate = user.latest_pet_date 
+                        ? new Date(user.latest_pet_date).toLocaleDateString('th-TH', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })
+                        : '-';
+                    
+                    html += `
+                        <tr class="user-pet-row" onclick="selectUser(${user.id}, '${user.full_name || user.username}')">
+                            <td>${index + 1}</td>
+                            <td><strong>${user.full_name || user.username}</strong></td>
+                            <td>${user.email}</td>
+                            <td><span class="pet-count-badge">${user.pet_count} ตัว</span></td>
+                            <td>${latestPetDate}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+
+            // Filter
+            function filterUserPets() {
+                const searchTerm = document.getElementById('searchUserPets').value.toLowerCase();
+                const filtered = allUserPets.filter(user =>
+                    user.username.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    (user.full_name && user.full_name.toLowerCase().includes(searchTerm))
+                );
+                displayUserPetsList(filtered);
+            }
+
+            let allBlogs = [];
+
+            async function loadBlogs() {
+                const res = await fetch(`${API_URL}/blog/all`);
+                allBlogs = await res.json();
+                renderBlogList(allBlogs);
+            }
+
+
+            // Select User and Load pets
+            async function selectUser(userId, userName) {
+                selectedUser = { id: userId, name: userName };
+                
+                try {
+                    const response = await fetch(`${API_URL}/admin/users/${userId}/pets`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to load pets');
+                    
+                    selectedUserPets = await response.json();
+                    
+                    document.getElementById('userListView').style.display = 'none';
+                    document.getElementById('petListView').style.display = 'block';
+                    document.getElementById('petListTitle').textContent = `สัตว์เลี้ยงของ ${userName}`;
+                    
+                    displayPetGrid(selectedUserPets);
+                } catch (error) {
+                    console.error('Error loading pets:', error);
+                    alert('ไม่สามารถโหลดข้อมูลสัตว์เลี้ยงได้');
+                }
+            }
+
+            // Display pet grid
+            function displayPetGrid(pets) {
+                const container = document.getElementById('petGridContainer');
+                
+                if (pets.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-data">
+                            <div class="no-data-icon"><img src="/icon/warning.png" alt="No Pet" style="width:50px;height:50px;"></div>
+                            <div class="no-data-text">ยังไม่มีสัตว์เลี้ยง</div>
+                            <div class="no-data-subtext">ยังไม่ได้เพิ่มสัตว์เลี้ยงในระบบ</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<div class="pet-grid">';
+                
+                pets.forEach(pet => {
+                    const age = calculateAge(pet.birth_date);
+                    const imageUrl = pet.photo_url || 'https://via.placeholder.com/300x200?text=No+Photo';
+                    
+                    html += `
+                        <div class="pet-card" onclick="selectPet(${pet.id})">
+                            <img src="${imageUrl}" class="pet-card-image" alt="${pet.name}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Photo'">
+                            <div class="pet-card-content">
+                                <div class="pet-card-name">${pet.name}</div>
+                                <div class="pet-card-breed">${pet.breed || 'ไม่ระบุสายพันธุ์'}</div>
+                                <div class="pet-card-info">
+                                    <div class="pet-card-info-item">
+                                        <span>${pet.gender === 'male' ? '<img src="/icon/gender (1).png" alt="Boy" style="width:25px;height:25px;">' : '<img src="/icon/gender.png" alt="Girl" style="width:25px;height:25px;">'}</span>
+                                        <span>${pet.gender === 'male' ? 'ชาย' : 'หญิง'}</span>
+                                    </div>
+                                    ${age ? `<div class="pet-card-info-item"><img src="/icon/birthday.png" alt="Birth Day" style="width:25px;height:25px;"><span>${age}</span></div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            }
+
+            // Calculate Age
+            function calculateAge(birthDate) {
+                if (!birthDate) return null;
+                
+                const birth = new Date(birthDate);
+                const now = new Date();
+                const years = now.getFullYear() - birth.getFullYear();
+                const months = now.getMonth() - birth.getMonth();
+                
+                if (years > 0) {
+                    return `${years} ปี ${months} เดือน`;
+                } else {
+                    return `${months} เดือน`;
+                }
+            }
+
+            // Select Pet and Show Detail
+            async function selectPet(petId) {
+                try {
+                    // Load Pet
+                    const petResponse = await fetch(`${API_URL}/admin/pets/${petId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (!petResponse.ok) throw new Error('Failed to load pet details');
+                    selectedPet = await petResponse.json();
+                    
+                    // Load vaccination
+                    const vaccineResponse = await fetch(`${API_URL}/admin/pets/${petId}/vaccinations`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    const vaccinations = vaccineResponse.ok ? await vaccineResponse.json() : [];
+                    
+                    document.getElementById('petListView').style.display = 'none';
+                    document.getElementById('petDetailView').style.display = 'block';
+                    
+                    displayPetDetail(selectedPet);
+                    displayVaccinationHistory(vaccinations);
+                } catch (error) {
+                    console.error('Error loading pet details:', error);
+                    alert('ไม่สามารถโหลดรายละเอียดได้');
+                }
+            }
+
+            // Display Pet detail
+            function displayPetDetail(pet) {
+                const imageUrl = pet.photo_url || 'https://via.placeholder.com/300x300?text=No+Photo';
+                const age = calculateAge(pet.birth_date);
+                
+                const html = `
+                    <div class="pet-detail-grid">
+                        <div>
+                            <img src="${imageUrl}" class="pet-detail-image" alt="${pet.name}" onerror="this.src='https://via.placeholder.com/300x300?text=No+Photo'">
+                        </div>
+                        <div class="pet-detail-info">
+                            <div class="pet-info-item">
+                                <div class="pet-info-label">ชื่อ</div>
+                                <div class="pet-info-value">${pet.name}</div>
+                            </div>
+                            <div class="pet-info-item">
+                                <div class="pet-info-label">สายพันธุ์</div>
+                                <div class="pet-info-value">${pet.breed || 'ไม่ระบุ'}</div>
+                            </div>
+                            <div class="pet-info-item">
+                                <div class="pet-info-label">เพศ</div>
+                                <div class="pet-info-value">${pet.gender === 'male' ? 'ชาย' : 'หญิง'}</div>
+                            </div>
+                            <div class="pet-info-item">
+                                <div class="pet-info-label">วันเกิด</div>
+                                <div class="pet-info-value">${pet.birth_date ? new Date(pet.birth_date).toLocaleDateString('th-TH') : 'ไม่ระบุ'}</div>
+                            </div>
+                            <div class="pet-info-item">
+                                <div class="pet-info-label">อายุ</div>
+                                <div class="pet-info-value">${age || 'ไม่ระบุ'}</div>
+                            </div>
+                            <div class="pet-info-item">
+                                <div class="pet-info-label">สี</div>
+                                <div class="pet-info-value">${pet.color || 'ไม่ระบุ'}</div>
+                            </div>
+                            <div class="pet-info-item">
+                                <div class="pet-info-label">น้ำหนัก</div>
+                                <div class="pet-info-value">${pet.weight ? pet.weight + ' กก.' : 'ไม่ระบุ'}</div>
+                            </div>
+                            ${pet.notes ? `
+                            <div class="pet-info-item" style="grid-column: 1 / -1;">
+                                <div class="pet-info-label">หมายเหตุ</div>
+                                <div class="pet-info-value">${pet.notes}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('petDetailTitle').textContent = `${pet.name}`;
+                document.getElementById('petDetailContainer').innerHTML = html;
+            }
+
+            // Display Vaccination
+            function displayVaccinationHistory(vaccinations) {
+                const container = document.getElementById('vaccinationHistoryContainer');
+                
+                if (vaccinations.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-data">
+                            <img src="/icon/syringe.png" alt="Vaccine" style="width:30px;height:30px;">
+                            <div class="no-data-text">ยังไม่มีบันทึกวัคซีน</div>
+                            <div class="no-data-subtext">ยังไม่มีการบันทึกประวัติการฉีดวัคซีน</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<div class="vaccination-timeline">';
+                
+                vaccinations.forEach(vac => {
+                    const date = new Date(vac.vaccination_date);
+                    const day = date.getDate();
+                    const month = date.toLocaleDateString('th-TH', { month: 'short', year: 'numeric' });
+                    
+                    html += `
+                        <div class="vaccination-item">
+                            <div class="vaccination-date">
+                                <div class="vaccination-date-day">${day}</div>
+                                <div class="vaccination-date-month">${month}</div>
+                            </div>
+                            <div class="vaccination-content">
+                                <div class="vaccination-vaccine-name"><img src="/icon/syringe.png" alt="Vaccine" style="width:20px;height:20px;"> ${vac.vaccine_name}</div>
+                                ${vac.vaccine_type ? `<div style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">${vac.vaccine_type}</div>` : ''}
+                                <div class="vaccination-details">
+                                    ${vac.veterinarian ? `<div class="vaccination-detail-item"><div class="vaccination-vaccine-name"><img src="/icon/veterinarian.png" alt="Doctor" style="width:20px;height:20px;"> สัตวแพทย์: ${vac.veterinarian}</div>` : ''}
+                                    ${vac.clinic_name ? `<div class="vaccination-detail-item"><img src="/icon/veterinary.png" alt="Clinic" style="width:20px;height:20px;"> คลินิก: ${vac.clinic_name}</div>` : ''}
+                                    ${vac.batch_number ? `<div class="vaccination-detail-item"><img src="/icon/barcode.png" alt="Batch" style="width:20px;height:20px;"> Batch: ${vac.batch_number}</div>` : ''}
+                                    ${vac.next_due_date ? `<div class="vaccination-detail-item"><img src="/icon/right-arrow.png" alt="Next Dua Date" style="width:20px;height:20px;"> นัดครั้งถัดไป: ${new Date(vac.next_due_date).toLocaleDateString('th-TH')}</div>` : ''}
+                                </div>
+                                ${vac.notes ? `<div style="margin-top: 10px; padding: 10px; background: white; border-radius: 6px; font-size: 0.9rem; color: #666;"><img src="/icon/medical-book.png" alt="Vaccine Book" style="width:20px;height:20px;"> ${vac.notes}</div>` : ''}
+                            </div>
+                            ${vac.proof_image ? `
+                            <div class="vaccination-proof">
+                                <img src="${vac.proof_image}" class="vaccination-proof-image" alt="หลักฐาน" onclick="openImageModal('${vac.proof_image}'); event.stopPropagation();" onerror="this.style.display='none'">
+                                <button class="view-proof-btn" onclick="openImageModal('${vac.proof_image}'); event.stopPropagation();">ดูหลักฐาน</button>
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            }
+
+            // Navigation functions
+            function backToUserList() {
+                document.getElementById('petListView').style.display = 'none';
+                document.getElementById('userListView').style.display = 'block';
+                selectedUser = null;
+                selectedUserPets = [];
+            }
+            function backToPetList() {
+                document.getElementById('petDetailView').style.display = 'none';
+                document.getElementById('petListView').style.display = 'block';
+                selectedPet = null;
+            }
+
+            // Image functions
+            function openImageModal(imageUrl) {
+                const modal = document.getElementById('imageModal');
+                const modalImg = document.getElementById('modalImage');
+                modal.classList.add('show');
+                modalImg.src = imageUrl;
+            }
+            function closeImageModal() {
+                const modal = document.getElementById('imageModal');
+                modal.classList.remove('show');
+            }
+
+            // Initialize when section is shown
+            function initPetsSection() {
+                loadUserPets();
+            }
+            </script>
+
+
+
+            <!-- Blog Section -->
+            <div id="blogSection" style="display: none;">
+                <!-- Header Section -->
+                <div style="background: linear-gradient(135deg, #00bcd4 0%); 
+                            padding: 30px; 
+                            border-radius: 16px; 
+                            margin-bottom: 30px;
+                            box-shadow: 0 4px 20px rgba(0, 188, 212, 0.3);
+                            position: relative;
+                            overflow: hidden;">
+                    <!-- Decorative Elements -->
+                    <div style="position: relative; z-index: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                            <div>
+                                <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 15px;">
+                                    สร้าง แก้ไข ลบ ข้อมูลการดูแลสัตว์เลี้ยง
+                                </p>
+                            </div>
+                            <button onclick="openBlogModal()" 
+                                    style="padding: 14px 28px;
+                                        background: white;
+                                        color: #00bcd4;
+                                        border: none;
+                                        border-radius: 25px;
+                                        font-size: 16px;
+                                        font-weight: 600;
+                                        cursor: pointer;
+                                        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                                        transition: all 0.3s;
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 10px;">
+                                <span style="font-size: 20px;">+</span>
+                                <span>สร้างบทความใหม่</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter, Search Bar -->
+                <div style="background: white; 
+                            padding: 20px 25px; 
+                            border-radius: 15px; 
+                            margin-bottom: 25px;
+                            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+                            display: flex;
+                            gap: 15px;
+                            flex-wrap: wrap;
+                            align-items: center;">
+                    
+                    <!-- Search Box -->
+                    <div style="flex: 1; min-width: 250px;">
+                        <div style="position: relative;">
+                            <input type="text" 
+                                id="blogSearchInput" 
+                                placeholder="ค้นหา"
+                                style="width: 100%;
+                                        padding: 12px 45px 12px 15px;
+                                        border: 2px solid #e0e0e0;
+                                        border-radius: 25px;
+                                        font-size: 14px;
+                                        transition: all 0.3s;">
+                            <span style="position: absolute; 
+                                        right: 15px; 
+                                        top: 50%; 
+                                        transform: translateY(-50%); 
+                                        color: #999;
+                                        font-size: 25px;"><img src="/icon/search (1).png" alt="Search" style="width:20px;height:20px;"></span>
+                        </div>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <select id="blogCategoryFilter" 
+                            style="padding: 12px 20px;
+                                border: 2px solid #e0e0e0;
+                                border-radius: 25px;
+                                font-size: 14px;
+                                cursor: pointer;
+                                background: white;
+                                min-width: 150px;">
+                        <option value="">ทุกหมวดหมู่</option>
+                        <option value="สุขภาพ">สุขภาพ</option>
+                        <option value="โภชนาการ">โภชนาการ</option>
+                        <option value="พฤติกรรม">พฤติกรรม</option>
+                        <option value="การดูแล">การดูแล</option>
+                        <option value="ทั่วไป">ทั่วไป</option>
+                    </select>
+
+                    <!-- Status Filter -->
+                    <select id="blogStatusFilter" 
+                            style="padding: 12px 20px;
+                                border: 2px solid #e0e0e0;
+                                border-radius: 25px;
+                                font-size: 14px;
+                                cursor: pointer;
+                                background: white;
+                                min-width: 150px;">
+                        <option value="">ทุกสถานะ</option>
+                        <option value="published">เผยแพร่แล้ว</option>
+                        <option value="draft">แบบร่าง</option>
+                    </select>
+
+                    <!-- Stats -->
+                    <div style="margin-left: auto; 
+                                display: flex; 
+                                gap: 20px;
+                                padding: 10px 20px;
+                                background: #f8f9fa;
+                                border-radius: 15px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 20px; font-weight: 700; color: #00bcd4;" id="totalPosts">0</div>
+                            <div style="font-size: 12px; color: #666;">บทความทั้งหมด</div>
+                        </div>
+                        <div style="width: 1px; background: #ddd;"></div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 20px; font-weight: 700; color: #4caf50;" id="publishedPosts">0</div>
+                            <div style="font-size: 12px; color: #666;">เผยแพร่</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog Grid -->
+                <div id="blogGrid" style="display: grid; 
+                                        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); 
+                                        gap: 25px;">
+                    <div style="text-align: center; padding: 60px; color: #999; grid-column: 1/-1;">
+                        <div style="font-size: 60px; margin-bottom: 15px;"></div>
+                        <p>กำลังโหลดข้อมูล</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Modal -->
+            <div id="blogModal" style="display: none; 
+                                    position: fixed; 
+                                    top: 0; 
+                                    left: 0; 
+                                    width: 100%; 
+                                    height: 100%; 
+                                    background: rgba(0, 0, 0, 0.6);
+                                    backdrop-filter: blur(5px);
+                                    z-index: 1000; 
+                                    align-items: center; 
+                                    justify-content: center;
+                                    animation: fadeIn 0.3s;">
+                <div style="background: white; 
+                            border-radius: 20px; 
+                            padding: 35px; 
+                            max-width: 900px; 
+                            width: 90%; 
+                            max-height: 90vh; 
+                            overflow-y: auto;
+                            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                            animation: slideUp 0.3s;">
+                    
+                    <!-- Modal Header -->
+                    <div style="display: flex; 
+                                justify-content: space-between; 
+                                align-items: center; 
+                                margin-bottom: 30px;
+                                padding-bottom: 20px;
+                                border-bottom: 2px solid #f0f0f0;">
+                        <h2 id="blogModalTitle" style="margin: 0; color: #333; font-size: 24px; display: flex; align-items: center; gap: 12px;">
+                            <span>สร้างบทความใหม่</span>
+                        </h2>
+                        <button onclick="closeBlogModal()" 
+                                style="background: #f5f5f5; 
+                                    border: none; 
+                                    width: 40px;
+                                    height: 40px;
+                                    border-radius: 50%;
+                                    font-size: 20px; 
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    transition: all 0.3s;">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Modal Form -->
+                    <form id="blogForm" onsubmit="handleBlogSubmit(event)">
+                        <!-- Title -->
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333; font-size: 14px;">
+                                หัวข้อ *
+                            </label>
+                            <input type="text" 
+                                id="blogTitle" 
+                                required 
+                                style="width: 100%; 
+                                        padding: 14px 18px; 
+                                        border: 2px solid #e0e0e0; 
+                                        border-radius: 12px;
+                                        font-size: 15px;
+                                        transition: all 0.3s;"
+                                placeholder="">
+                        </div>
+
+                        <!-- Category & Status -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333; font-size: 14px;">
+                                    หมวดหมู่
+                                </label>
+                                <select id="blogCategory" 
+                                        style="width: 100%; 
+                                            padding: 14px 18px; 
+                                            border: 2px solid #e0e0e0; 
+                                            border-radius: 12px;
+                                            font-size: 15px;
+                                            cursor: pointer;">
+                                    <option value="">เลือกหมวดหมู่</option>
+                                    <option value="สุขภาพ">สุขภาพ</option>
+                                    <option value="โภชนาการ">โภชนาการ</option>
+                                    <option value="พฤติกรรม">พฤติกรรม</option>
+                                    <option value="การดูแล">การดูแล</option>
+                                    <option value="ทั่วไป">ทั่วไป</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333; font-size: 14px;">
+                                    สถานะ
+                                </label>
+                                <select id="blogStatus" 
+                                        style="width: 100%; 
+                                            padding: 14px 18px; 
+                                            border: 2px solid #e0e0e0; 
+                                            border-radius: 12px;
+                                            font-size: 15px;
+                                            cursor: pointer;">
+                                    <option value="draft">แบบร่าง</option>
+                                    <option value="published">เผยแพร่</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Excerpt -->
+                        <div style="margin-bottom: 25px;">
+                            <label for="blogExcerpt">คำอธิบาย</label>
+                            <textarea id="blogExcerpt" name="excerpt" rows="4" placeholder=""></textarea>
+                            <div class="char-count" id="count_blogExcerpt">0 ตัวอักษร</div>
+                        </div>
+
+                        <!-- Content -->
+                        <div style="margin-bottom: 25px;">
+                            <label for="blogContent">เนื้อหา</label>
+                            <textarea id="blogContent" name="content" rows="8" placeholder=""></textarea>
+                            <div class="char-count" id="count_blogContent">0 ตัวอักษร</div> 
+                        </div>
+
+                        <!-- Image -->
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333; font-size: 14px;">
+                                รูปหน้าปก
+                            </label>
+                            <input type="file"
+                                id="blogImage"
+                                accept="image/*"
+                                onchange="previewBlogImage(this)"
+                                style="width: 100%;
+                                        padding: 14px 18px;
+                                        border: 2px dashed #e0e0e0;
+                                        border-radius: 12px;
+                                        cursor: pointer;">
+
+                            <!-- Preview Container -->
+                            <div id="blogImagePreview" style="display: none; margin-top: 15px; position: relative;">
+                                <img id="blogImagePreviewImg"
+                                    style="width: 100%;
+                                            max-height: 300px;
+                                            object-fit: cover;
+                                            border-radius: 12px;
+                                            border: 2px solid #e0e0e0;">
+                                <button type="button"
+                                        onclick="removeBlogImagePreview()"
+                                        style="position: absolute;
+                                                top: 10px;
+                                                right: 10px;
+                                                background: rgba(255, 59, 48, 0.9);
+                                                color: white;
+                                                border: none;
+                                                width: 32px;
+                                                height: 32px;
+                                                border-radius: 50%;
+                                                cursor: pointer;
+                                                font-size: 18px;
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                                    ×
+                                </button>
+                            </div>
+
+                            <!-- Current Image (for edit mode) -->
+                            <div id="currentBlogImage" style="margin-top: 15px;"></div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div id="blogTagsContainer" style="display: grid; 
+                                    grid-template-columns: repeat(2, 1fr); 
+                                    gap: 10px; 
+                                    padding: 14px 18px; 
+                                    border: 2px solid #e0e0e0; 
+                                    border-radius: 12px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;">
+                                <input type="checkbox" name="blogTags" value="สุขภาพ" style="width: 18px; height: 18px; cursor: pointer;">
+                                <span>สุขภาพ</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;">
+                                <input type="checkbox" name="blogTags" value="โภชนาการ" style="width: 18px; height: 18px; cursor: pointer;">
+                                <span>โภชนาการ</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;">
+                                <input type="checkbox" name="blogTags" value="พฤติกรรม" style="width: 18px; height: 18px; cursor: pointer;">
+                                <span>พฤติกรรม</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;">
+                                <input type="checkbox" name="blogTags" value="การดูแล" style="width: 18px; height: 18px; cursor: pointer;">
+                                <span>การดูแล</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;">
+                                <input type="checkbox" name="blogTags" value="วัคซีน" style="width: 18px; height: 18px; cursor: pointer;">
+                                <span>วัคซีน</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;">
+                                <input type="checkbox" name="blogTags" value="โรคภัย" style="width: 18px; height: 18px; cursor: pointer;">
+                                <span>โรคภัย</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;">
+                                <input type="checkbox" name="blogTags" value="ทั่วไป" style="width: 18px; height: 18px; cursor: pointer;">
+                                <span>ทั่วไป</span>
+                            </label>
+                        </div>
+                        <small style="color: #999; font-size: 12px;">
+                            เลือกได้หลายแท็ก
+                        </small>
+
+                        <!-- Sources -->
+                        <div class="form-group">
+                        <label for="sourcesInput" style="font-weight:600; display:block; margin-bottom:8px;">
+                            อ้างอิง
+                        </label>
+                        <textarea id="sourcesInput"
+                                    placeholder="ใส่ URL หรือข้อความอ้างอิง"
+                                    rows="3"
+                                    style="width:100%; box-sizing:border-box; padding:10px 12px; border-radius:10px; border:1px solid #e6e6e6; resize:vertical;"></textarea>
+                            <small style="color:#777;">คั่นด้วยเครื่องหมาย , </small>
+                            <small id="sourcesCount" style="color:#666;">0 รายการ</small>
+                        </div>
+
+                        <!-- Button Actions -->
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 20px; border-top: 2px solid #f0f0f0;">
+                            <button type="button" 
+                                    onclick="closeBlogModal()" 
+                                    style="padding: 14px 30px; 
+                                        background: #f5f5f5; 
+                                        border: none; 
+                                        border-radius: 12px; 
+                                        cursor: pointer;
+                                        font-size: 15px;
+                                        font-weight: 600;
+                                        color: #666;
+                                        transition: all 0.3s;">
+                                ยกเลิก
+                            </button>
+                            <button type="submit" 
+                                    style="padding: 14px 30px; 
+                                        background: linear-gradient(135deg, #00bcd4); 
+                                        color: white; 
+                                        border: none; 
+                                        border-radius: 12px; 
+                                        cursor: pointer;
+                                        font-size: 15px;
+                                        font-weight: 600;
+                                        box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+                                        transition: all 0.3s;">
+                                บันทึก
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <style>
+            /* Blog Card Styles */
+            .blog-card {
+                background: white;
+                border-radius: 16px;
+                padding: 0;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                transition: all 0.3s;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .blog-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0, 188, 212, 0.2);
+            }
+
+            .blog-card-header {
+                padding: 20px 25px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .blog-card-body {
+                padding: 25px;
+                flex: 1;
+            }
+
+            .blog-card-footer {
+                padding: 20px 25px;
+                background: #f8f9fa;
+                border-top: 1px solid #e0e0e0;
+                display: flex;
+                gap: 10px;
+            }
+
+            .blog-title {
+                color: #333;
+                margin: 0 0 12px 0;
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .blog-meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                color: #666;
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+
+            .blog-meta-item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .blog-excerpt {
+                color: #666;
+                line-height: 1.7;
+                font-size: 14px;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .char-count {
+                margin-top: 6px;
+                font-size: 13px;
+                color: #666;
+                text-align: right;  
+            }
+            
+            .char-count.warning { color: #d9534f; } 
+
+            .source-row {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            .source-row input {
+                flex: 1;
+                padding: 8px;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+            }
+            .source-row button.remove-source {
+                padding: 6px 8px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            #sourcesInput {
+                background: #fff;
+                font-size: 14px;
+                line-height: 1.4;
+                min-height: 56px;
+                max-height: 240px;
+                overflow-y: auto;
+                transition: box-shadow 0.15s ease, border-color 0.15s ease;
+            }
+            #sourcesInput:focus {
+                outline: none;
+                box-shadow: 0 6px 18px rgba(0,188,212,0.12);
+                border-color: #00bcd4;
+            }
+
+            #sourcesHelp small { font-size: 13px; }
+
+            .status-badge {
+                padding: 5px 12px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .status-published {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+
+            .status-draft {
+                background: #fff3e0;
+                color: #e65100;
+            }
+
+            .blog-action-btn {
+                flex: 1;
+                padding: 10px;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 600;
+                transition: all 0.3s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+            }
+
+            .blog-action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+            .btn-blog-edit {
+                background: linear-gradient(135deg, #4caf50, #388e3c);
+                color: white;
+            }
+
+            .btn-blog-delete {
+                background: linear-gradient(135deg, #f44336, #d32f2f);
+                color: white;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            #blogSearchInput:focus,
+            #blogForm input:focus,
+            #blogForm select:focus,
+            #blogForm textarea:focus {
+                outline: none;
+                border-color: #00bcd4;
+                box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+            }
+
+            #blogExcerpt,
+            #blogContent {
+                display: block;
+                width: 100% !important;      
+                box-sizing: border-box !important;
+                min-height: 180px;            
+                padding: 10px 12px;
+                resize: vertical;             
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            button:hover {
+                opacity: 0.9;
+            }
+
+            #blogModal button[onclick="closeBlogModal()"]:hover {
+                background: #e0e0e0;
+                transform: rotate(90deg);
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                #blogGrid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .blog-card-footer {
+                    flex-direction: column;
+                }
+            }
+
+            .modal {
+            display: none;
+            position: fixed;
+            inset: 0;                 
+            background: rgba(0,0,0,0.6) !important;
+            z-index: 20000 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 20px !important;
+            }
+
+            .modal.active { display: flex !important; }
+
+            .modal-content input,
+            .modal-content select,
+            .modal-content textarea {
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .modal-content .form-row,
+            .modal-content .form-group {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .modal-content .field-inline {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            #blogModal .modal-footer {
+                position: sticky;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: white;           
+                padding: 14px 20px;
+                box-shadow: 0 -6px 20px rgba(0,0,0,0.06);
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                z-index: 30;
+            }
+
+            #blogModal .btn-cancel { 
+                background:#f0f0f0; 
+                color:#333; 
+                padding:10px 18px; 
+                border-radius:10px; 
+                border:none; 
+            }
+
+            #blogModal .btn-save { 
+                background:#00bcd4; 
+                color:#fff; 
+                padding:10px 18px; 
+                border-radius:10px; 
+                border:none; 
+            }
+
+            @media (max-width: 768px) {
+            .modal-content {
+                width: 90%;
+                max-width: 960px;
+                max-height: calc(100vh - 80px); 
+                overflow-y: auto;            
+                border-radius: 12px;
+                background: #fff;
+                position: relative;
+                padding-bottom: 80px;      
+            }
+            }
+
+
+            </style>
+
+            <script>
+            let currentBlogId = null;
+            let allBlogPosts = [];
+
+            async function loadAdminBlogPosts() {
+                try {
+                    const resp = await fetch(`${API_URL}/admin/blog`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    if (!resp.ok) throw new Error('Cannot load admin blog posts: ' + resp.status);
+                    allBlogPosts = await resp.json();
+                    displayBlogPosts(allBlogPosts);
+                    updateBlogStats();
+                    setupBlogFilters(); 
+                } catch (err) {
+                    console.error('loadAdminBlogPosts error', err);
+                    document.getElementById('blogGrid').innerHTML = `<div style="text-align:center;padding:60px;color:#999;">โหลดไม่สำเร็จ</div>`;
+                }
+            }
+
+            function updateExcerptCounter() {
+                const excerpt = document.getElementById('blogExcerpt').value;
+                const counter = document.getElementById('excerptCounter');
+                if (counter) {
+                    counter.textContent = `${excerpt.length}/200`;
+                    counter.style.color = excerpt.length > 180 ? '#f44336' : '#999';
+                }
+            }
+
+            // search and filter function
+            function setupBlogFilters() {
+                const searchInput = document.getElementById('blogSearchInput');
+                const categoryFilter = document.getElementById('blogCategoryFilter');
+                const statusFilter = document.getElementById('blogStatusFilter');
+
+                if (searchInput) searchInput.addEventListener('input', filterBlogPosts);
+                if (categoryFilter) categoryFilter.addEventListener('change', filterBlogPosts);
+                if (statusFilter) statusFilter.addEventListener('change', filterBlogPosts);
+            }
+
+
+            // Filter blog 
+            function filterBlogPosts() {
+                const searchTerm = (document.getElementById('blogSearchInput')?.value || '').toLowerCase();
+                const category = document.getElementById('blogCategoryFilter')?.value || '';
+                const status = document.getElementById('blogStatusFilter')?.value || '';
+
+                const filtered = allBlogPosts.filter(p => {
+                    const matchesSearch = !searchTerm || (p.title && p.title.toLowerCase().includes(searchTerm)) ||
+                        (p.excerpt && p.excerpt.toLowerCase().includes(searchTerm)) ||
+                        (p.content && p.content.toLowerCase().includes(searchTerm));
+                    const matchesCategory = !category || (p.category === category);
+                    const matchesStatus = !status || (p.status === status);
+                    return matchesSearch && matchesCategory && matchesStatus;
+                });
+
+                displayBlogPosts(filtered);
+            }
+
+            // Load blog 
+            async function loadBlogPosts() {
+                try {
+                    const response = await fetch(`${API_URL}/blog`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    allBlogPosts = await response.json();
+                    displayBlogPosts(allBlogPosts);
+                    updateBlogStats();
+                } catch (error) {
+                    console.error('Error loading blog posts:', error);
+                    document.getElementById('blogGrid').innerHTML = `
+                        <div style="text-align: center; padding: 60px; color: #999; grid-column: 1/-1;">
+                            <div style="font-size: 60px; margin-bottom: 15px;"><img src="/icon/warning.png" alt="warning" style="width:50px;height:50px;"></div>
+                            <p style="font-size: 16px; color: #666;">ไม่สามารถโหลดข้อมูลได้</p>
+                            <button onclick="loadBlogPosts()" 
+                                    style="margin-top: 15px; padding: 10px 20px; background: #00bcd4; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                ลองอีกครั้ง
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            function setupCharCounter(textareaId, counterId, max = null) {
+                const ta = document.getElementById(textareaId);
+                const counter = document.getElementById(counterId);
+                if (!ta || !counter) return;
+
+                function update() {
+                    const len = ta.value.length;
+                    if (max) {
+                    counter.textContent = `${len}/${max} ตัวอักษร`;
+                    counter.classList.toggle('warning', len > max);
+                    } else {
+                    counter.textContent = `${len} ตัวอักษร`;
+                    }
+                }
+
+                ta.addEventListener('input', update);
+                update(); 
+            }
+
+            setupCharCounter('blogExcerpt', 'count_blogExcerpt', 200);
+            setupCharCounter('blogContent', 'count_blogContent', 1000);
+
+            (function autoResizeTextareas() {
+                const ids = ['blogExcerpt', 'blogContent'];
+                ids.forEach(id => {
+                    const ta = document.getElementById(id);
+                    if (!ta) return;
+                    
+                    const resize = () => {
+                    ta.style.height = 'auto';
+                    ta.style.height = Math.min(window.innerHeight * 0.6, ta.scrollHeight) + 'px';
+                    };
+                    ta.addEventListener('input', resize);
+                    resize();
+                });
+            })();
+
+            function createSourceInput(value = '') {
+                const row = document.createElement('div');
+                row.className = 'source-row';
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'source-input';
+                input.placeholder = 'https://example.com หรือข้อความอ้างอิง';
+                input.value = value;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'remove-source';
+                removeBtn.textContent = 'ลบ';
+                removeBtn.onclick = () => row.remove();
+
+                row.appendChild(input);
+                row.appendChild(removeBtn);
+                return row;
+            }
+
+            function initSourcesUI(arr = []) {
+                const container = document.getElementById('sourcesContainer');
+                if (!container) return;
+                container.innerHTML = '';
+                if (Array.isArray(arr) && arr.length) {
+                    arr.forEach(s => container.appendChild(createSourceInput(s)));
+                } else {
+                    container.appendChild(createSourceInput(''));
+                }
+            }
+
+
+            // Update blog 
+            function updateBlogStats() {
+                const totalPosts = allBlogPosts.length;
+                const publishedPosts = allBlogPosts.filter(p => p.status === 'published').length;
+                
+                const totalEl = document.getElementById('totalPosts');
+                const publishedEl = document.getElementById('publishedPosts');
+                
+                if (totalEl) totalEl.textContent = totalPosts;
+                if (publishedEl) publishedEl.textContent = publishedPosts;
+            }
+
+            // category icon
+            function getCategoryIcon(category) {
+                const icons = {
+                    'สุขภาพ': '',
+                    'โภชนาการ': '',
+                    'พฤติกรรม': '',
+                    'การดูแล': '',
+                    'ทั่วไป': ''
+                };
+                return icons[category] || '<img src="/icon/animal-lover.png" alt="Category Icon" style="width:30px;height:30px;">';
+            }
+
+            // Display blog 
+            function displayBlogPosts(posts) {
+                const grid = document.getElementById('blogGrid');
+                
+                if (posts.length === 0) {
+                    grid.innerHTML = `
+                        <div style="text-align: center; 
+                                    padding: 12px 24px; 
+                                    color: #999; 
+                                    grid-column: 1/-1;
+                                    background: white;
+                                    border-radius: 8px;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <img src="/icon/like.png" alt="Blog" style="width:50px;height:50px;">
+                            <h3 style="color: #666; margin-bottom: 10px; font-size: 20px;">ยังไม่มีบทความ</h3>
+                            <p style="color: #999; margin-bottom: 25px;">คลิก "สร้างบทความใหม่"</p>
+                            <button onclick="openBlogModal()" 
+                                    style="padding: 12px 24px; 
+                                        background: linear-gradient(135deg, #00bcd4, #0097a7); 
+                                        color: white; 
+                                        border: none; 
+                                        border-radius: 8px; 
+                                        cursor: pointer;
+                                        font-size: 15px;
+                                        font-weight: 600;
+                                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+                                + สร้างบทความใหม่
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                grid.innerHTML = posts.map(post => {
+                    const categoryIcon = getCategoryIcon(post.category);
+                    const statusClass = post.status === 'published' ? 'status-published' : 'status-draft';
+                    const statusText = post.status === 'published' ? 'เผยแพร่' : 'แบบร่าง';
+                    
+                    return `
+                        <div class="blog-card">
+                            <div class="blog-card-header">
+                                <div class="blog-meta">
+                                    <span class="blog-meta-item">
+                                        <img src="/icon/calendar (2).png" alt="Date" style="width:30px;height:30px;"> ${new Date(post.created_at).toLocaleDateString('th-TH', { 
+                                            year: 'numeric', 
+                                            month: 'short', 
+                                            day: 'numeric' 
+                                        })}
+                                    </span>
+                                    <span class="blog-meta-item">
+                                        ${categoryIcon} ${post.category || 'ไม่ระบุ'}
+                                    </span>
+                                    <span class="status-badge ${statusClass}">
+                                        ${statusText}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="blog-card-body">
+                                <h3 class="blog-title">${post.title}</h3>
+                                <div class="blog-excerpt">
+                                    ${post.excerpt || post.content.substring(0, 150) + '...'}
+                                </div>
+                            </div>
+                            
+                            <div class="blog-card-footer">
+                                <button class="blog-action-btn btn-blog-edit" 
+                                        onclick="editBlogPost(${post.id})">
+                                    แก้ไข
+                                </button>
+                                <button class="blog-action-btn btn-blog-delete" 
+                                        onclick="deleteBlogPost(${post.id}, '${post.title.replace(/'/g, "\\'")}')">
+                                    ลบ
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Open blog 
+            function openBlogModal() {
+                currentBlogId = null;
+                document.getElementById('blogModalTitle').innerHTML = '</span><span>สร้างบทความใหม่</span>';
+                document.getElementById('blogForm').reset();
+                document.getElementById('currentBlogImage').innerHTML = '';
+                document.getElementById('blogModal').style.display = 'flex';
+                document.querySelectorAll('input[name="blogTags"]').forEach(cb => cb.checked = false);
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Close blog
+            function closeBlogModal() {
+                document.getElementById('blogModal').style.display = 'none';
+                currentBlogId = null;
+                document.body.style.overflow = 'auto';
+                // Reset preview
+                removeBlogImagePreview();
+            }
+
+            // Preview blog image
+            function previewBlogImage(input) {
+                const preview = document.getElementById('blogImagePreview');
+                const previewImg = document.getElementById('blogImagePreviewImg');
+                const currentImage = document.getElementById('currentBlogImage');
+
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        preview.style.display = 'block';
+                        // Hide current image when new preview is shown
+                        if (currentImage) currentImage.style.display = 'none';
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    removeBlogImagePreview();
+                }
+            }
+
+            // Remove blog image preview
+            function removeBlogImagePreview() {
+                const preview = document.getElementById('blogImagePreview');
+                const previewImg = document.getElementById('blogImagePreviewImg');
+                const fileInput = document.getElementById('blogImage');
+                const currentImage = document.getElementById('currentBlogImage');
+
+                if (preview) preview.style.display = 'none';
+                if (previewImg) previewImg.src = '';
+                if (fileInput) fileInput.value = '';
+                // Show current image again when preview is removed
+                if (currentImage) currentImage.style.display = 'block';
+            }
+
+            // Edit blog 
+            async function editBlogPost(postId) {
+                try {
+                    const response = await fetch(`${API_URL}/admin/blog/${postId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        let errText = `HTTP ${response.status}`;
+                        try {
+                            const errJson = await response.json();
+                            errText = errJson.error || errJson.message || JSON.stringify(errJson);
+                        } catch (e) {
+                        }
+                        throw new Error(errText);
+                    }
+
+                    const post = await response.json();
+                    populateSourcesTextarea(post.source || []);
+
+                    currentBlogId = postId;
+                    document.getElementById('blogModalTitle').innerHTML = '<span>แก้ไขบทความ</span>';
+                    document.getElementById('blogTitle').value = post.title || '';
+                    document.getElementById('blogCategory').value = post.category || '';
+                    document.getElementById('blogStatus').value = post.status || 'draft';
+                    document.getElementById('blogExcerpt').value = post.excerpt || '';
+                    document.getElementById('blogContent').value = post.content || '';
+
+                    const tagsArray = Array.isArray(post.tags) ? post.tags : (post.tags ? JSON.parse(post.tags) : []);
+                    document.querySelectorAll('input[name="blogTags"]').forEach(checkbox => {
+                        checkbox.checked = tagsArray.includes(checkbox.value);
+                    });
+
+                    // แสดงรูปภาพปัจจุบัน (ถ้ามี)
+                    const imageUrl = post.featured_image || post.image_url || post.image || '';
+                    if (imageUrl) {
+                        document.getElementById('currentBlogImage').innerHTML = `
+                            <div style="position: relative; display: inline-block;">
+                                <img src="${imageUrl}" style="max-width: 200px; border-radius: 12px; border: 2px solid #e0e0e0;">
+                                <div style="margin-top:8px; color:#666; font-size:13px;">รูปปกปัจจุบัน</div>
+                            </div>
+                        `;
+                        document.getElementById('currentBlogImage').style.display = 'block';
+                    } else {
+                        document.getElementById('currentBlogImage').innerHTML = '';
+                        document.getElementById('currentBlogImage').style.display = 'none';
+                    }
+
+                    document.getElementById('blogModal').style.display = 'flex';
+
+                } catch (error) {
+                    console.error('Error loading blog post:', error);
+                    alert('ไม่สามารถโหลดข้อมูลได้: ' + (error.message || 'Connection error'));
+                }
+            }
+
+            
+
+
+            // Delete blog 
+            async function deleteBlogPost(postId, postTitle) {
+                if (!confirm(`คุณต้องการลบบทความ "${postTitle}" ใช่หรือไม่?`)) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`${API_URL}/admin/blog/${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to delete blog post');
+                    showSuccessNotification('ลบบทความเรียบร้อยแล้ว');
+                    loadAdminBlogPosts();
+                } catch (error) {
+                    console.error('Error deleting blog post:', error);
+                    alert('ไม่สามารถลบบทความได้: ' + error.message);
+                }
+            }
+
+            // Handle blog form submission
+            async function handleBlogSubmit(e) {
+                e.preventDefault();
+
+                const title = document.getElementById('blogTitle').value.trim();
+                const category = document.getElementById('blogCategory').value;
+                const status = document.getElementById('blogStatus').value;
+                const excerpt = document.getElementById('blogExcerpt').value.trim();
+
+                let content = '';
+                if (window.quill && typeof quill.root !== 'undefined') {
+                    content = quill.root.innerHTML;
+                } else {
+                    content = document.getElementById('blogContent').value.trim();
+                }
+
+                const imageInput = document.getElementById('blogImage');
+                const tags = Array.from(document.querySelectorAll('input[name="blogTags"]:checked')).map(i => i.value);
+                const sources = collectSourcesFromTextarea();
+
+                const token = localStorage.getItem('token');
+                const isEdit = !!currentBlogId;
+                const url = isEdit ? `${API_URL}/admin/blog/${currentBlogId}` : `${API_URL}/admin/blog`;
+                const method = isEdit ? 'PUT' : 'POST';
+
+                try {
+                    let options = { method, headers: {}, body: null };
+
+                    if (imageInput && imageInput.files && imageInput.files.length > 0) {
+                        const fd = new FormData();
+                        fd.append('title', title);
+                        fd.append('category', category);
+                        fd.append('status', status);
+                        fd.append('excerpt', excerpt);
+                        fd.append('content', content);
+                        fd.append('tags', JSON.stringify(tags));
+                        fd.append('source', JSON.stringify(sources));
+                        fd.append('image', imageInput.files[0]);
+                        options.body = fd;
+                    } else {
+                        options.headers['Content-Type'] = 'application/json';
+                        options.body = JSON.stringify({
+                            title, category, status, excerpt, content,
+                            tags: JSON.stringify(tags),
+                            source: JSON.stringify(sources)
+                        });
+                    }
+
+                    if (token) options.headers['Authorization'] = `Bearer ${token}`;
+
+                    const resp = await fetch(url, options);
+
+                    if (!resp.ok) {
+                        const err = await resp.json().catch(()=>({error:resp.statusText}));
+                        throw new Error(err.error || JSON.stringify(err));
+                    }
+
+                    alert('บันทึกสำเร็จ');
+                    closeBlogModal();
+                    loadAdminBlogPosts();
+                } catch (err) {
+                    console.error('handleBlogSubmit error', err);
+                    alert('บันทึกไม่สำเร็จ: ' + err.message);
+                }
+            }
+
+            function populateSourcesTextarea(sourcesArray) {
+                const ta = document.getElementById('sourcesInput');
+                const countEl = document.getElementById('sourcesCount');
+                if (!ta) return;
+                if (!Array.isArray(sourcesArray)) sourcesArray = [];
+                ta.value = sourcesArray.join(', ');
+                countEl && (countEl.textContent = `${sourcesArray.length} รายการ`);
+            }
+
+            function collectSourcesFromTextarea() {
+                const ta = document.getElementById('sourcesInput');
+                if (!ta) return [];
+                return ta.value.split(',').map(s => s.trim()).filter(Boolean);
+            }
+
+            function collectSources() {
+                const inputs = Array.from(document.querySelectorAll('#sourcesContainer .source-input'));
+                return inputs.map(i => i.value.trim()).filter(Boolean);
+            }
+
+            (function setupSourcesLiveCount() {
+                const ta = document.getElementById('sourcesInput');
+                const countEl = document.getElementById('sourcesCount');
+                if (!ta || !countEl) return;
+                ta.addEventListener('input', () => {
+                    const arr = collectSourcesFromTextarea();
+                    countEl.textContent = `${arr.length} รายการ`;
+                });
+            })();
+
+
+            // Show success notification
+            function showSuccessNotification(message) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #4caf50, #388e3c);
+                    color: white;
+                    padding: 16px 24px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    font-weight: 600;
+                    animation: slideInRight 0.3s;
+                `;
+                notification.innerHTML = `
+                    <span style="font-size: 20px;"><img src="/icon/verified copy.png" alt="Correct" style="width:30px;height:30px;"></span>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.3s';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        opacity: 0;
+                        transform: translateX(100px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+                
+                @keyframes slideOutRight {
+                    from {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                    to {
+                        opacity: 0;
+                        transform: translateX(100px);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            </script>
+
+
+
+            <!-- Vaccines Section -->
+            <div id="vaccinesSection" style="display: none;">
+                <style>
+                    .vaccine-header-simple {
+                        background: linear-gradient(135deg, #00bcd4 0%);
+                        border-radius: 16px;
+                        padding: 30px;
+                        margin-bottom: 30px;
+                        color: white;
+                        box-shadow: 0 4px 20px rgba(0, 188, 212, 0.3);
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 20px;
+                    }
+
+                    .vaccine-header-content {
+                        flex: 1;
+                        min-width: 300px;
+                    }
+
+                    .vaccine-header-simple h2 {
+                        font-size: 1.8rem;
+                        font-weight: 700;
+                        margin-bottom: 10px;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                    }
+
+                    .vaccine-header-simple p {
+                        font-size: 1rem;
+                        opacity: 0.95;
+                        line-height: 1.6;
+                        margin: 0;
+                    }
+
+                    .btn-add-vaccine-simple {
+                        background: white;
+                        color: #00bcd4;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                        transition: all 0.3s;
+                    }
+
+                    .btn-add-vaccine-simple:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    }
+
+                    .vaccine-modal-simple {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.5);
+                        z-index: 10000;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+                    .vaccine-modal-simple.active {
+                        display: flex;
+                    }
+
+                    .vaccine-modal-content-simple {
+                        background: white;
+                        border-radius: 15px;
+                        padding: 30px;
+                        max-width: 600px;
+                        width: 90%;
+                        max-height: 90vh;
+                        overflow-y: auto;
+                        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                    }
+
+                    .vaccine-modal-header-simple {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 20px;
+                    }
+
+                    .vaccine-modal-header-simple h2 {
+                        font-size: 1.5rem;
+                        color: #333;
+                        margin: 0;
+                    }
+
+                    .vaccine-modal-close-simple {
+                        background: none;
+                        border: none;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        color: #999;
+                        transition: color 0.3s;
+                    }
+
+                    .vaccine-modal-close-simple:hover {
+                        color: #333;
+                    }
+
+                    .vaccine-form-group-simple {
+                        margin-bottom: 20px;
+                    }
+
+                    .vaccine-form-group-simple label {
+                        display: block;
+                        margin-bottom: 8px;
+                        font-weight: 600;
+                        color: #333;
+                    }
+
+                    .vaccine-form-group-simple input,
+                    .vaccine-form-group-simple textarea {
+                        width: 100%;
+                        padding: 12px;
+                        border: 2px solid #e0e0e0;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        font-family: inherit;
+                        transition: border-color 0.3s;
+                    }
+
+                    .vaccine-form-group-simple input:focus,
+                    .vaccine-form-group-simple textarea:focus {
+                        border-color: #00bcd4;
+                        outline: none;
+                    }
+
+                    .vaccine-form-row-simple {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px;
+                    }
+
+                    .vaccine-form-checkbox-simple {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                    .vaccine-form-checkbox-simple input[type="checkbox"] {
+                        width: 20px;
+                        height: 20px;
+                        cursor: pointer;
+                    }
+
+                    .vaccine-form-actions-simple {
+                        display: flex;
+                        gap: 10px;
+                        justify-content: flex-end;
+                        margin-top: 20px;
+                    }
+
+                    .vaccine-form-actions-simple button {
+                        padding: 12px 24px;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    }
+
+                    .btn-vaccine-cancel-simple {
+                        background: #f0f0f0;
+                        color: #666;
+                    }
+
+                    .btn-vaccine-cancel-simple:hover {
+                        background: #e0e0e0;
+                    }
+
+                    .btn-vaccine-submit-simple {
+                        background: #00bcd4;
+                        color: white;
+                    }
+
+                    .btn-vaccine-submit-simple:hover {
+                        background: #00acc1;
+                    }
+
+                    @media (max-width: 768px) {
+                        .vaccine-header-simple {
+                            flex-direction: column;
+                            align-items: flex-start;
+                        }
+
+                        .vaccine-form-row-simple {
+                            grid-template-columns: 1fr;
+                        }
+                    }
+                </style>
+
+
+                <!-- Header Card -->
+                <div class="vaccine-header-simple">
+                    <div class="vaccine-header-content">
+                        <p>ตารางวัคซีนตามช่วงอายุ</p>
+                    </div>
+                    <button class="btn-add-vaccine-simple" onclick="openVaccineScheduleModal()">
+                        + เพิ่มตารางวัคซีน
+                    </button>
+                </div>
+
+                <!-- Vaccine Table -->
+                <div class="card">
+                    <div id="vaccineSchedulesTableContainer">
+                        <div class="loading">กำลังโหลดข้อมูล</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vaccine Schedule Modal -->
+            <div id="vaccineScheduleModal" class="vaccine-modal-simple">
+                <div class="vaccine-modal-content-simple">
+                    <div class="vaccine-modal-header-simple">
+                        <h2 id="vaccineScheduleModalTitle">เพิ่มวัคซีน</h2>
+                        <button class="vaccine-modal-close-simple" onclick="closeVaccineScheduleModal()">×</button>
+                    </div>
+
+                    <form id="vaccineScheduleForm" onsubmit="handleVaccineScheduleSubmit(event)">
+                        <!-- Vaccine Name -->
+                        <div class="vaccine-form-group-simple">
+                            <label>ชื่อวัคซีน *</label>
+                            <input 
+                                type="text" 
+                                id="scheduleVaccineName" 
+                                required 
+                                placeholder=""
+                            >
+                        </div>
+
+                        <!-- Age Range -->
+                        <div class="vaccine-form-row-simple">
+                            <div class="vaccine-form-group-simple">
+                                <label>อายุขั้นต่ำ (สัปดาห์) *</label>
+                                <input 
+                                    type="number" 
+                                    id="scheduleAgeMin" 
+                                    required 
+                                    min="0"
+                                    placeholder=""
+                                >
+                            </div>
+                            <div class="vaccine-form-group-simple">
+                                <label>อายุสูงสุด (สัปดาห์)</label>
+                                <input 
+                                    type="number" 
+                                    id="scheduleAgeMax" 
+                                    min="0"
+                                    placeholder="ไม่ระบุ = ไม่จำกัด"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Booster -->
+                        <div class="vaccine-form-group-simple">
+                            <label class="vaccine-form-checkbox-simple">
+                                <input type="checkbox" id="scheduleIsBooster">
+                                <span>Booster</span>
+                            </label>
+                        </div>
+
+                        <!-- Frequency -->
+                        <div class="vaccine-form-group-simple" id="frequencyField" style="display: none;">
+                            <label>ฉีดซ้ำ (ปี)</label>
+                            <input 
+                                type="number" 
+                                id="scheduleFrequency" 
+                                min="1"
+                                placeholder=""
+                            >
+                        </div>
+
+                        <!-- Description -->
+                        <div class="vaccine-form-group-simple">
+                            <label>คำอธิบาย</label>
+                            <textarea 
+                                id="scheduleDescription" 
+                                rows="3"
+                                placeholder=""
+                                maxlength="200"
+                            ></textarea>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="vaccine-form-actions-simple">
+                            <button type="button" class="btn-vaccine-cancel-simple" onclick="closeVaccineScheduleModal()">
+                                ยกเลิก
+                            </button>
+                            <button type="submit" class="btn-vaccine-submit-simple">
+                                บันทึก
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+            let currentVaccineScheduleId = null;
+            let allVaccineSchedules = [];
+
+            // booster
+            document.addEventListener('DOMContentLoaded', () => {
+                const addBtn = document.getElementById('addSourceBtn');
+                if (addBtn) addBtn.addEventListener('click', () => {
+                    const container = document.getElementById('sourcesContainer');
+                    container && container.appendChild(createSourceInput(''));
+                });
+
+                if (document.getElementById('sourcesContainer')) initSourcesUI([]);
+            });
+
+            // Load vaccine schedules
+            async function loadVaccineSchedules() {
+                try {
+                    const response = await fetch(`${API_URL}/vaccine-schedules`);
+                    allVaccineSchedules = await response.json();
+                    displayVaccineSchedules();
+                } catch (error) {
+                    console.error('Error loading vaccine schedules:', error);
+                    document.getElementById('vaccineSchedulesTableContainer').innerHTML = 
+                        '<div class="loading">ไม่สามารถโหลดข้อมูลได้</div>';
+                }
+            }
+
+            // Display vaccine schedules
+            function displayVaccineSchedules() {
+                const container = document.getElementById('vaccineSchedulesTableContainer');
+                
+                if (allVaccineSchedules.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px; color: #999;">
+                            <div style="font-size: 60px; margin-bottom: 15px;"></div>
+                            <p>ยังไม่มีตารางวัคซีน</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ชื่อวัคซีน</th>
+                                <th style="text-align: center;">อายุ (สัปดาห์)</th>
+                                <th style="text-align: center;">ประเภท</th>
+                                <th style="text-align: center;">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                allVaccineSchedules.forEach(schedule => {
+                    const ageRange = schedule.age_weeks_max 
+                        ? `${schedule.age_weeks_min}-${schedule.age_weeks_max}`
+                        : `${schedule.age_weeks_min}+`;
+                    
+                    const typeClass = schedule.is_booster ? 'status-badge' : 'status-badge';
+                    const typeStyle = schedule.is_booster 
+                        ? 'background: #e6f7ff; color: #1890ff;' 
+                        : 'background: #f0f0f0; color: #666;';
+                    const typeText = schedule.is_booster ? 'Booster' : 'วัคซีนปกติ';
+                    
+                    html += `
+                        <tr>
+                            <td>
+                                <strong style="color: #00bcd4;">${schedule.vaccine_name}</strong>
+                                ${schedule.description ? `<br><small style="color: #999;">${schedule.description}</small>` : ''}
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="status-badge" style="background: #e8f5f7; color: #00838f;">${ageRange}</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="${typeClass}" style="${typeStyle}">${typeText}</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <button class="action-btn btn-edit" onclick="editVaccineSchedule(${schedule.id})" title="แก้ไข">
+                                    แก้ไข
+                                </button>
+                                <button class="action-btn btn-delete" onclick="deleteVaccineSchedule(${schedule.id}, '${schedule.vaccine_name.replace(/'/g, "\\'")}')" title="ลบ">
+                                    ลบ
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+
+            // Open vaccine schedule 
+            function openVaccineScheduleModal() {
+                currentVaccineScheduleId = null;
+                document.getElementById('vaccineScheduleModalTitle').textContent = 'เพิ่มวัคซีน';
+                document.getElementById('vaccineScheduleForm').reset();
+                document.getElementById('frequencyField').style.display = 'none';
+                document.getElementById('vaccineScheduleModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Close vaccine schedule 
+            function closeVaccineScheduleModal() {
+                document.getElementById('vaccineScheduleModal').classList.remove('active');
+                document.getElementById('vaccineScheduleForm').reset();
+                document.body.style.overflow = 'auto';
+            }
+
+            // Edit vaccine schedule
+            function editVaccineSchedule(scheduleId) {
+                const schedule = allVaccineSchedules.find(s => s.id === scheduleId);
+                if (!schedule) return;
+                
+                currentVaccineScheduleId = scheduleId;
+                document.getElementById('vaccineScheduleModalTitle').textContent = 'แก้ไขตารางวัคซีน';
+                document.getElementById('scheduleVaccineName').value = schedule.vaccine_name;
+                document.getElementById('scheduleAgeMin').value = schedule.age_weeks_min;
+                document.getElementById('scheduleAgeMax').value = schedule.age_weeks_max || '';
+                document.getElementById('scheduleIsBooster').checked = schedule.is_booster;
+                document.getElementById('scheduleFrequency').value = schedule.frequency_years || '';
+                document.getElementById('scheduleDescription').value = schedule.description || '';
+                
+                document.getElementById('frequencyField').style.display = schedule.is_booster ? 'block' : 'none';
+                document.getElementById('vaccineScheduleModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Handle vaccine schedule submit
+            async function handleVaccineScheduleSubmit(event) {
+                event.preventDefault();
+                
+                const submitBtn = event.target.querySelector('.btn-vaccine-submit-simple');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'กำลังบันทึก';
+                submitBtn.disabled = true;
+                
+                const data = {
+                    vaccine_name: document.getElementById('scheduleVaccineName').value,
+                    age_weeks_min: parseInt(document.getElementById('scheduleAgeMin').value),
+                    age_weeks_max: document.getElementById('scheduleAgeMax').value ? parseInt(document.getElementById('scheduleAgeMax').value) : null,
+                    is_booster: document.getElementById('scheduleIsBooster').checked,
+                    frequency_years: document.getElementById('scheduleFrequency').value ? parseInt(document.getElementById('scheduleFrequency').value) : null,
+                    description: document.getElementById('scheduleDescription').value
+                };
+                
+                try {
+                    const url = currentVaccineScheduleId 
+                        ? `${API_URL}/vaccine-schedules/${currentVaccineScheduleId}`
+                        : `${API_URL}/vaccine-schedules`;
+                    
+                    const response = await fetch(url, {
+                        method: currentVaccineScheduleId ? 'PUT' : 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        alert(currentVaccineScheduleId ? 'อัปเดตสำเร็จ' : 'เพิ่มสำเร็จ');
+                        closeVaccineScheduleModal();
+                        loadVaccineSchedules();
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    } else {
+                        const errorData = await response.json();
+                        alert('เกิดข้อผิดพลาด: ' + (errorData.error || 'ไม่สามารถบันทึกได้'));
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+
+            // Delete vaccine schedule
+            async function deleteVaccineSchedule(scheduleId, vaccineName) {
+                if (!confirm(`ต้องการลบ "${vaccineName}" หรือไม่?`)) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`${API_URL}/vaccine-schedules/${scheduleId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        alert('ลบสำเร็จ');
+                        loadVaccineSchedules();
+                    } else {
+                        const errorData = await response.json();
+                        alert('เกิดข้อผิดพลาด: ' + (errorData.error || 'ไม่สามารถลบได้'));
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+                }
+            }
+
+            // Close modal on outside click
+            document.getElementById('vaccineScheduleModal').addEventListener('click', (e) => {
+                if (e.target.id === 'vaccineScheduleModal') {
+                    closeVaccineScheduleModal();
+                }
+            });
+            </script>
+
+
+            <!-- Dashboard Section -->
+            <div id="statsSection" style="display: none;">
+            <style>
+
+                .dashboard-container {
+                    padding: 30px;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .dashboard-header {
+                    margin-bottom: 30px;
+                }
+
+                .dashboard-title {
+                    font-size: 1.8rem;
+                    font-weight: 600;
+                    color: #333;
+                    margin: 0;
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 250px);
+                    gap: 20px;
+                    width: 100%;
+                }
+
+                .stat-card {
+                    background: white;
+                    padding: 30px;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                    transition: all 0.3s ease;
+                    border: 1px solid #f0f0f0;
+                    text-align: center;
+                }
+
+                .stat-card:hover {
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                    transform: translateY(-2px);
+                }
+
+                .stat-icon-container {
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 20px;
+                }
+
+                .stat-icon {
+                    font-size: 2rem;
+                }
+
+                .stat-label {
+                    font-size: 0.9rem;
+                    color: #999;
+                    margin-bottom: 15px;
+                    font-weight: 500;
+                }
+
+                .stat-value {
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    color: #333;
+                    line-height: 1;
+                }
+
+                .loading-spinner {
+                    text-align: center;
+                    padding: 80px 20px;
+                }
+
+                .spinner {
+                    display: inline-block;
+                    width: 40px;
+                    height: 40px;
+                    border: 4px solid #f0f0f0;
+                    border-radius: 50%;
+                    border-top-color: #00bcd4;
+                    animation: spin 1s ease-in-out infinite;
+                }
+
+                .loading-text {
+                    margin-top: 20px;
+                    color: #999;
+                    font-size: 0.95rem;
+                }
+
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+
+                .error-message {
+                    text-align: center;
+                    padding: 40px 20px;
+                    background: white;
+                    border: 1px solid #ffccc7;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                }
+
+                .error-icon {
+                    font-size: 3rem;
+                    margin-bottom: 16px;
+                }
+
+                .error-title {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: #ff4d4f;
+                    margin-bottom: 8px;
+                }
+
+                .error-description {
+                    color: #999;
+                    font-size: 0.95rem;
+                }
+
+                .empty-state {
+                    text-align: center;
+                    padding: 80px 20px;
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                }
+
+                .empty-state-icon {
+                    font-size: 4rem;
+                    margin-bottom: 20px;
+                    opacity: 0.3;
+                }
+
+                .empty-state-text {
+                    font-size: 1.1rem;
+                    color: #333;
+                    font-weight: 600;
+                    margin-bottom: 8px;
+                }
+
+                .empty-state-hint {
+                    font-size: 0.95rem;
+                    color: #999;
+                }
+
+                @media (max-width: 1200px) {
+                    .stats-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .dashboard-container {
+                        padding: 20px 15px;
+                    }
+
+                    .stats-grid {
+                        grid-template-columns: 1fr;
+                        gap: 15px;
+                    }
+
+                    .stat-value {
+                        font-size: 2rem;
+                    }
+
+                    .stat-card {
+                        padding: 24px;
+                    }
+                }
+            </style>
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card users">
+                    <div class="stat-icon-container">
+                        <img src="/icon/love.png" alt="Total Users" style="width:50px;height:50px;">
+                    </div>
+                    <div class="stat-label">ผู้ใช้ทั้งหมด</div>
+                    <div class="stat-value" id="statTotalUsers">0</div>
+                </div>
+
+                <div class="stat-card pets">
+                    <div class="stat-icon-container">
+                        <img src="/icon/logo.png" alt="Total Cats" style="width:50px;height:50px;">
+                    </div>
+                    <div class="stat-label">แมวทั้งหมด</div>
+                    <div class="stat-value" id="statTotalPets">0</div>
+                </div>
+
+                <div class="stat-card vaccines">
+                    <div class="stat-icon-container">
+                        <img src="/icon/syringe.png" alt="Total Vaccine" style="width:50px;height:50px;">
+                    </div>
+                    <div class="stat-label">วัคซีนที่ฉีดแล้ว</div>
+                    <div class="stat-value" id="statCompletedVacc">0</div>
+                </div>
+
+                <div class="stat-card pending">
+                    <div class="stat-icon-container">
+                        <img src="/icon/warning.png" alt="Total No Vaccine" style="width:50px;height:50px;">
+                    </div>
+                    <div class="stat-label">วัคซีนยังไม่ได้ฉีด</div>
+                    <div class="stat-value" id="statPendingVacc">0</div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div id="dashboardLoading" class="loading-spinner" style="display: none;">
+                <div class="spinner"></div>
+                <p style="margin-top: 20px; color: #999;">กำลังโหลดข้อมูล</p>
+            </div>
+
+            <!-- Error -->
+            <div id="dashboardError" style="display: none; text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px solid #ffccc7;">
+                <div style="font-size: 3rem; margin-bottom: 16px;"><img src="/icon/warning.png" alt="Error" style="width:30px;height:30px;"></div>
+                <div style="font-size: 1.2rem; font-weight: 600; color: #ff4d4f; margin-bottom: 8px;">เกิดข้อผิดพลาด</div>
+                <p id="errorMessage" style="color: #999;"></p>
+            </div>
+        </div>
+
+        <script>
+        // Load Dashboard Data
+        async function loadDashboardData() {
+            const statsCards = document.querySelector('#statsSection .stats-grid');
+            const loading = document.getElementById('dashboardLoading');
+            const error = document.getElementById('dashboardError');
+
+            // Show loading
+            statsCards.style.display = 'none';
+            loading.style.display = 'block';
+            error.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`ไม่สามารถโหลดข้อมูลได้ (${response.status})`);
+                }
+
+                const data = await response.json();
+
+                // Hide loading
+                loading.style.display = 'none';
+                statsCards.style.display = 'grid';
+
+                // Update values with fallback to 0 and safe toLocaleString
+                const safeNumber = (val) => {
+                    const num = Number(val || 0);
+                    return isNaN(num) ? 0 : num;
+                };
+
+                document.getElementById('statTotalUsers').textContent = safeNumber(data.totalUsers).toLocaleString();
+                document.getElementById('statTotalPets').textContent = safeNumber(data.totalPets).toLocaleString();
+                document.getElementById('statCompletedVacc').textContent = safeNumber(data.completedVaccinations).toLocaleString();
+                document.getElementById('statPendingVacc').textContent = safeNumber(data.pendingVaccinations).toLocaleString();
+
+            } catch (err) {
+                console.error('Error loading dashboard:', err);
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                document.getElementById('errorMessage').textContent = err.message;
+            }
+        }
+        </script>
+
+        </div>
+    </div>
+
+
+    <script src="/js/config.js"></script>
+    <script>
+        const API_URL = CONFIG.API_URL;
+        let allUsers = [];
+        let adminUsers = [];
+        let memberUsers = [];
+
+        // Check admin auth
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (!token || !user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const currentUser = JSON.parse(user);
+            if (currentUser.role !== 'admin') {
+                alert('คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            document.getElementById('adminName').textContent = currentUser.full_name || currentUser.username;
+            loadUsers();
+            loadStats();
+        }
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                const stats = await response.json();
+                document.getElementById('totalUsers').textContent = stats.totalUsers || 0;
+                document.getElementById('hiddenUsers').textContent = stats.hiddenUsers || 0;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load users
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_URL}/admin/users`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                allUsers = await response.json();
+                
+                // แยก admins และ members โดยใช้ userType
+                adminUsers = allUsers.filter(u => u.userType === 'admin' || u.role === 'admin');
+                memberUsers = allUsers.filter(u => u.userType === 'member' || u.role === 'user');
+                
+                displayAdmins(adminUsers);
+                displayMembers(memberUsers);
+                updateUserCounts();
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('adminsTableContainer').innerHTML = 
+                    '<div class="loading">ไม่สามารถโหลดข้อมูลได้</div>';
+                document.getElementById('membersTableContainer').innerHTML = 
+                    '<div class="loading">ไม่สามารถโหลดข้อมูลได้</div>';
+            }
+        }
+
+        // Display admins in table
+        function displayAdmins(users) {
+            const container = document.getElementById('adminsTableContainer');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<div class="loading">ไม่พบข้อมูล Admin</div>';
+                return;
+            }
+            
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            const currentUserId = currentUser ? currentUser.id : null;
+            const currentUserType = currentUser ? (currentUser.userType || (currentUser.role === 'admin' ? 'admin' : 'member')) : null;
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>ชื่อผู้ใช้</th>
+                            <th>ใช้งานล่าสุด</th>
+                            <th>สมัครเมื่อ</th>
+                            <th>สถานะ</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            users.forEach((user, index) => {
+                // ตรวจสอบว่าเป็น current user หรือไม่
+                const isCurrentUser = user.id === currentUserId && user.userType === currentUserType;
+                
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <strong>${user.full_name || user.username}</strong><br>
+                            <small style="color: #999;">${user.email}</small>
+                        </td>
+                        <td>${new Date(user.updated_at).toLocaleDateString('th-TH', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        })}</td>
+                        <td>${new Date(user.created_at).toLocaleDateString('th-TH', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        })}</td>
+                        <td><span class="status-badge status-admin">Admin</span></td>
+                        <td>
+                            ${!isCurrentUser ? `
+                                <button class="action-btn btn-demote" title="ลดเป็น Member" 
+                                        onclick="changeRole(${user.id}, 'user', '${user.username}', 'admin')">
+                                    เปลี่ยน
+                                </button>
+                                <button class="action-btn btn-delete" title="ลบผู้ใช้" 
+                                        onclick="deleteUser(${user.id}, '${user.username}', 'admin')">
+                                    ลบ
+                                </button>
+                            ` : '<span style="color: #999;">คุณ</span>'}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Display members in table
+        function displayMembers(users) {
+            const container = document.getElementById('membersTableContainer');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<div class="loading">ไม่พบข้อมูลผู้ใช้</div>';
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>ชื่อผู้ใช้</th>
+                            <th>สัตว์เลี้ยง</th>
+                            <th>ใช้งานล่าสุด</th>
+                            <th>สมัครเมื่อ</th>
+                            <th>สถานะ</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            users.forEach((user, index) => {
+                const status = user.status || (user.is_hidden === 1 ? 'hidden' : 'active');
+                const statusClass = status === 'active' ? 'status-active' : 'status-hide';
+                const statusText = status === 'active' ? 'active' : 'hidden';
+                const buttonText = status === 'active' ? 'ซ่อน' : 'แสดง';
+                
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>
+                            <strong>${user.full_name || user.username}</strong><br>
+                            <small style="color: #999;">${user.email}</small>
+                        </td>
+                        <td>${user.pet_count || 0}</td>
+                        <td>${new Date(user.updated_at).toLocaleDateString('th-TH', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        })}</td>
+                        <td>${new Date(user.created_at).toLocaleDateString('th-TH', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        })}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <button class="action-btn btn-promote" title="เปลี่ยนเป็น Admin" 
+                                    onclick="changeRole(${user.id}, 'admin', '${user.username}', 'member')">
+                                เปลี่ยน
+                            </button>
+                            <button class="action-btn btn-edit" 
+                                    onclick="toggleUserStatus(${user.id}, '${status}', 'member')">
+                                ${buttonText}
+                            </button>
+                            <button class="action-btn btn-delete" title="ลบผู้ใช้" 
+                                    onclick="deleteUser(${user.id}, '${user.username}', 'member')">
+                                ลบ
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+
+        // Update user counts
+        function updateUserCounts() {
+            const activeCount = allUsers.filter(u => u.status === 'active' || u.is_hidden === 0 || u.is_hidden === null).length;
+            const hiddenCount = allUsers.filter(u => u.status === 'hidden' || u.is_hidden === 1).length;
+            const adminCount = allUsers.filter(u => u.userType === 'admin' || u.role === 'admin').length;
+            const memberCount = allUsers.filter(u => u.userType === 'member' || u.role === 'user').length;
+            
+            const totalUsersElement = document.getElementById('totalUsers');
+            const hiddenUsersElement = document.getElementById('hiddenUsers');
+            
+            if (totalUsersElement) totalUsersElement.textContent = activeCount;
+            if (hiddenUsersElement) hiddenUsersElement.textContent = hiddenCount;
+            
+            // อัพเดท admin/member count ถ้ามี elements
+            const adminCountElement = document.getElementById('adminCount');
+            const memberCountElement = document.getElementById('memberCount');
+            
+            if (adminCountElement) adminCountElement.textContent = adminCount;
+            if (memberCountElement) memberCountElement.textContent = memberCount;
+        }
+
+        // Filter admins
+        function filterAdmins() {
+            const searchTerm = document.getElementById('searchAdminInput').value.toLowerCase();
+            const filtered = adminUsers.filter(user => 
+                user.username.toLowerCase().includes(searchTerm) ||
+                user.email.toLowerCase().includes(searchTerm) ||
+                (user.full_name && user.full_name.toLowerCase().includes(searchTerm))
+            );
+            displayAdmins(filtered);
+        }
+
+        // Filter members
+        function filterMembers() {
+            const searchTerm = document.getElementById('searchMemberInput').value.toLowerCase();
+            const filtered = memberUsers.filter(user => 
+                user.username.toLowerCase().includes(searchTerm) ||
+                user.email.toLowerCase().includes(searchTerm) ||
+                (user.full_name && user.full_name.toLowerCase().includes(searchTerm))
+            );
+            displayMembers(filtered);
+        }
+
+        console.log('✅ Admin Users Patch loaded successfully');
+
+
+        // Change user role
+        async function changeRole(userId, newRole, username, currentUserType) {
+            const roleText = newRole === 'admin' ? 'Admin' : 'Member';
+            
+            let confirmMessage = `ต้องการเปลี่ยน "${username}" เป็น ${roleText} หรือไม่?`;
+            
+            // แจ้งเตือนถ้า member → admin (จะลบ pets)
+            if (newRole === 'admin' && currentUserType === 'member') {
+                confirmMessage += '\n\n หมายเหตุ: สัตว์เลี้ยงของผู้ใช้จะถูกลบเนื่องจาก Admin ไม่สามารถมีสัตว์เลี้ยงได้';
+            }
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users/${userId}/role`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        role: newRole,
+                        currentUserType: currentUserType
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    let message = `เปลี่ยนเป็น ${roleText} สำเร็จ`;
+                    if (data.warning) {
+                        message += '\n\n' + data.warning;
+                    }
+                    alert(message);
+                    loadUsers();
+                } else {
+                    alert(data.error || 'เกิดข้อผิดพลาด');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+            }
+        }
+
+        async function hideUser(userId) {
+            const confirmed = confirm('ต้องการเปลี่ยนสถานะผู้ใช้นี้เป็นซ่อนหรือไม่?');
+            
+            if (confirmed) {
+                try {
+                    const response = await fetch(`/api/admin/users/${userId}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ status: 'hidden' })
+                    });
+                    
+                    if (response.ok) {
+                        alert('เปลี่ยนสถานะสำเร็จ');
+                        location.reload(); 
+                    } else {
+                        alert('เกิดข้อผิดพลาด');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาด');
+                }
+            }
+        }
+        
+        async function toggleUserStatus(userId, currentStatus, userType) {
+            // Admin ไม่สามารถถูก hide ได้
+            if (userType === 'admin') {
+                alert('ไม่สามารถซ่อน Admin ได้');
+                return;
+            }
+            
+            const action = currentStatus === 'active' ? 'ซ่อน' : 'แสดง';
+            const newStatus = currentStatus === 'active' ? 'hidden' : 'active';
+            
+            const confirmed = confirm(`ต้องการเปลี่ยนสถานะผู้ใช้นี้เป็น${action}หรือไม่?`);
+            
+            if (confirmed) {
+                try {
+                    const response = await fetch(`${API_URL}/admin/users/${userId}/toggle-status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify({ 
+                            status: newStatus,
+                            userType: userType
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        alert(`${action}ผู้ใช้สำเร็จ`);
+                        loadUsers();
+                    } else {
+                        const error = await response.json();
+                        alert(`เกิดข้อผิดพลาด: ${error.message || error.error || 'ไม่สามารถอัพเดทได้'}`);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                }
+            }
+        }
+
+        // Delete user
+        async function deleteUser(userId, username, userType) {
+            if (!confirm(`ต้องการลบผู้ใช้ "${username}" หรือไม่?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users/${userId}?userType=${userType}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                if (response.ok) {
+                    alert('ลบผู้ใช้สำเร็จ');
+                    loadUsers();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'เกิดข้อผิดพลาด');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+            }
+        }
+
+        // Show section
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('[id$="Section"]').forEach(el => el.style.display = 'none');
+            
+            // Show selected section
+            const targetSection = document.getElementById(section + 'Section');
+            if (!targetSection) {
+                console.error('Section not found:', section + 'Section');
+                return;
+            }
+            targetSection.style.display = 'block';
+            
+            // Update active menu
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            if (event && event.target) {
+                event.target.closest('.menu-item').classList.add('active');
+            }
+            
+            // Update page title
+            const titles = {
+                'users': 'จัดการบัญชีผู้ใช้งาน',
+                'pets': 'จัดการข้อมูลสัตว์เลี้ยง',
+                'blog': 'จัดการข้อมูลดูแลสัตว์เลี้ยง',
+                'vaccines': 'จัดการข้อมูลวัคซีน',
+                'stats': 'รายงานและวิเคราะห์ข้อมูล'
+            };
+            
+            const pageTitle = document.getElementById('pageTitle');
+            if (pageTitle) {
+                pageTitle.textContent = titles[section] || 'Admin Panel';
+            }
+            
+            // Load data for specific sections
+            if (section === 'pets') {
+                if (typeof initPetsSection === 'function') {
+                    initPetsSection();
+                }
+            } else if (section === 'blog') {
+                if (typeof loadAdminBlogPosts === 'function') {
+                    loadAdminBlogPosts();
+                }
+            } else if (section === 'vaccines') {
+                if (typeof loadVaccineSchedules === 'function') {
+                    loadVaccineSchedules();
+                }
+            } else if (section === 'stats') {
+                if (typeof loadDashboardData === 'function') {
+                    loadDashboardData();
+                }
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('ต้องการออกจากระบบ?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', checkAuth);
+    </script>
+
+    <!-- Profile Modal -->
+    <div class="profile-modal" id="profileModal">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <div class="profile-modal-title">
+                    <span></span>
+                    <span>ข้อมูลส่วนตัว</span>
+                </div>
+                <button class="profile-modal-close" onclick="closeProfileModal()">×</button>
+            </div>
+            
+            <div class="profile-modal-body">
+                <!-- View Mode -->
+                <div id="profileViewMode">
+                    <div class="profile-info-section">
+                        <div class="profile-info-item">
+                            <div class="profile-info-icon"><img src="/icon/profile.png" alt="User" style="width:24px;height:24px;"></div>
+                            <div class="profile-info-content">
+                                <div class="profile-info-label">ชื่อผู้ใช้</div>
+                                <div class="profile-info-value" id="modalUsername">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-icon"><img src="/icon/document2.png" alt="Email" style="width:24px;height:24px;"></div>
+                            <div class="profile-info-content">
+                                <div class="profile-info-label">อีเมล</div>
+                                <div class="profile-info-value" id="modalEmail">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-icon"><img src="/icon/notes.png" alt="Notes" style="width:24px;height:24px;"></div>
+                            <div class="profile-info-content">
+                                <div class="profile-info-label">ชื่อ-นามสกุล</div>
+                                <div class="profile-info-value" id="modalFullName">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-icon"><img src="/icon/notes.png" alt="Phone" style="width:24px;height:24px;"></div>
+                            <div class="profile-info-content">
+                                <div class="profile-info-label">เบอร์โทรศัพท์</div>
+                                <div class="profile-info-value" id="modalPhone">-</div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-info-item">
+                            <div class="profile-info-icon"></div>
+                            <div class="profile-info-content">
+                                <div class="profile-info-label">สถานะ</div>
+                                <div class="profile-info-value">
+                                    <span class="profile-badge" id="modalRole">Admin</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="profile-edit-btn" onclick="toggleEditMode(true)">
+                         แก้ไขข้อมูล
+                    </button>
+                </div>
+                
+                <!-- Edit Mode -->
+                <div class="profile-edit-form" id="profileEditMode">
+                    <form onsubmit="saveProfile(event)">
+                        <div class="form-group-profile">
+                            <label>ชื่อผู้ใช้</label>
+                            <input type="text" id="editUsername" disabled style="background:#f5f5f5;">
+                        </div>
+                        
+                        <div class="form-group-profile">
+                            <label>อีเมล</label>
+                            <input type="email" id="editEmail" disabled style="background:#f5f5f5;">
+                        </div>
+                        
+                        <div class="form-group-profile">
+                            <label>ชื่อ-นามสกุล</label>
+                            <input type="text" id="editFullName" placeholder="กรอกชื่อ-นามสกุล">
+                        </div>
+                        
+                        <div class="form-group-profile">
+                            <label>เบอร์โทรศัพท์</label>
+                            <input type="tel" id="editPhone" placeholder="กรอกเบอร์โทรศัพท์">
+                        </div>
+                        
+                        <div class="profile-form-actions">
+                            <button type="submit" class="btn-save-profile"> บันทึก</button>
+                            <button type="button" class="btn-cancel-profile" onclick="toggleEditMode(false)"> ยกเลิก</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Mobile Menu Toggle
+    (function() {
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        if (mobileMenuToggle && sidebar && sidebarOverlay) {
+            // Toggle menu
+            mobileMenuToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            // Close menu when clicking overlay
+            sidebarOverlay.addEventListener('click', function() {
+                mobileMenuToggle.classList.remove('active');
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            // Close menu when clicking menu item
+            const menuItems = sidebar.querySelectorAll('.menu-item');
+            menuItems.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        mobileMenuToggle.classList.remove('active');
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+        }
+    })();
+    </script>
+
+    </body>
+</html>

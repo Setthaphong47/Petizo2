@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Petizo</title>
+
+    <link rel="preload" href="/js/navbar.js" as="script">
+    <link rel="preload" href="/icon/logo.png" as="image">
+
+    <link rel="preload" href="/css/navbar.css" as="style">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/chat-popup.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+        }
+
+        .breadcrumb {
+            padding: 20px 40px;
+            background: white;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #00bcd4;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 56px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #00bcd4;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #999;
+        }
+
+        .blog-filters input, 
+        .blog-filters select { 
+            font-size:14px; 
+            color:#0f172a; 
+        }
+
+        .blog-filters 
+        .tag-badge { 
+            display:inline-block; 
+            padding:4px 8px; 
+            border-radius:999px; 
+            background:#ebf8ff; 
+            color:#0369a1; 
+            font-weight:700; 
+            margin-right:6px; 
+        }
+
+        #blogGrid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            justify-content: center;
+            align-items: start;
+            padding: 10px 40px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .blog-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0px 15px 40px rgba(0, 188, 212, 0.12);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            transition: transform 0.25s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .blog-image img {
+            width: 100%;
+            height: 220px;       
+            object-fit: cover;
+            display: block;
+        }
+
+        .blog-content {
+            padding: 18px 20px;
+        }
+
+        .blog-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .blog-excerpt {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        /* TAGS */
+        .blog-tags .tag {
+            display: inline-block;
+            background: #ebf4ff;
+            color: #3b82f6;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        .blog-footer {
+            padding: 14px 20px;
+            border-top: 1px solid rgb(243, 244, 246);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .blog-footer img {
+            width: 18px;
+            height: 18px;
+            opacity: 0.8;
+            margin-right: 6px;
+        }
+
+        .meta-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .read-btn {
+            background: #00bcd4;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .read-btn:hover {
+        background: #00e5ff;
+        }
+
+        @media (max-width: 1100px) {
+        #blogGrid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        }
+
+        @media (max-width: 768px) {
+            .breadcrumb {
+                padding: 15px 20px;
+                font-size: 13px;
+            }
+
+            .container {
+                padding: 30px 20px;
+            }
+
+            .page-title {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+
+            .blog-filters {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+
+            .blog-filters input,
+            .blog-filters select {
+                width: 100% !important;
+            }
+
+            #blogGrid {
+                grid-template-columns: 1fr;
+                padding: 0;
+            }
+
+            .blog-image img {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .breadcrumb {
+                padding: 12px 15px;
+                font-size: 12px;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .page-title {
+                font-size: 28px;
+                margin-bottom: 16px;
+            }
+
+            .search-input {
+                padding: 12px 40px 12px 16px;
+                font-size: 14px;
+            }
+
+            .blog-filters input,
+            .blog-filters select {
+                font-size: 13px !important;
+                padding: 10px 12px !important;
+            }
+
+            .blog-card {
+                border-radius: 12px;
+            }
+
+            .blog-content {
+                padding: 20px;
+            }
+
+            .blog-title {
+                font-size: 18px;
+            }
+
+            .blog-excerpt {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+    <div id="nav-placeholder"></div>
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> >> <span>Blog</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Blog</h1>
+            <!-- FILTERS -->
+            <div class="blog-filters" style="display:flex;gap:12px;align-items:center;justify-content:center;margin:18px 0;">
+                <input id="searchInput" type="search" placeholder="ค้นหา" style="width:420px;padding:10px 14px;border-radius:8px;border:1px solid #e6eef2;" />
+                    <select id="categoryFilter" style="padding:9px 12px;border-radius:8px;border:1px solid #e6eef2;">
+                        <option value="">หมวดหมู่</option>
+                        <option value="สุขภาพ">สุขภาพ</option>
+                        <option value="โภชนาการ">โภชนาการ</option>
+                        <option value="พฤติกรรม">พฤติกรรม</option>
+                        <option value="การดูแล">การดูแล</option>
+                        <option value="ทั่วไป">ทั่วไป</option>
+                    </select>
+                    <select id="tagFilter" style="padding:9px 12px;border-radius:8px;border:1px solid #e6eef2;">
+                        <option value="">แท็ก</option>
+                        <option value="สุขภาพ">สุขภาพ</option>
+                        <option value="โภชนาการ">โภชนาการ</option>
+                        <option value="พฤติกรรม">พฤติกรรม</option>
+                        <option value="การดูแล">การดูแล</option>
+                        <option value="วัคซีน">วัคซีน</option>
+                        <option value="โรคภัย">โรคภัย</option>
+                        <option value="ทั่วไป">ทั่วไป</option>
+                    </select>
+            </div>
+        </div>
+
+        <div class="blog-grid" id="blogGrid">
+            <div class="loading">กำลังโหลดบทความ</div>
+        </div>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/navbar.js"></script>
+
+    <script src="/js/profile-dropdown.js" defer></script>
+    <script src="/js/vaccine-notification.js"></script>
+    <script src="/js/auth-common.js"></script>
+
+    <script>
+        window.CONFIG = window.CONFIG || { API_URL: (location.origin + '/api') };
+
+        var allPosts = [];
+            var filteredPosts = [];
+
+            // Handle Your Pet link click
+            function handleYourPetClick(event) {
+                event.preventDefault();
+                var token = localStorage.getItem('token');
+                if (!token) {
+                    alert('กรุณาเข้าสู่ระบบก่อนเพื่อเข้าถึงหน้า Your Pet');
+                    window.location.href = 'login.html';
+                } else {
+                    window.location.href = 'your-pet.html';
+                }
+            }
+
+            // Load all blog posts
+            async function loadBlogList() {
+                try {
+                    console.log('Fetching blog from', CONFIG && CONFIG.API_URL ? CONFIG.API_URL + '/blog' : 'CONFIG.API_URL missing');
+                    const res = await fetch(`${CONFIG.API_URL}/blog`);
+                    if (!res.ok) throw new Error('Fetch blog failed: ' + res.status);
+                    const posts = await res.json();
+
+                    allPosts = posts || [];
+                    filteredPosts = allPosts;
+                    populateFilters(allPosts);
+                    bindFilterEvents();
+                    displayBlogPosts(filteredPosts);
+
+                    if (typeof displayBlogPosts === 'function') {
+                        displayBlogPosts(allPosts);
+                    } else if (typeof renderBlogList === 'function') {
+                        renderBlogList(allPosts);
+                    } else {
+                        console.error('No render function for blog posts');
+                    }
+                } catch(e) {
+                    console.error("Blog load error:", e);
+                    const el = document.getElementById('blogGrid') || document.querySelector('.blog-grid');
+                    if (el) el.innerHTML = "<div class='no-posts'>ไม่พบบทความ</div>";
+                }
+            }
+
+            // Display blog posts
+            function displayBlogPosts(posts) {
+                var blogGrid = document.getElementById('blogGrid');
+
+                if (!posts || posts.length === 0) {
+                    blogGrid.innerHTML = '<div class="empty-state"><div class="empty-icon"><img src="/icon/warning.png" alt="Can not Load Blog" style="width:50px;height:50px;"></div><p>ไม่พบบทความ</p></div>';
+                    return;
+                }
+
+                var html = '';
+                for (var i = 0; i < posts.length; i++) {
+                    var post = posts[i] || {};
+                    var publishDate = new Date(post.published_at || post.created_at || Date.now());
+                    var formattedDate = publishDate.toLocaleDateString('th-TH', { day:'2-digit', month:'short', year:'numeric' });
+
+                    // tags
+                    var tags = [];
+                    if (post.tags) {
+                        if (Array.isArray(post.tags)) tags = post.tags;
+                        else {
+                            try { var maybe = JSON.parse(String(post.tags)); if (Array.isArray(maybe)) tags = maybe; else tags = String(post.tags).split(/[,;]/); }
+                            catch(e) { tags = String(post.tags).split(/[,;]/); }
+                        }
+                    }
+                    tags = tags.map(function(t){ return String(t).trim(); }).filter(Boolean);
+                    var tagsHtml = tags.length ? tags.map(function(t){ return '<span class="tag">'+t+'</span>'; }).join(' ') : '<span class="tag">ทั่วไป</span>';
+
+                    // image 
+                    var imageHtml = (post.featured_image && String(post.featured_image).trim()) ? '<img src="'+post.featured_image+'" alt="'+(post.title||'')+'">' : '<img src="/icon/stray-cat.png" alt="Default Image">';
+
+                    var excerpt = post.excerpt || (post.content ? (String(post.content).substring(0,120) + '...') : '');
+                    var views = (post.views !== undefined && post.views !== null) ? post.views : 0;
+                    var id = post.id || '';
+
+                    html += '<div class="blog-card" data-id="'+id+'">';
+                    html += '  <div class="blog-image">' + imageHtml + '</div>';
+                    html += '  <div class="blog-content">';
+                    html += '    <h3 class="blog-title">' + (post.title || '') + '</h3>';
+                    html += '    <div class="blog-excerpt">' + excerpt + '</div>';
+                    html += '    <div class="blog-meta"><div class="blog-tags">' + tagsHtml + '</div></div>';
+                    html += '  </div>';
+                    html += '  <div class="blog-footer">';
+                    html += '    <div class="meta-left"><img src="/icon/view.png" alt="views"> <span>' + views + '</span> <span style="margin-left:12px;" class="date-badge"><img src="/icon/calendar (2).png" style="vertical-align:middle;width:16px;height:16px;"> ' + formattedDate + '</span></div>';
+                    html += '    <div><button class="read-btn" data-id="' + id + '">อ่านเพิ่มเติม</button></div>';
+                    html += '  </div>';
+                    html += '</div>';
+                }
+
+                blogGrid.innerHTML = html;
+
+                var buttons = blogGrid.querySelectorAll('.read-btn');
+                buttons.forEach(function(btn){
+                    btn.addEventListener('click', function(e){
+                        e.stopPropagation();
+                        var postId = this.getAttribute('data-id');
+                        // หา slug จาก allPosts
+                        var post = allPosts.find(function(p){ return String(p.id) === String(postId); });
+                        var identifier = (post && post.slug) ? post.slug : postId;
+                        if (identifier) window.location.href = 'blog-detail.html?id=' + encodeURIComponent(identifier);
+                    });
+                });
+            }
+
+            function populateFilters(allPosts) {
+                var catSel = document.getElementById('categoryFilter');
+                var tagSel = document.getElementById('tagFilter');
+                if (!catSel || !tagSel) return;
+
+                var cats = new Set();
+                var tags = new Set();
+
+                (allPosts||[]).forEach(function(post){
+                    if (post && post.category) cats.add(String(post.category).trim());
+                    if (post && post.tags) {
+                        if (Array.isArray(post.tags)) {
+                            post.tags.forEach(function(t){ if (t) tags.add(String(t).trim()); });
+                        } else {
+                            try {
+                                var parsed = JSON.parse(String(post.tags));
+                                if (Array.isArray(parsed)) parsed.forEach(function(t){ if (t) tags.add(String(t).trim()); });
+                                else String(post.tags).split(/[,;]/).forEach(function(t){ if (t) tags.add(t.trim()); });
+                            } catch(e) {
+                                String(post.tags).split(/[,;]/).forEach(function(t){ if (t) tags.add(t.trim()); });
+                            }
+                        }
+                    }
+                });
+
+                while (catSel.options.length > 1) catSel.remove(1);
+                while (tagSel.options.length > 1) tagSel.remove(1);
+
+                Array.from(cats).sort().forEach(function(c){
+                    var o = document.createElement('option'); o.value = c; o.textContent = c; catSel.appendChild(o);
+                });
+                Array.from(tags).sort().forEach(function(t){
+                    var o = document.createElement('option'); o.value = t; o.textContent = t; tagSel.appendChild(o);
+                });
+            }
+
+            // Bind filter events
+            function bindFilterEvents() {
+                var searchInput = document.getElementById('searchInput');
+                var catSel = document.getElementById('categoryFilter');
+                var tagSel = document.getElementById('tagFilter');
+
+                if (searchInput) searchInput.addEventListener('input', debounce(function(){ searchBlogs(); }, 250));
+                if (catSel) catSel.addEventListener('change', searchBlogs);
+                if (tagSel) tagSel.addEventListener('change', searchBlogs);
+            
+            }
+
+            // simple debounce
+            function debounce(fn, wait) {
+                var t;
+                return function() {
+                    clearTimeout(t);
+                    var args = arguments, ctx = this;
+                    t = setTimeout(function(){ fn.apply(ctx, args); }, wait);
+                };
+            }
+
+
+            // Search blogs
+            function searchBlogs() {
+                var searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+                var selectedCat = (document.getElementById('categoryFilter')?.value || '').trim();
+                var selectedTag = (document.getElementById('tagFilter')?.value || '').trim();
+
+                var result = allPosts.filter(function(post){
+                    if (searchTerm) {
+                        var title = (post.title || '').toLowerCase();
+                        var content = (post.content || post.excerpt || '').toLowerCase();
+                        var postTags = Array.isArray(post.tags) ? post.tags.join(' ') : String(post.tags || '');
+                        var category = String(post.category || '');
+                        var combined = title + ' ' + content + ' ' + postTags + ' ' + category;
+                        if (combined.toLowerCase().indexOf(searchTerm) === -1) return false;
+                    }
+                    // category filter
+                    if (selectedCat) {
+                        if ((String(post.category || '').trim()) !== selectedCat) return false;
+                    }
+                    // tag filter
+                    if (selectedTag) {
+                        var tagsArr = [];
+                        if (post.tags) {
+                            if (Array.isArray(post.tags)) tagsArr = post.tags;
+                            else {
+                                try { var p = JSON.parse(String(post.tags)); tagsArr = Array.isArray(p) ? p : String(post.tags).split(/[,;]/); }
+                                catch(e) { tagsArr = String(post.tags).split(/[,;]/); }
+                            }
+                        }
+                        var tagsNorm = tagsArr.map(function(t){ return String(t||'').trim(); });
+                        if (tagsNorm.indexOf(selectedTag) === -1) return false;
+                    }
+                    return true;
+                });
+
+                filteredPosts = result;
+                displayBlogPosts(filteredPosts);
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                checkLoginStatus && checkLoginStatus();
+                loadBlogList();
+            });
+    </script>
+    <script src="/js/chat-popup.js"></script>
+</body>
+</html>

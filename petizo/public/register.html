@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก - Petizo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 50%, #0096c7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .brand-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .welcome-section p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            line-height: 1.6;
+            max-width: 400px;
+        }
+
+        .form-section {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .form-subtitle {
+            color: #6c757d;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .toggle-form {
+            text-align: center;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .toggle-form a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            background: #fff1f0;
+            color: #cf1322;
+            border: 1px solid #ffccc7;
+        }
+
+        .success-message {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+
+        .back-home {
+            display: none;
+        }
+
+        .mobile-logo {
+            display: none;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .mobile-logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin-bottom: 12px;
+        }
+
+        .mobile-logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #0096c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .register-container {
+                grid-template-columns: 1fr;
+                border-radius: 16px;
+            }
+
+            .welcome-section {
+                padding: 40px 20px;
+            }
+
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+
+            .welcome-section p {
+                font-size: 1rem;
+            }
+
+            .form-section {
+                padding: 40px 20px;
+            }
+
+            .form-section h2 {
+                font-size: 1.75rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .back-home {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 20px;
+                color: #00d4ff;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .register-container {
+                border-radius: 0;
+                box-shadow: none;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .welcome-section {
+                display: none;
+            }
+
+            .mobile-logo {
+                display: block;
+                padding-top: 8px;
+                margin-bottom: 8px;
+            }
+
+            .mobile-logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 28px;
+                margin-bottom: 4px;
+            }
+
+            .mobile-logo-text {
+                font-size: 18px;
+            }
+
+            .form-section {
+                padding: 8px 24px 12px;
+                height: 100vh;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .form-section h2 {
+                font-size: 1.3rem;
+                margin-bottom: 3px;
+                text-align: center;
+            }
+
+            .form-subtitle {
+                font-size: 0.75rem;
+                margin-bottom: 8px;
+                text-align: center;
+            }
+
+            .form-group {
+                margin-bottom: 8px;
+            }
+
+            .form-group label {
+                font-size: 0.75rem;
+                margin-bottom: 3px;
+            }
+
+            .form-group input,
+            .form-group select {
+                padding: 9px 12px;
+                font-size: 16px;
+                border: 2px solid #e0e0e0;
+            }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                border-color: #00d4ff;
+                outline: none;
+            }
+
+            .form-row {
+                gap: 8px;
+            }
+
+            .btn-register {
+                padding: 11px;
+                font-size: 16px;
+                margin-top: 6px;
+                font-weight: 600;
+            }
+
+            .divider {
+                margin: 8px 0;
+                font-size: 0.75rem;
+            }
+
+            .toggle-form {
+                margin-top: 8px;
+                font-size: 0.8rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-home">← กลับหน้าแรก</a>
+
+    <div class="register-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="brand-icon"><img src="/icon/logo.png" alt="Petizo" style="width:50px;height:50px;"></div>
+            <h1>เริ่มต้นใช้งาน</h1>
+            <p>สร้างบัญชีเพื่อเริ่มต้นจัดการข้อมูลสัตว์เลี้ยงแมวของคุณอย่างมีประสิทธิภาพ</p>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="mobile-logo">
+                <div class="mobile-logo-icon"><img src="/icon/logo.png" alt="Petizo" style="width:40px;height:40px;"></div>
+                <div class="mobile-logo-text">Petizo</div>
+            </div>
+            <h2>สมัครสมาชิก</h2>
+            <p class="form-subtitle">กรอกข้อมูลด้านล่างเพื่อสร้างบัญชีของคุณ</p>
+            
+            <div class="message error-message" id="registerError"></div>
+            <div class="message success-message" id="registerSuccess"></div>
+            
+            <form onsubmit="handleRegister(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ชื่อผู้ใช้ *</label>
+                        <input type="text" id="registerUsername" required placeholder="username">
+                    </div>
+                    <div class="form-group">
+                        <label>ชื่อ-นามสกุล *</label>
+                        <input type="text" id="registerFullName" required placeholder="ชื่อเต็มของคุณ">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>อีเมล *</label>
+                    <input type="email" id="registerEmail" required placeholder="your@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>เบอร์โทรศัพท์</label>
+                    <input type="tel" id="registerPhone" placeholder="08x-xxx-xxxx">
+                </div>
+                
+                <div class="form-group">
+                    <label>รหัสผ่าน *</label>
+                    <input type="password" id="registerPassword" required minlength="6" placeholder="อย่างน้อย 6 ตัวอักษร">
+                </div>
+                
+                <button type="submit" class="btn-register">สมัครสมาชิก</button>
+            </form>
+            
+            <div class="divider">หรือ</div>
+            
+            <div class="toggle-form">
+                มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script>
+        const API_URL = CONFIG.API_URL;
+
+        // Show message
+        function showMessage(id, text) {
+            const element = document.getElementById(id);
+            element.textContent = text;
+            element.style.display = 'block';
+        }
+
+        // Hide message
+        function hideMessage(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Handle Register
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const full_name = document.getElementById('registerFullName').value;
+            const phone = document.getElementById('registerPhone').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        username, 
+                        email, 
+                        password, 
+                        full_name, 
+                        phone 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage('registerSuccess', 'สมัครสมาชิกสำเร็จ! กำลังนำคุณไปหน้าเข้าสู่ระบบ...');
+                    hideMessage('registerError');
+                    
+                    // Clear form
+                    event.target.reset();
+                    
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    showMessage('registerError', data.error || 'เกิดข้อผิดพลาดในการสมัครสมาชิก');
+                    hideMessage('registerSuccess');
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+                showMessage('registerError', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า server กำลังทำงาน');
+                hideMessage('registerSuccess');
+            }
+        }
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (token && user) {
+                const userData = JSON.parse(user);
+                if (userData.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

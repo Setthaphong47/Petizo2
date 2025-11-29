@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมุดบันทึกวัคซีน</title>
+
+    <link rel="preload" href="/js/navbar.js" as="script">
+    <link rel="preload" href="/icon/logo.png" as="image">
+    <link rel="stylesheet" href="/css/navbar.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 20px 40px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .breadcrumb a {
+            color: #00bcd4;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .breadcrumb a:hover {
+            color: #00bcd4;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        /* Pet Header Card - Petizo Theme */
+        .pet-header {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pet-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.08) 0%, rgba(0, 229, 255, 0.08) 100%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .pet-header-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pet-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3);
+            border: 5px solid white;
+            position: relative;
+        }
+
+        .pet-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .pet-info {
+            flex: 1;
+        }
+
+        .pet-name {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pet-badge {
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+        }
+
+        .pet-details {
+            display: flex;
+            gap: 30px;
+            margin-top: 12px;
+        }
+
+        .detail-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #e0f7fa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #00695c;
+            font-weight: 500;
+        }
+
+        .detail-icon {
+            font-size: 18px;
+        }
+
+        /* Page Title */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            animation: slideIn 0.6s ease 0.2s both;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .title-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .title-text {
+            color: #1a1a1a;
+        }
+
+        .title-text h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .title-text p {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        .record-count {
+            background: white;
+            padding: 12px 24px;
+            border-radius: 16px;
+            color: #00bcd4;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Timeline Container */
+        .timeline-container {
+            position: relative;
+            padding-left: 80px;
+            animation: slideIn 0.6s ease 0.4s both;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 32px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, 
+                rgba(0, 188, 212, 0.6) 0%, 
+                rgba(0, 188, 212, 0.2) 100%
+            );
+            border-radius: 4px;
+        }
+
+        /* Vaccination Item */
+        .vaccination-item {
+            position: relative;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .vaccination-item:nth-child(1) { animation-delay: 0.1s; }
+        .vaccination-item:nth-child(2) { animation-delay: 0.2s; }
+        .vaccination-item:nth-child(3) { animation-delay: 0.3s; }
+        .vaccination-item:nth-child(4) { animation-delay: 0.4s; }
+        .vaccination-item:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -54px;
+            top: 30px;
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 5px solid #00bcd4;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3),
+                        0 0 0 8px rgba(0, 188, 212, 0.1);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Vaccination Card - Petizo Theme */
+        .vaccination-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .vaccination-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #00bcd4 0%, #00e5ff 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .vaccination-card:hover {
+            transform: translateX(8px) translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0, 188, 212, 0.2);
+            border-color: #00bcd4;
+        }
+
+        .vaccination-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .vaccine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .vaccine-main-info {
+            flex: 1;
+        }
+
+        .vaccine-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vaccine-icon {
+            font-size: 24px;
+        }
+
+        .vaccine-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            color: #00bcd4;
+            font-weight: 600;
+        }
+
+        .vaccine-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-view {
+            background: linear-gradient(135deg, white 0%, white 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+        }
+
+        .btn-view:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 6px 16px rgba(0, 188, 212, 0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, white 0%, white 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-delete:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Tooltip */
+        .action-btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: #1a1a1a;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .action-btn:hover::after {
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Vaccine Details Grid */
+        .vaccine-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #e0f7fa;
+            border-radius: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #00695c;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        /* Proof Image Section */
+        .vaccine-proof {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #b2ebf2;
+        }
+
+        .proof-label {
+            font-size: 14px;
+            color: #00695c;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .proof-image-container {
+            position: relative;
+            display: inline-block;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 3px solid #e0f7fa;
+        }
+
+        .proof-image-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.2);
+            border-color: #00bcd4;
+        }
+
+        .proof-image {
+            max-width: 240px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: block;
+        }
+
+        .proof-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.8) 0%, rgba(0, 229, 255, 0.8) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .proof-image-container:hover .proof-overlay {
+            opacity: 1;
+        }
+
+        .proof-overlay-text {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Notes Section */
+        .vaccine-notes {
+            margin-top: 16px;
+            padding: 16px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-left: 4px solid #00bcd4;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #00695c;
+            line-height: 1.6;
+        }
+
+        .notes-label {
+            font-weight: 700;
+            color: #004d40;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            padding: 80px 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            animation: slideIn 0.6s ease;
+        }
+
+        .empty-icon {
+            font-size: 96px;
+            margin-bottom: 24px;
+            opacity: 0.6;
+        }
+
+        .empty-text {
+            font-size: 20px;
+            color: #455a64;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .empty-subtext {
+            font-size: 16px;
+            color: #78909c;
+        }
+
+        /* Image Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: #00bcd4;
+            color: white;
+        }
+
+        .modal-image {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: #00695c;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 20px;
+            }
+
+            .container {
+                padding: 0 16px;
+                margin: 24px auto;
+            }
+
+            .pet-header {
+                padding: 24px;
+            }
+
+            .pet-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pet-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 48px;
+            }
+
+            .pet-name {
+                font-size: 28px;
+                flex-direction: column;
+            }
+
+            .pet-details {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .timeline-container {
+                padding-left: 0;
+            }
+
+            .timeline-line,
+            .timeline-dot {
+                display: none;
+            }
+
+            .vaccination-card {
+                padding: 24px;
+            }
+
+            .vaccine-details {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .title-text h1 {
+                font-size: 24px;
+            }
+
+            .modal-close {
+                top: 20px;
+                right: 20px;
+                width: 48px;
+                height: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <script src="/js/config.js" defer></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/profile-dropdown.js" defer></script>
+    <script src="/js/vaccine-notification.js" defer></script>
+    <script src="/js/auth-common.js" defer></script>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> >>
+        <a href="your-pet.html">Your Pet</a> >>
+        <a href="#" id="petNameBreadcrumb">...</a> >>
+        <span>สมุดวัคซีน</span>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Pet Header -->
+        <div class="pet-header" id="petHeader">
+            <div class="loading">กำลังโหลดข้อมูล</div>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-header">
+            <div class="page-title">
+                <div class="title-icon"><img src="/icon/medical-book.png" alt="male" style="width:30px;height:30px;"></div>
+                <div class="title-text">
+                    <h1>สมุดบันทึกวัคซีน</h1>
+                    <p>ประวัติการฉีดวัคซีนทั้งหมด</p>
+                </div>
+            </div>
+            <div class="record-count" id="recordCount">
+                <img src="/icon/syringe.png" alt="male" style="width:30px;height:30px;"> 0 รายการ
+            </div>
+        </div>
+
+        <!-- Vaccination Timeline -->
+        <div class="timeline-container" id="vaccinationTimeline">
+            <div class="timeline-line"></div>
+            <div class="loading">กำลังโหลดประวัติวัคซีน</div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal" onclick="closeImageModal()">
+        <button class="modal-close" onclick="closeImageModal(); event.stopPropagation()">×</button>
+        <img id="modalImage" class="modal-image" src="" alt="Proof Image">
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let currentPetId = null;
+        let currentPet = null;
+
+        function getPetIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('petId');
+        }
+
+        async function loadPetInfo() {
+            currentPetId = getPetIdFromURL();
+            
+            if (!currentPetId) {
+                window.location.href = 'your-pet.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/pets/${currentPetId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load pet');
+
+                currentPet = await response.json();
+                displayPetHeader();
+                loadVaccinationHistory();
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('petHeader').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon"><img src="/icon/warning.png" alt="Error" style="width:50px;height:50px;"></div>
+                        <div class="empty-text">ไม่สามารถโหลดข้อมูลได้</div>
+                    </div>
+                `;
+            }
+        }
+
+        function displayPetHeader() {
+            const header = document.getElementById('petHeader');
+            
+            const birthDate = currentPet.birth_date 
+                ? new Date(currentPet.birth_date).toLocaleDateString('th-TH', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                })
+                : 'ไม่ระบุ';
+
+            const gender = currentPet.gender === 'male' ? 'เพศผู้' : 
+                          currentPet.gender === 'female' ? 'เพศเมีย' : 'ไม่ระบุ';
+
+            header.innerHTML = `
+                <div class="pet-header-content">
+                    <div class="pet-avatar">
+                        ${currentPet.photo_url 
+                            ? `<img src="${currentPet.photo_url}" alt="${currentPet.name}">` 
+                            : ''}
+                    </div>
+                    <div class="pet-info">
+                        <div class="pet-name">
+                            ${currentPet.name}
+                        </div>
+                        <div class="pet-details">
+                            ${currentPet.breed ? `
+                                <div class="detail-chip">
+                                    ${currentPet.breed}
+                                </div>
+                            ` : ''}
+                            <div class="detail-chip">
+                                <span class="detail-icon">${currentPet.gender === 'male' ? '<img src="/icon/gender (1).png" alt="Male" style="width:30px;height:30px;">' : '<img src="/icon/gender.png" alt="Female" style="width:30px;height:30px;">'}</span>
+                                ${gender}
+                            </div>
+                            <div class="detail-chip">
+                                <span class="detail-icon"><img src="/icon/birthday.png" alt="Birth Date" style="width:30px;height:30px;"></span>
+                                ${birthDate}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Update breadcrumb
+            const breadcrumbEl = document.getElementById('petNameBreadcrumb');
+            if (breadcrumbEl && currentPet && currentPet.name) {
+                breadcrumbEl.textContent = currentPet.name;
+                breadcrumbEl.href = `pet-details.html?id=${currentPetId}`;
+            }
+        }
+
+        async function loadVaccinationHistory() {
+            try {
+                const response = await fetch(`${API_URL}/pets/${currentPetId}/vaccination-history`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load history');
+
+                const vaccinations = await response.json();
+                displayVaccinationHistory(vaccinations);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('vaccinationTimeline').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon"><img src="/icon/warning.png" alt="Error" style="width:50px;height:50px;"></div>
+                        <div class="empty-text">ไม่สามารถโหลดประวัติวัคซีนได้</div>
+                        <div class="empty-subtext">กรุณาลองใหม่อีกครั้ง</div>
+                    </div>
+                `;
+            }
+        }
+
+        function displayVaccinationHistory(vaccinations) {
+            const timeline = document.getElementById('vaccinationTimeline');
+            document.getElementById('recordCount').innerHTML = `<img src="/icon/syringe.png" alt="male" style="width:25px;height:25px;"> ${vaccinations.length} รายการ`;
+
+            if (vaccinations.length === 0) {
+                timeline.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon"><img src="/icon/syringe.png" alt="male" style="width:50px;height:50px;"></div>
+                        <div class="empty-text">ไม่มีประวัติการฉีดวัคซีน</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="timeline-line"></div>';
+
+            vaccinations.forEach((vaccination, index) => {
+                const vaccinationDate = new Date(vaccination.vaccination_date).toLocaleDateString('th-TH', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                const nextDueDate = vaccination.next_due_date 
+                    ? new Date(vaccination.next_due_date).toLocaleDateString('th-TH', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    })
+                    : '-';
+
+                html += `
+                    <div class="vaccination-item">
+                        <div class="timeline-dot">✓</div>
+                        <div class="vaccination-card">
+                            <div class="vaccine-header">
+                                <div class="vaccine-main-info">
+                                    <div class="vaccine-name">
+                                        <span class="vaccine-icon"><img src="/icon/syringe.png" alt="male" style="width:25px;height:25px;"></span>
+                                        ${vaccination.vaccine_name}
+                                    </div>
+                                    <div class="vaccine-date">
+                                        <img src="/icon/calendar (2).png" alt="male" style="width:25px;height:25px;"> ${vaccinationDate}
+                                    </div>
+                                </div>
+                                <div class="vaccine-actions">
+                                    ${vaccination.proof_image ? `
+                                        <button class="action-btn btn-view" 
+                                                onclick="viewProof('${vaccination.proof_image}')"
+                                                data-tooltip="หลักฐาน">
+                                            <img src="/icon/oath.png" alt="male" style="width:25px;height:25px;">
+                                        </button>
+                                    ` : ''}
+                                    <button class="action-btn btn-delete" 
+                                            onclick="deleteVaccination(${vaccination.id}, '${vaccination.vaccine_name}')"
+                                            data-tooltip="ลบ">
+                                        <img src="/icon/bin.png" alt="male" style="width:25px;height:25px;">
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="vaccine-details">
+                                ${vaccination.veterinarian ? `
+                                    <div class="detail-item">
+                                        <div class="detail-label"><img src="/icon/veterinarian.png" alt="Doctor" style="width:25px;height:25px;"> สัตวแพทย์</div>
+                                        <div class="detail-value">${vaccination.veterinarian}</div>
+                                    </div>
+                                ` : ''}
+                                ${vaccination.clinic_name ? `
+                                    <div class="detail-item">
+                                        <div class="detail-label"><img src="/icon/veterinary.png" alt="Clinic" style="width:25px;height:25px;"> คลินิก</div>
+                                        <div class="detail-value">${vaccination.clinic_name}</div>
+                                    </div>
+                                ` : ''}
+                                ${vaccination.batch_number ? `
+                                    <div class="detail-item">
+                                        <div class="detail-label"><img src="/icon/barcode.png" alt="Batch Num" style="width:25px;height:25px;"> Batch</div>
+                                        <div class="detail-value">${vaccination.batch_number}</div>
+                                    </div>
+                                ` : ''}
+                                <div class="detail-item">
+                                    <div class="detail-label"><img src="/icon/right-arrow.png" alt="Next Dua Date" style="width:25px;height:25px;"> นัดครั้งถัดไป</div>
+                                    <div class="detail-value">${nextDueDate}</div>
+                                </div>
+                            </div>
+
+                            ${vaccination.proof_image ? `
+                                <div class="vaccine-proof">
+                                    <div class="proof-label">
+                                        <img src="/icon/oath.png" alt="Evidence" style="width:25px;height:25px;"> หลักฐาน
+                                    </div>
+                                    <div class="proof-image-container" onclick="viewProof('${vaccination.proof_image}')">
+                                        <img src="${vaccination.proof_image}" 
+                                             alt="Proof" 
+                                             class="proof-image">
+                                        <div class="proof-overlay">
+                                            <span class="proof-overlay-text"><img src="/icon/search (1).png" alt="More" style="width:25px;height:25px;"> ขยาย</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${vaccination.notes ? `
+                                <div class="vaccine-notes">
+                                    <span class="notes-label"><img src="/icon/notes.png" alt="Note" style="width:25px;height:25px;"> หมายเหตุ :</span>
+                                    ${vaccination.notes}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            timeline.innerHTML = html;
+        }
+
+        function viewProof(imagePath) {
+            document.getElementById('modalImage').src = imagePath;
+            document.getElementById('imageModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function deleteVaccination(vaccinationId, vaccineName) {
+            if (!confirm(`ต้องการลบบันทึก "${vaccineName}" หรือไม่?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/vaccinations/${vaccinationId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    const card = event.target.closest('.vaccination-card');
+                    card.style.animation = 'fadeOutRight 0.5s ease forwards';
+                    
+                    setTimeout(() => {
+                        loadVaccinationHistory();
+                    }, 500);
+                } else {
+                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+            loadPetInfo();
+        });
+
+        document.getElementById('modalImage').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOutRight {
+                to {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
