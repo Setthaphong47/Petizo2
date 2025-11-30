@@ -2166,6 +2166,7 @@
                             <span>สร้างบทความใหม่</span>
                         </h2>
                         <button onclick="closeBlogModal()" 
+                                class="close-modal-btn"
                                 style="background: #f5f5f5; 
                                     border: none; 
                                     width: 40px;
@@ -2356,6 +2357,7 @@
                         <!-- Button Actions -->
                         <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 20px; border-top: 2px solid #f0f0f0;">
                             <button type="button" 
+                                    class="cancel-btn"
                                     onclick="closeBlogModal()" 
                                     style="padding: 14px 30px; 
                                         background: #f5f5f5; 
@@ -2369,8 +2371,9 @@
                                 ยกเลิก
                             </button>
                             <button type="submit" 
+                                    class="save-btn"
                                     style="padding: 14px 30px; 
-                                        background: linear-gradient(135deg, #00bcd4); 
+                                        background: #00bcd4; 
                                         color: white; 
                                         border: none; 
                                         border-radius: 12px; 
@@ -2590,13 +2593,28 @@
                 line-height: 1.5;
             }
 
-            button:hover {
-                opacity: 0.9;
+            /* Button Hover Effects */
+            .close-modal-btn:hover {
+                background: #e0e0e0 !important;
+                transform: rotate(90deg);
             }
 
-            #blogModal button[onclick="closeBlogModal()"]:hover {
-                background: #e0e0e0;
-                transform: rotate(90deg);
+            .cancel-btn:hover {
+                background: #e0e0e0 !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .save-btn:hover {
+                background: #00e5ff !important;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 188, 212, 0.4);
+            }
+
+            /* Action buttons hover */
+            .blog-card button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             }
 
             /* Responsive */
@@ -3106,6 +3124,10 @@
                 const imageInput = document.getElementById('blogImage');
                 const tags = Array.from(document.querySelectorAll('input[name="blogTags"]:checked')).map(i => i.value);
                 const sources = collectSourcesFromTextarea();
+                
+                // Backend expects source_name and source_url
+                const source_name = sources.length > 0 ? sources.join(', ') : null;
+                const source_url = null; // Can be extended later if needed
 
                 const token = localStorage.getItem('token');
                 const isEdit = !!currentBlogId;
@@ -3123,15 +3145,17 @@
                         fd.append('excerpt', excerpt);
                         fd.append('content', content);
                         fd.append('tags', JSON.stringify(tags));
-                        fd.append('source', JSON.stringify(sources));
-                        fd.append('image', imageInput.files[0]);
+                        if (source_name) fd.append('source_name', source_name);
+                        if (source_url) fd.append('source_url', source_url);
+                        fd.append('featured_image', imageInput.files[0]);
                         options.body = fd;
                     } else {
                         options.headers['Content-Type'] = 'application/json';
                         options.body = JSON.stringify({
                             title, category, status, excerpt, content,
                             tags: JSON.stringify(tags),
-                            source: JSON.stringify(sources)
+                            source_name,
+                            source_url
                         });
                     }
 

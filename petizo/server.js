@@ -742,6 +742,10 @@ app.post('/api/admin/blog', authenticateToken, isAdmin, upload.single('featured_
 });
 
 app.put('/api/admin/blog/:id', authenticateToken, isAdmin, upload.single('featured_image'), (req, res) => {
+    console.log('PUT /api/admin/blog/:id - Request body:', req.body);
+    console.log('PUT /api/admin/blog/:id - File:', req.file);
+    console.log('PUT /api/admin/blog/:id - Blog ID:', req.params.id);
+    
     const { title, content, excerpt, category, status, tags, source_name, source_url } = req.body;
     const file = req.file;
     
@@ -769,7 +773,12 @@ app.put('/api/admin/blog/:id', authenticateToken, isAdmin, upload.single('featur
         params.push(req.params.id);
         
         db.run(sql, params, function(err) {
-            if (err) return res.status(500).json({ error: 'ไม่สามารถอัปเดตได้' });
+            if (err) {
+                console.error('Blog update error:', err);
+                console.error('SQL:', sql);
+                console.error('Params:', params);
+                return res.status(500).json({ error: 'ไม่สามารถอัปเดตได้: ' + err.message });
+            }
             if (this.changes === 0) return res.status(404).json({ error: 'ไม่พบบทความ' });
             res.json({ message: 'อัปเดตสำเร็จ' });
         });
