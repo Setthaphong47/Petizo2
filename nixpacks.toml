@@ -1,6 +1,6 @@
 [phases.setup]
-# ติดตั้ง Node.js 20, Python, build tools และ Tesseract OCR
-nixPkgs = ['nodejs_20', 'python39', 'python39Packages.pip', 'tesseract', 'gcc', 'gnumake', 'python3']
+# ติดตั้ง Node.js 20, Python 3.9, build tools และ Tesseract OCR
+nixPkgs = ['nodejs_20', 'python39', 'python39Packages.pip', 'tesseract', 'gcc', 'gnumake']
 
 [phases.install]
 # ติดตั้ง Node.js dependencies ใน petizo folder
