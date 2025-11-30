@@ -1,6 +1,6 @@
 [phases.setup]
-# ติดตั้ง Python และ Tesseract OCR สำหรับระบบ OCR
-nixPkgs = ['python39', 'python39Packages.pip', 'tesseract']
+# ติดตั้ง Node.js, Python และ Tesseract OCR
+nixPkgs = ['nodejs-18_x', 'python39', 'python39Packages.pip', 'tesseract']
 
 [phases.install]
 # ติดตั้ง Node.js dependencies ใน petizo folder
