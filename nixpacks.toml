@@ -4,7 +4,7 @@ nixPkgs = ['nodejs-18_x', 'python39', 'python39Packages.pip', 'tesseract']
 
 [phases.install]
 # ติดตั้ง Node.js dependencies ใน petizo folder
-cmds = ['cd petizo && npm ci']
+cmds = ['cd petizo && npm install']
 
 [phases.build]
 # สร้าง database และติดตั้ง Python dependencies
