@@ -1,0 +1,18 @@
+[phases.setup]
+# ติดตั้ง Python และ Tesseract OCR สำหรับระบบ OCR
+nixPkgs = ['python39', 'python39Packages.pip', 'tesseract']
+
+[phases.install]
+# ติดตั้ง Node.js dependencies
+cmds = ['npm ci']
+
+[phases.build]
+# สร้าง database และติดตั้ง Python dependencies
+cmds = [
+  'npm run build',
+  'pip install -r ocr_system/requirements.txt --user'
+]
+
+[start]
+# เริ่ม server
+cmd = 'npm start'
