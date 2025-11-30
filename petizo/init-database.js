@@ -117,7 +117,7 @@ function createTables() {
         else console.log('✅ ตาราง vaccinations สร้างเสร็จแล้ว');
     });
 
-    // ตาราง Blog Posts (เชื่อมกับ admins)
+    // ตาราง Blog Posts (เชื่อมกับ admins) - สร้างทั้ง blog_posts และ blogs
     db.run(`
         CREATE TABLE IF NOT EXISTS blog_posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -140,6 +140,32 @@ function createTables() {
     `, (err) => {
         if (err) console.error('❌ Error creating blog_posts table:', err);
         else console.log('✅ ตาราง blog_posts สร้างเสร็จแล้ว');
+    });
+
+    // ตาราง blogs (เหมือน blog_posts - สำหรับ compatibility)
+    db.run(`
+        CREATE TABLE IF NOT EXISTS blogs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            admin_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            slug TEXT UNIQUE NOT NULL,
+            content TEXT NOT NULL,
+            excerpt TEXT,
+            featured_image TEXT,
+            category TEXT,
+            tags TEXT,
+            source_name TEXT,
+            source_url TEXT,
+            status TEXT DEFAULT 'draft' CHECK(status IN ('draft', 'published')),
+            views INTEGER DEFAULT 0,
+            published_at DATETIME,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (admin_id) REFERENCES admins(id)
+        )
+    `, (err) => {
+        if (err) console.error('❌ Error creating blogs table:', err);
+        else console.log('✅ ตาราง blogs สร้างเสร็จแล้ว');
     });
 
     // ตาราง Chat History (เชื่อมกับ members)
