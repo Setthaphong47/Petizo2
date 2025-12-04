@@ -2,7 +2,7 @@
 (function() {
     'use strict';
 
-    const API_URL = 'http://localhost:3000/api';
+    const API_URL = window.CONFIG?.API_URL || '/api';
     let currentNotifications = [];
 
     // ----------------- Utility / Helpers -----------------
