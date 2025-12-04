@@ -20,8 +20,6 @@ yarn.lock
 *.bak
 
 # Uploads (รูปภาพที่อัปโหลด)
-uploads/*
-!uploads/.gitkeep
 data/uploads/*
 !data/uploads/.gitkeep
 
@@ -29,7 +27,6 @@ data/uploads/*
 .DS_Store
 Thumbs.db
 desktop.ini
-nul
 
 # IDE
 .vscode/

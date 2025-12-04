@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node check-blogs-table.js:*)",
+      "Bash(node:*)",
+      "Bash(python app.py:*)",
+      "Bash(dir:*)",
+      "Bash(sqlite3:*)",
+      "Bash(cat:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(where:*)",
+      "Bash(railway whoami:*)",
+      "Bash(railway status:*)",
+      "Bash(railway link)",
+      "Bash(railway link:*)",
+      "Bash(railway logs:*)",
+      "Bash(python -c:*)",
+      "Bash(git checkout:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
