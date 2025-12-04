@@ -30,7 +30,7 @@ const slugify = (s) =>
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('data/uploads'));
 
 // Database Connection
 const fs = require('fs');
@@ -74,19 +74,20 @@ function detectDbStructure() {
     });
 }
 
-// สร้างโฟลเดอร์ uploads
-const uploadsDir = path.join(__dirname, 'uploads');
+// สร้างโฟลเดอร์ data/uploads
+const uploadsDir = path.join(__dirname, 'data', 'uploads');
 try {
-    if (!require('fs').existsSync(uploadsDir)) {
-        require('fs').mkdirSync(uploadsDir, { recursive: true });
+    if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+        console.log('✅ สร้าง data/uploads folder เรียบร้อย');
     }
 } catch (err) {
-    console.error('ไม่สามารถสร้างโฟลเดอร์ uploads:', err.message);
+    console.error('ไม่สามารถสร้างโฟลเดอร์ data/uploads:', err.message);
 }
 
 // File Upload Configuration
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
+    destination: (req, file, cb) => cb(null, 'data/uploads/'),
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
