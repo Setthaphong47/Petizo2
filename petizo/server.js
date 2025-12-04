@@ -672,7 +672,7 @@ app.get('/api/vaccinations', authenticateToken, (req, res) => {
 
 // ============= OCR VACCINE LABEL SCANNING =============
 
-app.post('/api/ocr/scan', authenticateToken, upload.single('image'), (req, res) => {
+app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'ไม่พบไฟล์รูปภาพ' });
     }
@@ -682,7 +682,11 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), (req, res) 
     
     // ตรวจสอบว่ามี Python script
     if (!require('fs').existsSync(pythonScript)) {
-        return res.status(500).json({ error: 'ไม่พบ OCR system' });
+        console.log('[OCR API] Python script not found, OCR feature disabled');
+        return res.status(503).json({ 
+            error: 'OCR feature is not available',
+            message: 'กรุณากรอกข้อมูลด้วยตนเอง'
+        });
     }
     
     console.log('\n[OCR API] Starting vaccine label scan...');
@@ -693,10 +697,20 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), (req, res) 
     // ลอง python3 ก่อน ถ้าไม่ได้ค่อยใช้ python
     const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
     console.log(`[OCR API] Using Python command: ${pythonCmd}`);
-    
+
     // เรียก Python script
     const { spawn } = require('child_process');
     const python = spawn(pythonCmd, [pythonScript, imagePath]);
+
+    // ตั้ง timeout 30 วินาที
+    const timeout = setTimeout(() => {
+        python.kill();
+        console.error('[OCR API] Process timeout after 30s');
+        res.status(504).json({
+            error: 'OCR processing timeout',
+            message: 'กรุณาลองใหม่อีกครั้งหรือกรอกข้อมูลด้วยตนเอง'
+        });
+    }, 30000);
     
     let stdout = '';
     let stderr = '';
@@ -712,6 +726,7 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), (req, res) 
     });
     
     python.on('close', (code) => {
+        clearTimeout(timeout);
         console.log(`[OCR API] Python process exited with code ${code}`);
         
         if (code !== 0) {
@@ -720,6 +735,7 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), (req, res) 
             console.error('[OCR API] stdout:', stdout);
             return res.status(500).json({ 
                 error: 'OCR processing failed',
+                message: 'ไม่สามารถอ่านฉลากวัคซีนได้ กรุณากรอกข้อมูลด้วยตนเอง',
                 details: stderr || 'Python process failed',
                 code: code
             });
@@ -727,18 +743,35 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), (req, res) 
         
         try {
             console.log('[OCR API] Raw stdout:', stdout);
+            
+            if (!stdout || stdout.trim() === '') {
+                throw new Error('Empty response from Python script');
+            }
+            
             const result = JSON.parse(stdout);
             console.log('[OCR API] Scan completed successfully');
+            console.log('[OCR API] Result:', result);
             res.json(result);
         } catch (err) {
             console.error('[OCR API] Failed to parse JSON:', err);
             console.error('[OCR API] stdout:', stdout);
             res.status(500).json({ 
                 error: 'ไม่สามารถประมวลผลผลลัพธ์ได้',
+                message: 'กรุณากรอกข้อมูลด้วยตนเอง',
                 details: err.message,
                 stdout: stdout
             });
         }
+    });
+    
+    python.on('error', (err) => {
+        clearTimeout(timeout);
+        console.error('[OCR API] Failed to start Python process:', err);
+        res.status(500).json({ 
+            error: 'Failed to start OCR process',
+            message: 'ไม่สามารถเริ่มระบบ OCR ได้ กรุณากรอกข้อมูลด้วยตนเอง',
+            details: err.message
+        });
     });
 });
 
