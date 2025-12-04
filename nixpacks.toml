@@ -11,8 +11,7 @@ cmds = ['cd petizo && npm install']
 # สร้าง database และติดตั้ง Python dependencies
 cmds = [
   'cd petizo && npm run build',
-  'pip3 install --upgrade pip',
-  'pip3 install -r petizo/ocr_system/requirements.txt'
+  'cd petizo/ocr_system && pip3 install --upgrade pip && pip3 install -r requirements.txt'
 ]
 
 [start]
