@@ -461,7 +461,7 @@
     <script src="/js/auth-common.js"></script>
 
     <script>
-        const API_URL = 'http://localhost:3000/api';
+        const API_URL = window.CONFIG ? window.CONFIG.API_URL : (window.location.origin + '/api');
 
         // Notification Modal Functions
         function toggleNotificationModal() {
