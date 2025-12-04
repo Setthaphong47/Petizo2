@@ -764,8 +764,9 @@
         <img id="modalImage" class="modal-image" src="" alt="Proof Image">
     </div>
 
+    <script src="/js/config.js"></script>
     <script>
-        const API_URL = 'http://localhost:3000/api';
+        const API_URL = window.CONFIG?.API_URL || '/api';
         let currentPetId = null;
         let currentPet = null;
 

@@ -85,26 +85,21 @@ MODEL_NAME=openai/gpt-4o-mini
 - เก็บ SQLite database (petizo.db)
 - ป้องกันไฟล์หายเมื่อ redeploy
 
-### Volume 1: สำหรับ Uploads
+### Volume 1: สำหรับ Uploads และ Database
 
 1. ไปที่ **Settings** → **Volumes**
 2. คลิก **"New Volume"**
 3. ตั้งค่าดังนี้:
    ```
-   Volume Name: uploads-volume
-   Mount Path: /app/uploads
+   Volume Name: petizo-data
+   Mount Path: /app/petizo/data
    ```
 4. คลิก **"Add Volume"**
 
-### Volume 2: สำหรับ Database (แนะนำ)
-
-1. คลิก **"New Volume"** อีกครั้ง
-2. ตั้งค่าดังนี้:
-   ```
-   Volume Name: database-volume
-   Mount Path: /app
-   ```
-3. คลิก **"Add Volume"**
+### ⚠️ สำคัญมาก:
+- Mount Path ต้องเป็น `/app/petizo/data` เพื่อให้รูปภาพและ database อยู่ใน volume
+- ถ้า mount path ผิด รูปภาพจะหายทุกครั้งที่ redeploy
+- Volume จะเก็บทั้ง `petizo.db` และโฟลเดอร์ `uploads/`
 
 ### 📝 หมายเหตุ:
 - Free tier มี 1GB Volume ฟรี (ใช้ร่วมกันได้)
