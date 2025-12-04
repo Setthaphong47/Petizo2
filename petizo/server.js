@@ -1411,6 +1411,20 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
 });
 
 
+// ============= UTILITY ENDPOINTS =============
+
+// Upload file to Railway Volume (สำหรับ sync รูปจาก local)
+app.post('/api/admin/upload-file', authenticateToken, isAdmin, upload.single('file'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+    res.json({ 
+        message: 'File uploaded successfully', 
+        filename: req.file.filename,
+        path: `/uploads/${req.file.filename}`
+    });
+});
+
 // ============= ERROR HANDLING & START =============
 
 app.use((err, req, res, next) => {
