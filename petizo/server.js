@@ -687,10 +687,16 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), (req, res) 
     
     console.log('\n[OCR API] Starting vaccine label scan...');
     console.log(`[OCR API] Image: ${req.file.filename}`);
+    console.log(`[OCR API] Image path: ${imagePath}`);
+    console.log(`[OCR API] Python script: ${pythonScript}`);
+    
+    // ลอง python3 ก่อน ถ้าไม่ได้ค่อยใช้ python
+    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+    console.log(`[OCR API] Using Python command: ${pythonCmd}`);
     
     // เรียก Python script
     const { spawn } = require('child_process');
-    const python = spawn('python', [pythonScript, imagePath]);
+    const python = spawn(pythonCmd, [pythonScript, imagePath]);
     
     let stdout = '';
     let stderr = '';
@@ -706,25 +712,31 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), (req, res) 
     });
     
     python.on('close', (code) => {
+        console.log(`[OCR API] Python process exited with code ${code}`);
+        
         if (code !== 0) {
             console.error(`[OCR API] Python script failed with code ${code}`);
-            console.error(stderr);
+            console.error('[OCR API] stderr:', stderr);
+            console.error('[OCR API] stdout:', stdout);
             return res.status(500).json({ 
                 error: 'OCR processing failed',
-                details: stderr
+                details: stderr || 'Python process failed',
+                code: code
             });
         }
         
         try {
+            console.log('[OCR API] Raw stdout:', stdout);
             const result = JSON.parse(stdout);
             console.log('[OCR API] Scan completed successfully');
             res.json(result);
         } catch (err) {
             console.error('[OCR API] Failed to parse JSON:', err);
-            console.error('stdout:', stdout);
+            console.error('[OCR API] stdout:', stdout);
             res.status(500).json({ 
                 error: 'ไม่สามารถประมวลผลผลลัพธ์ได้',
-                details: err.message
+                details: err.message,
+                stdout: stdout
             });
         }
     });
