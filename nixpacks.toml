@@ -1,7 +1,7 @@
 [phases.setup]
 # ติดตั้ง Node.js 20, Python 3.9, build tools และ Tesseract OCR
 nixPkgs = ['nodejs_20', 'python39', 'python39Packages.pip', 'tesseract', 'gcc', 'gnumake']
-aptPkgs = ['libgl1-mesa-glx', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libgomp1', 'libgthread-2.0-0']
+aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libgomp1', 'libgthread-2.0-0']
 
 [phases.install]
 # ติดตั้ง Node.js dependencies ใน petizo folder
