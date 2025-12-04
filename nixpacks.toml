@@ -1,5 +1,5 @@
 [phases.setup]
-# ติดตั้ง Node.js 20, Python 3.9, build tools และ Tesseract OCR
+# ติดตั้ง Node.js 20, Python 3.9, build tools และ Tesseract OCR สำหรับ OCR system
 nixPkgs = ['nodejs_20', 'python39', 'python39Packages.pip', 'tesseract', 'gcc', 'gnumake']
 aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libgomp1', 'libgthread-2.0-0']
 
