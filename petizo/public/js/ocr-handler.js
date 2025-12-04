@@ -54,14 +54,20 @@ async function scanVaccineLabel() {
             fillVaccineData(result.data);
             
             // แสดงข้อความสำเร็จ
-            showNotification('สแกนฉลากสำเร็จ', 'success');
+            showNotification('สแกนฉลากสำเร็จ กรุณาตรวจสอบข้อมูลที่กรอกอัตโนมัติ', 'success');
         } else {
             throw new Error('ไม่สามารถอ่านข้อมูลจากฉลากได้');
         }
         
     } catch (error) {
         console.error('OCR Error:', error);
-        showNotification('เกิดข้อผิดพลาด: ' + error.message, 'error');
+        
+        // แสดงข้อความที่เป็นมิตรกับผู้ใช้
+        const userMessage = error.message.includes('OCR processing failed') 
+            ? 'ระบบ OCR ไม่พร้อมใช้งานในขณะนี้ กรุณากรอกข้อมูลด้วยตนเอง' 
+            : 'ไม่สามารถสแกนฉลากได้ กรุณากรอกข้อมูลด้วยตนเอง';
+            
+        showNotification(userMessage, 'warning');
     } finally {
         // ซ่อน loading และแสดง preview กลับมา
         if (scanButton) scanButton.disabled = false;
