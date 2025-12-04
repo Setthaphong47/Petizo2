@@ -7,28 +7,37 @@
 ไปที่ Railway Dashboard → เลือก Service → Variables → เพิ่มตัวแปรต่อไปนี้:
 
 ```
-EASYOCR_MODULE_PATH=/app/petizo/.easyocr
+EASYOCR_MODULE_PATH=/app/petizo/data/easyocr_models
 OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
 PYTHONUNBUFFERED=1
 ```
 
-### 2. ตั้งค่า Volume สำหรับ EasyOCR Models (Optional แต่แนะนำ)
+### 2. ใช้ Volume เดิมที่มีอยู่แล้ว
 
-เพื่อให้ EasyOCR ไม่ต้องดาวน์โหลด models ใหม่ทุกครั้งที่ deploy:
+คุณมี Volume อยู่แล้วที่ mount อยู่ที่ `/app/petizo/data` สำหรับเก็บ database และรูปภาพ
 
-1. ไปที่ Railway Dashboard → Service → Settings → Volumes
-2. สร้าง Volume ใหม่:
-   - **Mount Path**: `/app/petizo/.easyocr`
-   - **Size**: อย่างน้อย 1GB (แนะนำ 2GB)
+**ไม่ต้องสร้าง Volume ใหม่!** ระบบจะสร้างโฟลเดอร์ย่อย `/app/petizo/data/easyocr_models` อัตโนมัติ
+เพื่อเก็บ EasyOCR models ใน Volume เดิม
 
-### 3. ตรวจสอบการตั้งค่า Memory
+### 3. เพิ่มขนาด Volume (ถ้าจำเป็น)
+
+Volume ปัจจุบันของคุณมีขนาด **500 MB**
+
+EasyOCR models ต้องการพื้นที่ประมาณ **100-200 MB**
+
+**แนะนำ:** กด **Grow** เพื่อเพิ่มขนาด Volume เป็น **1-2 GB** เพื่อให้มีพื้นที่เพียงพอสำหรับ:
+- Database (petizo.db)
+- รูปภาพที่อัปโหลด (uploads/)
+- EasyOCR models (easyocr_models/)
+
+### 4. ตรวจสอบการตั้งค่า Memory
 
 ระบบ OCR (โดยเฉพาะ EasyOCR) ต้องใช้ memory สูง:
 
 1. ไปที่ Railway Dashboard → Service → Settings
 2. ตรวจสอบว่า Memory Limit อย่างน้อย **1GB** (แนะนำ 2GB)
 
-### 4. Deploy
+### 5. Deploy
 
 ```bash
 git add .
@@ -51,7 +60,7 @@ Railway จะ auto-deploy และติดตั้ง dependencies ต่อ
 หลังจาก deploy เสร็จ ให้เช็ค Railway Logs:
 
 ```
-[EasyOCR] Model storage directory: /app/petizo/.easyocr
+[EasyOCR] Model storage directory: /app/petizo/data/easyocr_models
 [EasyOCR] Reader initialized successfully
 ```
 
@@ -67,8 +76,9 @@ Railway จะ auto-deploy และติดตั้ง dependencies ต่อ
 ## การแก้ปัญหา
 
 ### ถ้า EasyOCR ดาวน์โหลด models ทุกครั้ง
-- ตรวจสอบว่าตั้งค่า Volume ที่ `/app/petizo/.easyocr` แล้ว
-- ตรวจสอบว่า Environment Variable `EASYOCR_MODULE_PATH` ตั้งค่าถูกต้อง
+- ตรวจสอบว่า Volume mount อยู่ที่ `/app/petizo/data` ถูกต้อง
+- ตรวจสอบว่า Environment Variable `EASYOCR_MODULE_PATH=/app/petizo/data/easyocr_models` ตั้งค่าถูกต้อง
+- ตรวจสอบว่า Volume มีพื้นที่เพียงพอ (แนะนำ 1-2 GB)
 
 ### ถ้า Python script ล้มเหลว
 - ตรวจสอบ Railway Logs หา error message
