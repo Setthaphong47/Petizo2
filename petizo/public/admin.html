@@ -1788,11 +1788,11 @@
                 
                 pets.forEach(pet => {
                     const age = calculateAge(pet.birth_date);
-                    const imageUrl = pet.photo_url || 'https://via.placeholder.com/300x200?text=No+Photo';
-                    
+                    const imageUrl = pet.photo_url || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'%3E%3Crect width=\'300\' height=\'200\' fill=\'%23ddd\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'18\' fill=\'%23999\'%3ENo Photo%3C/text%3E%3C/svg%3E';
+
                     html += `
                         <div class="pet-card" onclick="selectPet(${pet.id})">
-                            <img src="${imageUrl}" class="pet-card-image" alt="${pet.name}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Photo'">
+                            <img src="${imageUrl}" class="pet-card-image" alt="${pet.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'%3E%3Crect width=\'300\' height=\'200\' fill=\'%23ddd\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'18\' fill=\'%23999\'%3ENo Photo%3C/text%3E%3C/svg%3E'">
                             <div class="pet-card-content">
                                 <div class="pet-card-name">${pet.name}</div>
                                 <div class="pet-card-breed">${pet.breed || 'ไม่ระบุสายพันธุ์'}</div>
@@ -1863,13 +1863,13 @@
 
             // Display Pet detail
             function displayPetDetail(pet) {
-                const imageUrl = pet.photo_url || 'https://via.placeholder.com/300x300?text=No+Photo';
+                const imageUrl = pet.photo_url || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ddd\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'18\' fill=\'%23999\'%3ENo Photo%3C/text%3E%3C/svg%3E';
                 const age = calculateAge(pet.birth_date);
-                
+
                 const html = `
                     <div class="pet-detail-grid">
                         <div>
-                            <img src="${imageUrl}" class="pet-detail-image" alt="${pet.name}" onerror="this.src='https://via.placeholder.com/300x300?text=No+Photo'">
+                            <img src="${imageUrl}" class="pet-detail-image" alt="${pet.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ddd\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'18\' fill=\'%23999\'%3ENo Photo%3C/text%3E%3C/svg%3E'">
                         </div>
                         <div class="pet-detail-info">
                             <div class="pet-info-item">
