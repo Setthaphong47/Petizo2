@@ -4,7 +4,6 @@
   "description": "Pet Management System",
   "main": "server.js",
   "scripts": {
-    "prestart": "node download-db.js || echo 'Database already exists or download failed, continuing...'",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "init-db": "node init-database.js",
