@@ -31,15 +31,16 @@ __MACOSX/
 .gitignore
 
 # Uploads (will be stored in Volume)
-uploads/*
-!uploads/.gitkeep
+data/uploads/*
+!data/uploads/.gitkeep
 
-# Python cache
+# Python cache & models
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+.easyocr/
 
 # Logs
 logs/
@@ -56,3 +57,7 @@ build/
 # Documentation
 README.md
 docs/
+
+# Utility scripts (not needed in production)
+scripts/debug/
+scripts/utils/
