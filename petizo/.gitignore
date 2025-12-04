@@ -22,6 +22,8 @@ yarn.lock
 # Uploads (รูปภาพที่อัปโหลด)
 uploads/*
 !uploads/.gitkeep
+data/uploads/*
+!data/uploads/.gitkeep
 
 # OS files
 .DS_Store
