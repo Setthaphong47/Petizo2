@@ -378,10 +378,12 @@
             max-width: 800px;
             width: 100%;
             max-height: 90vh;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
+            -webkit-overflow-scrolling: touch;
         }
 
         @keyframes modalSlideUp {
@@ -427,13 +429,12 @@
         .modal-pet-layout {
             display: grid;
             grid-template-columns: 280px 1fr;
-            max-height: 90vh;
-            overflow: hidden;
+            min-height: 400px;
         }
 
         .modal-pet-layout .pet-form-section {
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+            padding: 28px 35px;
+            background: white;
         }
 
         .pet-photo-section {
@@ -443,7 +444,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow-y: auto;
             position: relative;
         }
 
@@ -538,24 +538,11 @@
         .pet-form-section {
             padding: 28px 35px;
             background: white;
-            overflow-y: auto;
         }
 
+        /* ซ่อน scrollbar ของ pet-form-section เพราะให้ modal-content-pet scroll แทน */
         .pet-form-section::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .pet-form-section::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-
-        .pet-form-section::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 10px;
-        }
-
-        .pet-form-section::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
+            display: none;
         }
 
         .form-title {
@@ -684,21 +671,15 @@
         @media (max-width: 968px) {
             .modal-pet-layout {
                 grid-template-columns: 1fr;
-                display: flex;
-                flex-direction: column;
-                max-height: 95vh;
             }
 
             .pet-photo-section {
                 padding: 40px 30px;
                 border-radius: 24px 24px 0 0;
-                flex-shrink: 0;
             }
 
             .modal-pet-layout .pet-form-section {
-                flex: 1;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
+                padding: 32px 28px;
             }
 
             .pet-photo-upload {
@@ -747,9 +728,8 @@
             .modal-content-pet {
                 max-height: 95vh;
                 border-radius: 20px;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             .close-btn-top {
@@ -763,7 +743,6 @@
             .pet-photo-section {
                 padding: 30px 20px;
                 border-radius: 20px 20px 0 0;
-                flex-shrink: 0;
             }
 
             .pet-photo-upload {
@@ -786,9 +765,6 @@
 
             .pet-form-section {
                 padding: 32px 24px;
-                flex: 1;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
             }
 
             .form-title {
@@ -835,10 +811,12 @@
                 padding: 5px;
             }
 
+            .modal-content-pet {
+                border-radius: 16px;
+            }
+
             .pet-form-section {
                 padding: 24px 20px;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
             }
 
             .form-title {
