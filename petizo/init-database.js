@@ -1,9 +1,17 @@
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 
 console.log('🚀 กำลังสร้าง Database...\n');
 
-const db = new sqlite3.Database('./petizo.db', (err) => {
+// สร้าง data folder ถ้ายังไม่มี
+const dataDir = './data';
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+    console.log('✅ สร้าง data folder เรียบร้อย\n');
+}
+
+const db = new sqlite3.Database('./data/petizo.db', (err) => {
     if (err) {
         console.error('❌ Error opening database:', err);
         process.exit(1);

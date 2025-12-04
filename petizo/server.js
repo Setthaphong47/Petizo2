@@ -33,7 +33,13 @@ app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
 
 // Database Connection
-const db = new sqlite3.Database('./petizo.db', (err) => {
+const fs = require('fs');
+const dataDir = './data';
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const db = new sqlite3.Database('./data/petizo.db', (err) => {
     if (err) {
         console.error(' ไม่สามารถเชื่อมต่อ database:', err.message);
     } else {
