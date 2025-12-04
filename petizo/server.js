@@ -634,10 +634,24 @@ app.get('/api/pets/:petId/vaccinations', authenticateToken, (req, res) => {
 });
 
 app.delete('/api/vaccinations/:id', authenticateToken, (req, res) => {
-    db.run('DELETE FROM vaccinations WHERE id = ?', [req.params.id], function(err) {
-        if (err) return res.status(500).json({ error: 'ไม่สามารถลบได้' });
-        res.json({ message: 'ลบสำเร็จ' });
-    });
+    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงที่มีวัคซีนนี้
+    const petColumn = getPetUserColumn();
+    
+    db.get(
+        `SELECT v.* FROM vaccinations v 
+         JOIN pets p ON v.pet_id = p.id 
+         WHERE v.id = ? AND p.${petColumn} = ?`,
+        [req.params.id, req.user.id],
+        (err, vaccination) => {
+            if (err) return res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+            if (!vaccination) return res.status(404).json({ error: 'ไม่พบข้อมูล' });
+            
+            db.run('DELETE FROM vaccinations WHERE id = ?', [req.params.id], function(err) {
+                if (err) return res.status(500).json({ error: 'ไม่สามารถลบได้' });
+                res.json({ message: 'ลบสำเร็จ' });
+            });
+        }
+    );
 });
 
 app.get('/api/vaccinations', authenticateToken, (req, res) => {
