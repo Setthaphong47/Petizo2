@@ -577,14 +577,14 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
                 const priority = { overdue: 1, due: 2, upcoming: 3, completed: 4 };
                 recommendations.sort((a, b) => (priority[a.status] || 5) - (priority[b.status] || 5));
                 
-                // กรองเฉพาะวัคซีนที่ยังไม่ได้ฉีด (ไม่รวม completed)
-                const activeVaccines = recommendations.filter(v => v.status !== 'completed');
+                // กรองเฉพาะวัคซีนที่ยังไม่ได้ฉีด (ใช้ is_completed แทน status)
+                const activeVaccines = recommendations.filter(v => !v.is_completed);
                 
                 res.json({
                     pet_age_weeks: ageInWeeks,
                     vaccines: activeVaccines,
                     active_count: activeVaccines.length,
-                    completed_count: recommendations.filter(v => v.status === 'completed').length
+                    completed_count: recommendations.filter(v => v.is_completed).length
                 });
             });
         });
