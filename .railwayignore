@@ -1,0 +1,9 @@
+# ไฟล์ที่ไม่ต้อง upload ไปยัง Railway
+node_modules/
+.git/
+*.log
+.env.local
+.DS_Store
+__pycache__/
+*.pyc
+.pytest_cache/

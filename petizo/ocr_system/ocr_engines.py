@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import pytesseract
+import os
+import sys
 from typing import Dict, Optional
 
 # EasyOCR
@@ -18,9 +20,22 @@ def get_easyocr_reader():
     global _reader
     if _reader is None and EASYOCR_AVAILABLE:
         try:
-            _reader = easyocr.Reader(['en'], gpu=False, verbose=False)
+            # ตั้งค่า model storage path
+            model_storage_directory = os.environ.get('EASYOCR_MODULE_PATH', None)
+            print(f'[EasyOCR] Model storage directory: {model_storage_directory}', file=sys.stderr)
+            
+            _reader = easyocr.Reader(
+                ['en'], 
+                gpu=False, 
+                verbose=False,
+                model_storage_directory=model_storage_directory,
+                download_enabled=True
+            )
+            print('[EasyOCR] Reader initialized successfully', file=sys.stderr)
         except Exception as e:
-            print(f'Warning: Could not initialize EasyOCR: {e}')
+            print(f'Warning: Could not initialize EasyOCR: {e}', file=sys.stderr)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
     return _reader
 
 
