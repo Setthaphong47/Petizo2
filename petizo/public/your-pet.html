@@ -436,6 +436,8 @@
             display: grid;
             grid-template-columns: 280px 1fr;
             min-height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
         }
 
         .modal-pet-layout .pet-form-section {
@@ -451,7 +453,6 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            border-radius: 20px 0 0 20px;
         }
 
         .pet-photo-section::before {
@@ -678,11 +679,12 @@
         @media (max-width: 968px) {
             .modal-pet-layout {
                 grid-template-columns: 1fr;
+                border-radius: 20px;
+                overflow: hidden;
             }
 
             .pet-photo-section {
                 padding: 40px 30px;
-                border-radius: 20px 20px 0 0;
             }
 
             .modal-pet-layout .pet-form-section {
