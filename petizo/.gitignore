@@ -46,3 +46,9 @@ build/
 # Temporary files
 tmp/
 temp/
+
+# Cache & Models
+.easyocr/
+__pycache__/
+*.pyc
+*.pyo

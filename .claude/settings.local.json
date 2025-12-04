@@ -19,7 +19,8 @@
       "Bash(python -c:*)",
       "Bash(git checkout:*)",
       "Bash(tree:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
