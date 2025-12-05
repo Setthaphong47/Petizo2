@@ -33,7 +33,7 @@ COPY petizo/package*.json ./petizo/
 
 # Install Node.js dependencies
 WORKDIR /app/petizo
-RUN npm ci --only=production
+RUN npm install --production
 
 # Copy Python requirements
 COPY petizo/ocr_system/requirements.txt ./ocr_system/
