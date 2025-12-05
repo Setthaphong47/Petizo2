@@ -1,5 +1,6 @@
 # Petizo Dockerfile - Node.js + Python + OCR
 # Multi-stage build for optimized image size
+# Build timestamp: 2024-12-05
 
 FROM node:20-slim
 
