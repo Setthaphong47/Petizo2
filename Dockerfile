@@ -38,9 +38,12 @@ RUN npm install --production
 # Copy Python requirements
 COPY petizo/ocr_system/requirements.txt ./ocr_system/
 
-# Install Python dependencies
+# Install Python dependencies and remove build tools to reduce image size
 RUN pip3 install --no-cache-dir --break-system-packages --upgrade pip && \
-    pip3 install --no-cache-dir --break-system-packages -r ocr_system/requirements.txt
+    pip3 install --no-cache-dir --break-system-packages -r ocr_system/requirements.txt && \
+    apt-get remove -y gcc g++ make python3-dev && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy application code
 WORKDIR /app
