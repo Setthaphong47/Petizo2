@@ -1,19 +1,16 @@
 [phases.setup]
-# ติดตั้ง Node.js 20, Python 3.9, build tools และ Tesseract OCR สำหรับ OCR system
-nixPkgs = ['nodejs_20', 'python39', 'python39Packages.pip', 'tesseract', 'gcc', 'gnumake']
-aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libgomp1', 'libgthread-2.0-0']
+# ติดตั้ง Node.js 20, Python 3.9, และ Tesseract OCR สำหรับ OCR system
+nixPkgs = ['nodejs_20', 'python39', 'python39Packages.pip', 'tesseract']
+aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libgomp1']
 
 [phases.install]
 # ติดตั้ง Node.js dependencies ใน petizo folder
 cmds = ['cd petizo && npm install']
 
 [phases.build]
-# สร้าง database และติดตั้ง Python dependencies
-cmds = [
-  'cd petizo && npm run build',
-  'cd petizo/ocr_system && pip3 install --upgrade pip && pip3 install -r requirements.txt'
-]
+# Skip - เราจะติดตั้ง Python packages ตอน runtime แทน (เพื่อหลีกเลี่ยง timeout)
+cmds = []
 
 [start]
-# เริ่ม server จากโฟลเดอร์ petizo พร้อม environment variables สำหรับ OCR
+# เริ่ม server จากโฟลเดอร์ petizo - start.sh จะติดตั้ง Python packages ถ้ายังไม่มี
 cmd = 'cd petizo && chmod +x start.sh && ./start.sh'
