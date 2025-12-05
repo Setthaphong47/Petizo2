@@ -39,8 +39,8 @@ RUN npm install --production
 COPY petizo/ocr_system/requirements.txt ./ocr_system/
 
 # Install Python dependencies
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -r ocr_system/requirements.txt
+RUN pip3 install --no-cache-dir --break-system-packages --upgrade pip && \
+    pip3 install --no-cache-dir --break-system-packages -r ocr_system/requirements.txt
 
 # Copy application code
 WORKDIR /app
