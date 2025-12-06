@@ -282,61 +282,91 @@ def extract_serial_number(text: str) -> Optional[str]:
     """ดึง Serial Number"""
     t = normalize_ocr_text(text)
     
-    strict_pattern = r'\b(\d{5,7}[A-Z]{0,2})\b'
+    # 🔧 Fix: ปรับ pattern ให้จับ serial ที่มีตัวอักษรท้าย (เช่น 532764C)
+    strict_pattern = r'\b(\d{5,7}[A-Z]{1,2})\b'  # ต้องมีตัวอักษรอย่างน้อย 1 ตัว
+    fallback_pattern = r'\b(\d{5,7})\b'  # ถ้าไม่เจอก็ใช้แค่ตัวเลข
     
-    # ลองหาจาก "SER" keyword
-    ser_match = re.search(r'(?:SER|SERIAL)\s*[:\-\s]?\s*(?:[A-Z]{1,5}\s+)?(\d{5,7}[A-Z]{0,2})\b', t)
+    # 🎯 Priority 1: หาจาก "SER:" keyword (แม่นที่สุด)
+    ser_match = re.search(r'(?:SER|SERIAL)\s*[:\-]?\s*([A-Z]*\s*)?(\d{5,7}[A-Z]{0,2})\b', t)
     if ser_match:
-        raw = ser_match.group(1)
+        raw = ser_match.group(2)  # ใช้ group 2 เพราะ group 1 คือ prefix ที่ไม่ต้องการ
         if re.fullmatch(r'\d{5,7}[A-Z]{0,2}', raw):
-            # ตรวจสอบว่าไม่ใช่เลขทะเบียน
+            # ตรวจสอบว่าไม่ใช่เลขทะเบียนที่ผสมกัน
             reg_patterns = re.findall(r'(\d{1,3})/(\d{1,3})', t)
             
             is_derived_from_reg = False
-            if raw.isdigit():
+            if raw.isdigit() and len(raw) <= 6:  # เฉพาะตัวเลขอย่างเดียวที่สั้น
                 for n1, n2 in reg_patterns:
                     combined = n1 + n2
                     if raw == combined or (raw.startswith(n1) and raw.endswith(n2)):
                         is_derived_from_reg = True
                         break
             
+            # 🔒 ข้ามถ้าเป็น zip code (เช่น 63521 จาก Nebraska)
+            if raw.isdigit() and len(raw) == 5:
+                # ตรวจสอบว่าอยู่ใกล้คำว่า USA, Nebraska, Lincoln หรือไม่
+                ser_pos = t.find(f'SER')
+                if ser_pos >= 0:
+                    context_before = t[max(0, ser_pos - 50):ser_pos]
+                    if re.search(r'\b(USA|NEBRASKA|LINCOLN|INC)\b', context_before):
+                        is_derived_from_reg = True  # ข้ามเพราะเป็น zip code
+            
             if not is_derived_from_reg:
                 return normalize_serial(raw)
     
-    # หาจาก pattern ทั่วไป
-    matches = re.findall(strict_pattern, t)
+    # 🎯 Priority 2: หาจาก pattern ที่มีตัวอักษรท้าย (เช่น 532764C)
+    matches_with_letter = re.findall(strict_pattern, t)
     
     reg_patterns = re.findall(r'(\d{1,3})/(\d{1,3})', t)
     
-    for match in matches:
-        if re.fullmatch(r'\d{5,7}[A-Z]{0,2}', match):
-            match_pos = t.find(match)
-            if match_pos >= 0:
-                context_start = max(0, match_pos - 30)
-                context_end = min(len(t), match_pos + len(match) + 30)
-                context = t[context_start:context_end]
-                
-                # ข้ามถ้าอยู่ใกล้ REG
-                if re.search(r'\b(REG|REGNO|FEG|GEG|RSG|RGS)\b', context[:match_pos - context_start + 10]):
-                    continue
+    for match in matches_with_letter:
+        match_pos = t.find(match)
+        if match_pos >= 0:
+            context_start = max(0, match_pos - 30)
+            context_end = min(len(t), match_pos + len(match) + 30)
+            context = t[context_start:context_end]
             
-            # ตรวจสอบว่าไม่ใช่เลขจากทะเบียน
-            is_derived_from_reg = False
-            if match.isdigit():
-                for n1, n2 in reg_patterns:
-                    combined = n1 + n2
-                    if match == combined or (match.startswith(n1) and match.endswith(n2)):
-                        is_derived_from_reg = True
-                        break
+            # ข้ามถ้าอยู่ใกล้ REG
+            if re.search(r'\b(REG|REGNO|FEG|GEG|RSG|RGS)\b', context[:match_pos - context_start + 10]):
+                continue
+        
+        return normalize_serial(match)
+    
+    # 🎯 Priority 3: หาจาก pattern ตัวเลขอย่างเดียว (แต่ต้องไม่ใช่ zip code)
+    matches_digits = re.findall(fallback_pattern, t)
+    
+    for match in matches_digits:
+        match_pos = t.find(match)
+        if match_pos >= 0:
+            context_start = max(0, match_pos - 50)
+            context_end = min(len(t), match_pos + len(match) + 30)
+            context = t[context_start:context_end]
             
-            if is_derived_from_reg:
+            # ข้ามถ้าอยู่ใกล้ REG
+            if re.search(r'\b(REG|REGNO|FEG|GEG|RSG|RGS)\b', context[:match_pos - context_start + 10]):
                 continue
             
-            # ข้ามตัวเลข 6 หลักที่เป็นแค่ตัวเลข
-            if len(match) >= 5 and match.isdigit() and len(match) == 6:
+            # ข้าม zip code (ใกล้ USA, Nebraska, Lincoln)
+            context_before = t[context_start:match_pos]
+            if re.search(r'\b(USA|NEBRASKA|LINCOLN|INC)\b', context_before):
                 continue
-            
-            return normalize_serial(match)
+        
+        # ตรวจสอบว่าไม่ใช่เลขทะเบียนที่ผสมกัน
+        is_derived_from_reg = False
+        for n1, n2 in reg_patterns:
+            combined = n1 + n2
+            if match == combined or (match.startswith(n1) and match.endswith(n2)):
+                is_derived_from_reg = True
+                break
+        
+        if is_derived_from_reg:
+            continue
+        
+        # ข้ามตัวเลข 5-6 หลักที่เป็นแค่ตัวเลข (น่าจะเป็น zip code)
+        if len(match) in [5, 6] and match.isdigit():
+            continue
+        
+        return normalize_serial(match)
     
     return None
 
@@ -372,7 +402,8 @@ def extract_date(text: str, date_type: str = 'MFG') -> Optional[str]:
     """ดึงวันที่ (MFG หรือ EXP)"""
     t = normalize_ocr_text(text)
     
-    # รูปแบบ: MFG: 01 JAN 2024
+    # 🔧 Fix: หา MFG และ EXP แยกกันชัดเจน
+    # รูปแบบ: MFG: 01 JAN 2024 หรือ EXP: 01 JAN 2024
     pattern = rf'{date_type}\s*[:.#]?\s*(\d{{1,2}})\s+([A-Z]{{2,6}})\s+(\d{{2,4}})'
     match = re.search(pattern, t)
     
@@ -382,22 +413,26 @@ def extract_date(text: str, date_type: str = 'MFG') -> Optional[str]:
         year = match.group(3)
         return format_date(day, month, year)
     
-    # ถ้าไม่เจอ ให้หาทั่วไป
+    # 🎯 ถ้าไม่เจอ keyword ให้ใช้ตำแหน่ง (MFG = วันที่แรก, EXP = วันที่หลัง)
+    all_dates = re.findall(r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})', t)
+    
+    if not all_dates:
+        return None
+    
     if date_type == 'MFG':
-        # MFG มักเป็นวันที่แรก
-        matches = re.findall(r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})', t)
-        if matches:
-            day, month, year = matches[0]
-            return format_date(day, month, year)
+        # MFG: ใช้วันที่แรกเสมอ
+        day, month, year = all_dates[0]
+        return format_date(day, month, year)
     else:
-        # EXP มักเป็นวันที่สุดท้าย
-        matches = re.findall(r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})', t)
-        if len(matches) >= 2:
-            day, month, year = matches[1]
-            return format_date(day, month, year)
-        elif matches:
-            day, month, year = matches[-1]
-            return format_date(day, month, year)
+        # EXP: ใช้วันที่หลังสุด (หรือวันที่สองถ้ามี)
+        if len(all_dates) >= 2:
+            # มี 2 วันขึ้นไป → ใช้วันสุดท้าย
+            day, month, year = all_dates[-1]
+        else:
+            # มีแค่วันเดียว → ใช้อันเดียวกัน
+            day, month, year = all_dates[0]
+        
+        return format_date(day, month, year)
     
     return None
 
