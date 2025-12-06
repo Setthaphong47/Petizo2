@@ -15,7 +15,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v7"  # v7: Use python3 -m pip instead of pip3 (Nixpacks compatibility)
+INSTALL_VERSION="v8"  # v8: Bootstrap pip via ensurepip before installing packages
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -49,6 +49,12 @@ mkdir -p "$TMPDIR" || echo "⚠️  Warning: Could not create tmp directory"
 if [ ! -f "$INSTALL_MARKER" ]; then
   echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
   echo "   Target: $PYTHON_PACKAGES"
+
+  # Bootstrap pip if not available
+  if ! python3 -m pip --version &> /dev/null; then
+    echo "   Installing pip module via ensurepip..."
+    python3 -m ensurepip --default-pip 2>&1 || echo "   (ensurepip not available, trying to continue...)"
+  fi
 
   # Install PyTorch CPU-only WITH dependencies (filelock, fsspec, jinja2, sympy, numpy 1.26.3, etc.)
   # Using --index-url ensures we get CPU version from PyTorch's CPU-only index
