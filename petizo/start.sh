@@ -15,7 +15,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v5"  # v5: Install PyTorch WITH deps, others WITHOUT deps to prevent GPU torch
+INSTALL_VERSION="v6"  # v6: Remove NumPy 2.0 install, let PyTorch install numpy 1.26.3 (no libstdc++ issue)
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -50,24 +50,10 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
   echo "   Target: $PYTHON_PACKAGES"
 
-  # CRITICAL: Install NumPy 2.0+ FIRST (before PyTorch)
-  # This ensures we get a version compiled with zlib1g support
-  echo "   Installing NumPy 2.0+ with zlib support..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" "numpy>=2.0.0,<3.0.0"
-  NUMPY_EXIT=$?
-  
-  if [ $NUMPY_EXIT -ne 0 ]; then
-    echo "❌ Failed to install NumPy (exit code: $NUMPY_EXIT)"
-    exit 1
-  fi
-  
-  # Verify NumPy installation
-  echo "   Verifying NumPy installation..."
-  python3 -c "import sys; sys.path.insert(0, '$PYTHON_PACKAGES'); import numpy; print(f'NumPy {numpy.__version__} installed successfully')"
-  
-  # Install PyTorch CPU-only WITH dependencies (filelock, fsspec, jinja2, sympy, etc.)
+  # Install PyTorch CPU-only WITH dependencies (filelock, fsspec, jinja2, sympy, numpy 1.26.3, etc.)
   # Using --index-url ensures we get CPU version from PyTorch's CPU-only index
-  echo "   Installing PyTorch CPU-only with dependencies..."
+  # PyTorch will install numpy 1.26.3 (not 2.0+) which doesn't have libstdc++ issues
+  echo "   Installing PyTorch CPU-only with dependencies (including numpy 1.26.3)..."
   pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
     torch torchvision --index-url https://download.pytorch.org/whl/cpu
   PYTORCH_EXIT=$?
@@ -77,7 +63,7 @@ if [ ! -f "$INSTALL_MARKER" ]; then
     exit 1
   fi
 
-  echo "   ✅ PyTorch CPU installed successfully with all dependencies"
+  echo "   ✅ PyTorch CPU + numpy 1.26.3 installed successfully (no libstdc++ issues)"
 
   # Install other basic packages WITHOUT dependencies (to prevent pulling torch GPU)
   echo "   Installing basic OCR packages (opencv, pillow, pytesseract)..."
