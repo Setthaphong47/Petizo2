@@ -1,5 +1,7 @@
 # 🚂 Railway Setup Guide - Petizo
 
+**Last Updated:** December 7, 2025
+
 ## ⚠️ ปัญหาที่พบ
 
 1. ❌ **Login ไม่ได้** - Environment variables ยังไม่ได้ตั้งค่า
