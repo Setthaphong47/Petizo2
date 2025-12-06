@@ -8,9 +8,6 @@ echo "🚀 Starting Petizo server with OCR support..."
 export PYTHON_PACKAGES="/app/petizo/data/python_packages"
 export PYTHONPATH="$PYTHON_PACKAGES:$PYTHONPATH"
 
-# Set library path for NumPy and other C-extensions to find system libraries (zlib, etc.)
-export LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:/usr/lib:$LD_LIBRARY_PATH"
-
 # Set environment variables for EasyOCR and OpenCV
 export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
 export OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
@@ -18,7 +15,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v10"  # v10: Add LD_LIBRARY_PATH for NumPy to find zlib (libz.so.1)
+INSTALL_VERSION="v11"  # v11: Remove LD_LIBRARY_PATH (caused GLIBC conflict), rely on Nix libraries
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
