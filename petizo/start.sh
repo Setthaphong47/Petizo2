@@ -20,6 +20,10 @@ mkdir -p "$PYTHON_PACKAGES"
 # Check if Python packages are installed
 INSTALL_MARKER="$PYTHON_PACKAGES/.installed"
 
+# Force reinstall to clear corrupted packages from OOM
+rm -rf "$PYTHON_PACKAGES"
+rm -f "$INSTALL_MARKER"
+
 if [ ! -f "$INSTALL_MARKER" ]; then
   echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
   echo "   Target: $PYTHON_PACKAGES"
