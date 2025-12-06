@@ -8,19 +8,26 @@ import sys
 import os
 import json
 
-# Debug: แสดง sys.path และตรวจสอบว่า cv2 อยู่ที่ไหน
+# Debug: แสดง sys.path และตรวจสอบว่า numpy และ cv2 อยู่ที่ไหน
 print("🔍 DEBUG: Python sys.path in scan.py:", file=sys.stderr)
 for p in sys.path[:5]:
     print(f"   - {p}", file=sys.stderr)
     
-print("🔍 DEBUG: Looking for cv2...", file=sys.stderr)
+print("🔍 DEBUG: Looking for numpy and cv2...", file=sys.stderr)
 nix_site_packages = "/nix/store/jf0ipsi53apm3891hb4f05f0lc4k0qam-python3-3.9.18/lib/python3.9/site-packages"
 if os.path.exists(nix_site_packages):
+    numpy_path = os.path.join(nix_site_packages, "numpy")
     cv2_path = os.path.join(nix_site_packages, "cv2")
+    print(f"🔍 DEBUG: numpy exists at {numpy_path}? {os.path.exists(numpy_path)}", file=sys.stderr)
     print(f"🔍 DEBUG: cv2 exists at {cv2_path}? {os.path.exists(cv2_path)}", file=sys.stderr)
-    if os.path.exists(cv2_path):
-        files = os.listdir(cv2_path)[:5]
-        print(f"🔍 DEBUG: cv2 contents: {files}", file=sys.stderr)
+    
+    # Check in Volume packages too
+    volume_packages = "/app/petizo/data/python_packages"
+    if os.path.exists(volume_packages):
+        volume_numpy = os.path.join(volume_packages, "numpy")
+        volume_cv2 = os.path.join(volume_packages, "cv2")
+        print(f"🔍 DEBUG: numpy in Volume? {os.path.exists(volume_numpy)}", file=sys.stderr)
+        print(f"🔍 DEBUG: cv2 in Volume? {os.path.exists(volume_cv2)}", file=sys.stderr)
 else:
     print(f"🔍 DEBUG: Nix site-packages does not exist", file=sys.stderr)
 
