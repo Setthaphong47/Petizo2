@@ -47,6 +47,9 @@ RUN pip3 install --no-cache-dir \
 # Copy application code
 COPY petizo/ ./
 
+# Copy database with existing data (will be used as template)
+COPY petizo/data/petizo.db ./data/petizo.db.template
+
 # สร้าง directories สำหรับ data และ uploads
 RUN mkdir -p data/uploads data/easyocr_models data/tmp
 
@@ -68,5 +71,5 @@ ENV NODE_ENV=production \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start command - init database ก่อนเริ่ม server
-CMD ["sh", "-c", "node scripts/setup/init-database.js && node server.js"]
+# Start command - ใช้ database template ถ้ายังไม่มี database ใน volume
+CMD ["sh", "-c", "if [ ! -f data/petizo.db ]; then cp data/petizo.db.template data/petizo.db; fi && node server.js"]

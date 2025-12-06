@@ -9,7 +9,8 @@ README.md
 .vscode
 .idea
 *.log
-petizo/data/petizo.db
+# Allow petizo.db to be copied to Docker image
+# petizo/data/petizo.db
 petizo/data/uploads/*
 petizo/data/python_packages
 petizo/data/easyocr_models
