@@ -1,16 +1,42 @@
 #!/bin/sh
 # Startup script for Railway deployment with OCR support
-# Python packages are installed during build phase (see nixpacks.toml)
+# Python packages installed to Volume (persist across deployments)
 
 echo "🚀 Starting Petizo server with OCR support..."
+
+# Set Python packages path in Volume
+export PYTHON_PACKAGES="/app/petizo/data/python_packages"
+export PYTHONPATH="$PYTHON_PACKAGES:$PYTHONPATH"
 
 # Set environment variables for EasyOCR and OpenCV
 export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
 export OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
 export PYTHONUNBUFFERED=1
 
-# Create necessary directories in Volume for EasyOCR models
+# Create necessary directories in Volume
 mkdir -p /app/petizo/data/easyocr_models
+mkdir -p "$PYTHON_PACKAGES"
+
+# Check if Python packages are installed
+INSTALL_MARKER="$PYTHON_PACKAGES/.installed"
+
+if [ ! -f "$INSTALL_MARKER" ]; then
+  echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
+  echo "   Target: $PYTHON_PACKAGES"
+
+  # Install to Volume using --target
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" -r ocr_system/requirements.txt
+
+  if [ $? -eq 0 ]; then
+    touch "$INSTALL_MARKER"
+    echo "✅ Python packages installed successfully!"
+  else
+    echo "❌ Failed to install Python packages"
+    exit 1
+  fi
+else
+  echo "✅ Python packages already installed (using Volume cache)"
+fi
 
 # Start the Node.js server
 echo "🌐 Starting Node.js server..."

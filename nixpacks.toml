@@ -8,11 +8,9 @@ aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'li
 cmds = ['cd petizo && npm install']
 
 [phases.build]
-# ติดตั้ง Python packages ตอน build (ไม่มี timeout เพราะ Nixpacks เร็ว)
-# ไม่ upgrade pip เพราะหลัง upgrade แล้ว pip3 จะหายจาก PATH
-cmds = [
-  'cd petizo/ocr_system && pip3 install --break-system-packages -r requirements.txt'
-]
+# ไม่ติดตั้ง Python packages ตอน build (ทำให้ image ใหญ่เกิน 13GB > 4GB limit)
+# จะติดตั้งตอน runtime ใน Volume แทน (ครั้งเดียว แล้วเก็บใน Volume)
+cmds = []
 
 [start]
 # เริ่ม server จากโฟลเดอร์ petizo - start.sh จะติดตั้ง Python packages ถ้ายังไม่มี
