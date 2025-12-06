@@ -63,6 +63,16 @@ def scan_vaccine_label(image_path: str) -> dict:
     if image is None:
         raise ValueError(f'Cannot load image: {image_path}')
     
+    # 🚀 Optimization: Resize ภาพให้เล็กลงก่อน (max width 1000px)
+    height, width = image.shape[:2]
+    max_width = 1000
+    if width > max_width:
+        scale_factor = max_width / width
+        new_width = max_width
+        new_height = int(height * scale_factor)
+        image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        print(f'[OCR] Resized image: {width}x{height} -> {new_width}x{new_height} ({scale_factor:.2f}x)', file=sys.stderr)
+    
     # แบ่งรูปภาพ
     print('[OCR] Splitting image...', file=sys.stderr)
     left, right = split_image_left_right(image)
@@ -70,7 +80,7 @@ def scan_vaccine_label(image_path: str) -> dict:
     # ประมวลผลภาพ
     print('[OCR] Preprocessing regions...', file=sys.stderr)
     left_processed = preprocess_left_region(left, scale=2)
-    right_processed = preprocess_right_region(right, scale=7)
+    right_processed = preprocess_right_region(right, scale=2)  # ลดจาก 7 -> 2
     
     # 🔍 Debug: บันทึกภาพที่ประมวลผลแล้ว
     debug_dir = os.path.dirname(image_path)

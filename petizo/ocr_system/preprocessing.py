@@ -72,11 +72,11 @@ def preprocess_left_region(image: np.ndarray, scale: int = 2) -> np.ndarray:
     return denoised
 
 
-def preprocess_right_region(image: np.ndarray, scale: int = 7) -> np.ndarray:
+def preprocess_right_region(image: np.ndarray, scale: int = 2) -> np.ndarray:
     """ประมวลผลภาพด้านขวา (Serial number, dates)"""
     height, width = image.shape[:2]
     
-    # ขยายภาพ
+    # ขยายภาพ (ลด default scale จาก 7->2 เพื่อเร็วขึ้น)
     scaled = cv2.resize(image, (width*scale, height*scale), 
                        interpolation=cv2.INTER_CUBIC)
     
