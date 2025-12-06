@@ -15,7 +15,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v8"  # v8: Bootstrap pip via ensurepip before installing packages
+INSTALL_VERSION="v9"  # v9: Install pip via get-pip.py (ensurepip blocked by Nix PEP 668)
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -50,10 +50,13 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
   echo "   Target: $PYTHON_PACKAGES"
 
-  # Bootstrap pip if not available
+  # Bootstrap pip if not available (using get-pip.py because ensurepip is blocked by Nix)
   if ! python3 -m pip --version &> /dev/null; then
-    echo "   Installing pip module via ensurepip..."
-    python3 -m ensurepip --default-pip 2>&1 || echo "   (ensurepip not available, trying to continue...)"
+    echo "   Installing pip module via get-pip.py..."
+    curl -sSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+    python3 /tmp/get-pip.py --break-system-packages --target="$PYTHON_PACKAGES" --no-warn-script-location
+    rm -f /tmp/get-pip.py
+    echo "   ✅ pip installed successfully"
   fi
 
   # Install PyTorch CPU-only WITH dependencies (filelock, fsspec, jinja2, sympy, numpy 1.26.3, etc.)
