@@ -700,21 +700,19 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req,
     console.log(`[OCR API] PYTHONPATH in Node.js: ${process.env.PYTHONPATH}`);
 
     // เรียก Python script พร้อมส่ง PYTHONPATH และ LD_LIBRARY_PATH
+    // ใช้ shell: true เพื่อให้ environment variables ทำงานถูกต้อง
     const { spawn } = require('child_process');
     const pythonEnv = {
         ...process.env,
+        PYTHONPATH: process.env.PYTHONPATH || '',
         LD_LIBRARY_PATH: '/root/.nix-profile/lib:' + (process.env.LD_LIBRARY_PATH || '')
     };
-    
-    // ให้แน่ใจว่า PYTHONPATH ถูกส่งไป (ถ้ามีค่าใน process.env)
-    if (process.env.PYTHONPATH) {
-        pythonEnv.PYTHONPATH = process.env.PYTHONPATH;
-    }
     
     console.log(`[OCR API] PYTHONPATH passed to Python: ${pythonEnv.PYTHONPATH}`);
     
     const python = spawn(pythonCmd, [pythonScript, imagePath], {
-        env: pythonEnv
+        env: pythonEnv,
+        shell: true
     });
 
     // ตั้ง timeout 120 วินาที (เพิ่มเป็น 2 นาทีสำหรับ download models ครั้งแรก)
