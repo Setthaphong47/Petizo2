@@ -25,7 +25,7 @@ export CUDA_VISIBLE_DEVICES=""
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v19"  # v19: Add packaging module for pytesseract
+INSTALL_VERSION="v20"  # v20: Install PyTorch CPU-only from PyTorch CPU index
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -69,10 +69,10 @@ if [ ! -f "$INSTALL_MARKER" ]; then
     echo "   ✅ pip installed successfully"
   fi
 
-  # Install PyTorch CPU-only WITHOUT numpy (NumPy มาจาก Nix แล้ว)
-  # Note: torch จะพยายามติดตั้ง numpy ถ้าไม่มี แต่เราบังคับให้ใช้ Nix's numpy
-  echo "   Installing PyTorch CPU-only (without numpy, using Nix's numpy)..."
+  # Install PyTorch CPU-only with explicit CPU index URL (no CUDA)
+  echo "   Installing PyTorch CPU-only (from PyTorch CPU index)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
+    --index-url https://download.pytorch.org/whl/cpu \
     torch torchvision
 
   # Install PyTorch dependencies (ยกเว้น numpy)
