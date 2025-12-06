@@ -72,10 +72,28 @@ def scan_vaccine_label(image_path: str) -> dict:
     left_processed = preprocess_left_region(left, scale=2)
     right_processed = preprocess_right_region(right, scale=7)
     
+    # 🔍 Debug: บันทึกภาพที่ประมวลผลแล้ว
+    debug_dir = os.path.dirname(image_path)
+    timestamp = int(time.time() * 1000)
+    try:
+        cv2.imwrite(os.path.join(debug_dir, f'debug_left_{timestamp}.png'), left_processed)
+        cv2.imwrite(os.path.join(debug_dir, f'debug_right_{timestamp}.png'), right_processed)
+        print(f'[DEBUG] Saved preprocessed images to: {debug_dir}/', file=sys.stderr)
+        print(f'  - debug_left_{timestamp}.png', file=sys.stderr)
+        print(f'  - debug_right_{timestamp}.png', file=sys.stderr)
+    except Exception as e:
+        print(f'[DEBUG] Could not save debug images: {e}', file=sys.stderr)
+    
     # === HYBRID ONLY (เร็วที่สุด) ===
     print('\n[HYBRID] Running Hybrid OCR (Tesseract + EasyOCR)...', file=sys.stderr)
     start_time = time.time()
     hybrid_results = ocr_hybrid(left_processed, right_processed)
+    
+    # 🔍 Debug: แสดงข้อความที่อ่านได้ (RAW)
+    print('\n[DEBUG] RAW OCR Text:', file=sys.stderr)
+    print(f'  Left (Tesseract):\n    {hybrid_results["left_text"]}', file=sys.stderr)
+    print(f'  Right (EasyOCR):\n    {hybrid_results["right_text"]}\n', file=sys.stderr)
+    
     hybrid_data = extract_vaccine_data(
         hybrid_results['left_text'],
         hybrid_results['right_text']
