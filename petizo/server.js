@@ -1498,6 +1498,46 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Debug endpoint - ตรวจสอบข้อมูลใน database
+app.get('/api/debug/db-info', (req, res) => {
+    const info = {
+        dbStructure: DB_STRUCTURE,
+        tables: [],
+        counts: {},
+        files: {
+            dbExists: fs.existsSync('./data/petizo.db'),
+            templateExists: fs.existsSync('./data/petizo.db.template')
+        }
+    };
+    
+    db.all("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name", (err, tables) => {
+        if (err) {
+            return res.status(500).json({ error: err.message, info });
+        }
+        
+        info.tables = tables.map(t => t.name);
+        
+        const countQueries = [
+            { table: 'admins', query: 'SELECT COUNT(*) as count FROM admins' },
+            { table: 'members', query: 'SELECT COUNT(*) as count FROM members' },
+            { table: 'blogs', query: 'SELECT COUNT(*) as count FROM blogs' },
+            { table: 'pets', query: 'SELECT COUNT(*) as count FROM pets' }
+        ];
+        
+        let completed = 0;
+        countQueries.forEach(({table, query}) => {
+            db.get(query, (err, row) => {
+                info.counts[table] = (!err && row) ? row.count : 'N/A';
+                completed++;
+                
+                if (completed === countQueries.length) {
+                    res.json(info);
+                }
+            });
+        });
+    });
+});
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     if (err instanceof multer.MulterError) {
