@@ -24,8 +24,9 @@ if [ ! -f "$CACHE_MARKER" ]; then
   echo "   - numpy, Pillow"
 
   # Install Python packages with cache in Volume
-  pip3 install --cache-dir=/app/petizo/data/pip_cache --upgrade pip
-  pip3 install --cache-dir=/app/petizo/data/pip_cache -r ocr_system/requirements.txt
+  # ใช้ --break-system-packages เพราะ Nixpacks ใช้ Nix-managed Python
+  pip3 install --break-system-packages --cache-dir=/app/petizo/data/pip_cache --upgrade pip
+  pip3 install --break-system-packages --cache-dir=/app/petizo/data/pip_cache -r ocr_system/requirements.txt
 
   if [ $? -eq 0 ]; then
     # Mark as installed
