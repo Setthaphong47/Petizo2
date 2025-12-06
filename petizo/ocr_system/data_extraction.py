@@ -104,6 +104,9 @@ def extract_registration_number(text: str) -> Optional[str]:
     t = t.replace('GEG', 'REG').replace('FEG', 'REG')
     t = t.replace('RO.', 'NO.').replace('R O', 'NO')
     
+    # 🔧 Fix: แปลง comma เป็น slash (เช่น 2,56 → 2/56)
+    t = re.sub(r'(\d{1,3}),(\d{1,3})', r'\1/\2', t)
+    
     # หารูปแบบเศษส่วน (111/222)
     m_frac = re.search(r'([0-9]{1,3}/[0-9]{1,3})', t)
     
@@ -397,13 +400,33 @@ def extract_serial_number(text: str) -> Optional[str]:
 
 
 def normalize_serial(raw: str) -> str:
-    """แปลง Serial Number ให้ถูกต้อง"""
+    """แปลง Serial Number ให้ถูกต้อง - Smart normalization"""
     if not raw:
         return raw
     
     s = re.sub(r'[^A-Z0-9]', '', raw.upper())
     if not s:
         return raw
+    
+    # 🔧 Fix: Pattern 1 - Letter prefix (S81525)
+    # รูปแบบ: [A-Z]\d{5,6} เช่น S81525, S81S25 → S81525
+    letter_prefix_pattern = re.match(r'^([A-Z])(\d{2})([A-Z0-9])(\d{2,3})$', s)
+    if letter_prefix_pattern:
+        # ตรวจสอบว่าตัวที่ 3 เป็น S หรือไม่ (S81S25 → S81525)
+        prefix = letter_prefix_pattern.group(1)
+        first_two = letter_prefix_pattern.group(2)
+        middle = letter_prefix_pattern.group(3)
+        last_part = letter_prefix_pattern.group(4)
+        
+        # แปลง S → 5, O → 0 ในตำแหน่งกลาง
+        if middle == 'S':
+            middle = '5'
+        elif middle == 'O':
+            middle = '0'
+        elif middle == 'I':
+            middle = '1'
+        
+        return f"{prefix}{first_two}{middle}{last_part}"
     
     # ตรวจสอบรูปแบบมาตรฐาน: ตัวเลข 5-7 หลัก + ตัวอักษร 0-2 ตัว
     serial_pattern = re.match(r'^(\d{5,7})([A-Z]{0,2})$', s)
@@ -449,17 +472,24 @@ def extract_date(text: str, date_type: str = 'MFG') -> Optional[str]:
             year = match.group(3)
             return format_date(day, month, year)
     
-    # 🔧 Pattern 2: หา date ที่มี noise characters (เช่น %7 DEC 0, 7 DEC 20)
-    # รองรับ: 17 DEC 20, %7 DEC %0, 13 JUN 23
+    # 🔧 Pattern 2: หา date ที่มี noise characters (เช่น %7 DEC 0, 7 DEC 20, nhuqi? SEP 23)
+    # รองรับ: 17 DEC 20, %7 DEC %0, 13 JUN 23, nhuqi? SEP 23 (กรณีไม่มีเลขวันที่ชัด)
     noisy_pattern = r'[^A-Z0-9]?(\d{1,2})\s+([A-Z]{2,6})\s+[^A-Z0-9]?(\d{2,4})'
     all_dates_noisy = re.findall(noisy_pattern, t)
+    
+    # 🔧 Pattern 2b: หา date ที่มี noise มาก จนไม่มีเลขวันที่ชัดเจน (เช่น nhuqi? SEP 23)
+    # รองรับ: nhuqi? SEP 23, ???? SEP 23, %SEP 23 (ไม่มีเลขวันชัดเจน แต่มีเดือนและปี)
+    very_noisy_pattern = r'[A-Z]*[^A-Z0-9]*\s*([A-Z]{3,6})\s+(\d{2,4})'
+    very_noisy_dates = re.findall(very_noisy_pattern, t)
+    # แปลงให้อยู่ในรูปแบบเดียวกับ all_dates (day, month, year) โดยกำหนดวันที่เป็น "12" (กลางเดือน)
+    very_noisy_dates_formatted = [("12", month, year) for month, year in very_noisy_dates if len(month) in [3, 4]]
     
     # 🔧 Pattern 3: หา date มาตรฐาน (เช่น 01 JAN 2024)
     standard_pattern = r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})'
     all_dates_standard = re.findall(standard_pattern, t)
     
-    # รวม dates ทั้งหมด (ไม่ซ้ำ)
-    all_dates = list(dict.fromkeys(all_dates_noisy + all_dates_standard))
+    # รวม dates ทั้งหมด (ไม่ซ้ำ) โดยให้ความสำคัญ: standard > noisy > very_noisy
+    all_dates = list(dict.fromkeys(all_dates_standard + all_dates_noisy + very_noisy_dates_formatted))
     
     if not all_dates:
         return None
