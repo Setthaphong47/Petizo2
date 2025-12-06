@@ -702,15 +702,23 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req,
     const { spawn } = require('child_process');
     const python = spawn(pythonCmd, [pythonScript, imagePath]);
 
-    // ตั้ง timeout 30 วินาที
+    // ตั้ง timeout 120 วินาที (เพิ่มเป็น 2 นาทีสำหรับ download models ครั้งแรก)
+    let isTimeout = false;
+    let isResponseSent = false;
+    
     const timeout = setTimeout(() => {
-        python.kill();
-        console.error('[OCR API] Process timeout after 30s');
-        res.status(504).json({
-            error: 'OCR processing timeout',
-            message: 'กรุณาลองใหม่อีกครั้งหรือกรอกข้อมูลด้วยตนเอง'
-        });
-    }, 30000);
+        isTimeout = true;
+        python.kill('SIGTERM');
+        console.error('[OCR API] Process timeout after 120s');
+        
+        if (!isResponseSent) {
+            isResponseSent = true;
+            res.status(504).json({
+                error: 'OCR processing timeout',
+                message: 'กรุณาลองใหม่อีกครั้งหรือกรอกข้อมูลด้วยตนเอง'
+            });
+        }
+    }, 120000); // เพิ่มเป็น 120 วินาที
     
     let stdout = '';
     let stderr = '';
@@ -728,6 +736,14 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req,
     python.on('close', (code) => {
         clearTimeout(timeout);
         console.log(`[OCR API] Python process exited with code ${code}`);
+        
+        // ถ้า timeout แล้วไม่ต้องส่ง response อีก
+        if (isTimeout || isResponseSent) {
+            console.log('[OCR API] Response already sent, skipping');
+            return;
+        }
+        
+        isResponseSent = true;
         
         if (code !== 0) {
             console.error(`[OCR API] Python script failed with code ${code}`);
