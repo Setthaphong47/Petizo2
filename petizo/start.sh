@@ -20,6 +20,9 @@ export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
 export OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
 export PYTHONUNBUFFERED=1
 
+# Force PyTorch to use CPU only (no CUDA)
+export CUDA_VISIBLE_DEVICES=""
+
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
 INSTALL_VERSION="v19"  # v19: Add packaging module for pytesseract
