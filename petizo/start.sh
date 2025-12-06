@@ -8,17 +8,12 @@ echo "🚀 Starting Petizo server with OCR support..."
 # Set Python packages path in Volume
 export PYTHON_PACKAGES="/app/petizo/data/python_packages"
 
-# Get Nix Python's site-packages path dynamically
-NIX_PYTHON_SITE_PACKAGES=$(python3 -c "import sys; import os; print(os.path.join(sys.base_prefix, 'lib', 'python' + sys.version[:3], 'site-packages'))" 2>/dev/null || echo "")
+# Add Volume packages to PYTHONPATH (ทุกอย่างติดตั้งผ่าน pip แล้ว)
+export PYTHONPATH="$PYTHON_PACKAGES:$PYTHONPATH"
 
-# Add both Nix site-packages AND Volume packages to PYTHONPATH
-# Order: Nix packages FIRST (numpy, pillow), then Volume packages (torch, easyocr, opencv)
-export PYTHONPATH="$NIX_PYTHON_SITE_PACKAGES:$PYTHON_PACKAGES:$PYTHONPATH"
-
-# Debug: Show Python path to verify cv2 is accessible
+# Debug: Show Python path to verify packages are accessible
 echo "📍 PYTHON_PACKAGES: $PYTHON_PACKAGES"
-echo "📍 NIX_PYTHON_SITE_PACKAGES: $NIX_PYTHON_SITE_PACKAGES"
-python3 -c "import sys; print('📍 Python sys.path:'); [print('   -', p) for p in sys.path[:7]]" 2>/dev/null || echo "⚠️  Warning: Could not get Python path"
+python3 -c "import sys; print('📍 Python sys.path:'); [print('   -', p) for p in sys.path[:5]]" 2>/dev/null || echo "⚠️  Warning: Could not get Python path"
 
 # Set environment variables for EasyOCR and OpenCV
 export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
@@ -27,7 +22,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v17"  # v17: Fix PYTHONPATH order - Nix packages first for numpy
+INSTALL_VERSION="v18"  # v18: Install numpy via pip (Nix numpy not working)
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -89,21 +84,28 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   fi
   echo "   ✅ PyTorch CPU installed (using Nix's NumPy)"
 
-  # Install pytesseract only (NumPy, Pillow มาจาก Nix แล้ว)
-  echo "   Installing pytesseract (NumPy, Pillow from Nix)..."
+  # Install pytesseract, numpy, pillow, opencv via pip
+  echo "   Installing numpy via pip..."
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" \
+    numpy>=1.24.0
+
+  echo "   Installing pillow via pip..."
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" \
+    pillow>=10.0.0
+
+  echo "   Installing pytesseract..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     pytesseract>=0.3.10
 
-  # Install OpenCV via pip (เพราะ Nix opencv4 ไม่มี Python bindings)
   echo "   Installing opencv-python-headless (no GUI dependencies)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     opencv-python-headless>=4.8.0
 
   # Install EasyOCR WITHOUT dependencies
-  echo "   Installing EasyOCR (without torch/numpy/opencv dependencies)..."
+  echo "   Installing EasyOCR (without torch/numpy/opencv/pillow dependencies)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps easyocr>=1.7.0
 
-  # Install EasyOCR's other dependencies (ยกเว้น numpy, pillow, opencv - มาจาก Nix และ pip แล้ว)
+  # Install EasyOCR's other dependencies (ยกเว้น numpy, pillow, opencv - ติดตั้งแล้ว)
   echo "   Installing EasyOCR dependencies (scipy, scikit-image, etc.)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     scipy scikit-image python-bidi PyYAML Shapely pyclipper ninja

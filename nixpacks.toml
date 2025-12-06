@@ -1,12 +1,10 @@
 [phases.setup]
 # ติดตั้ง Node.js 20, Python 3.9, Tesseract OCR
-# NumPy + Pillow จาก Nix, OpenCV จาก pip (เพราะ python39Packages.opencv4 ไม่มี Python bindings)
+# NumPy, OpenCV, Pillow จาก pip (Nix packages ไม่ work)
 nixPkgs = [
   'nodejs_20',
   'python39',
   'python39Packages.pip',
-  'python39Packages.numpy',
-  'python39Packages.pillow',
   'tesseract',
   'zlib'
 ]
