@@ -10,8 +10,8 @@ cmds = ['cd petizo && npm install']
 [phases.build]
 # ติดตั้ง Python packages ตอน build (ไม่มี timeout เพราะ Nixpacks เร็ว)
 cmds = [
-  'cd petizo/ocr_system && python3 -m pip install --break-system-packages --upgrade pip',
-  'cd petizo/ocr_system && python3 -m pip install --break-system-packages -r requirements.txt'
+  'cd petizo/ocr_system && pip3 install --break-system-packages --upgrade pip',
+  'cd petizo/ocr_system && pip3 install --break-system-packages -r requirements.txt'
 ]
 
 [start]
