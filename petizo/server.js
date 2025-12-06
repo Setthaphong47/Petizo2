@@ -1499,11 +1499,11 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('🐾 Petizo Server (Backward Compatible)');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log(` URL: http://localhost:${PORT}`);
+    console.log(` URL: http://0.0.0.0:${PORT}`);
     console.log(` DB Structure: ${DB_STRUCTURE.toUpperCase()}`);
     console.log('\n 🔐 Login:');
     console.log('   Admin: admin@petizo.com / admin123');
