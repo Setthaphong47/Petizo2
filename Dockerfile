@@ -45,11 +45,8 @@ RUN pip3 install --no-cache-dir \
     Pillow==10.0.0 && \
     rm -rf /root/.cache/pip
 
-# Copy application code (รวม database)
+# Copy application code
 COPY petizo/ ./
-
-# Backup database to safe location (outside volume mount point)
-RUN cp data/petizo.db /tmp/petizo.db.initial
 
 # สร้าง directories สำหรับ data และ uploads
 RUN mkdir -p data/uploads data/easyocr_models data/tmp
@@ -72,5 +69,5 @@ ENV NODE_ENV=production \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start command - restore initial database if not exists in volume
-CMD ["sh", "-c", "if [ ! -f data/petizo.db ]; then cp /tmp/petizo.db.initial data/petizo.db && echo '✅ Restored initial database with data'; fi && node server.js"]
+# Start command - init database และ seed data ถ้ายังไม่มี
+CMD ["sh", "-c", "if [ ! -f data/petizo.db ]; then echo '🔧 Initializing database...'; node scripts/setup/init-database.js && node scripts/setup/seed-data.js; fi && node server.js"]
