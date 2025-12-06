@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  petizo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=your-secret-key-change-this
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - PORT=3000
+    volumes:
+      # Mount data directory เพื่อเก็บ database และ uploads
+      - petizo-data:/app/data
+    # จำกัด memory สำหรับ test (ปรับได้)
+    mem_limit: 4g
+    mem_reservation: 2g
+    restart: unless-stopped
+
+volumes:
+  petizo-data:
+    driver: local

@@ -31,7 +31,8 @@
       "Bash(done)",
       "Bash(timeout 15 railway logs:*)",
       "Bash(for i in 1 2 3 4 5 6 7 8 9 10 11 12)",
-      "Bash(do sleep 15)"
+      "Bash(do sleep 15)",
+      "Bash(timeout 30 railway logs:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,5 +1,20 @@
-numpy>=2.0.0,<3.0.0
-opencv-python-headless>=4.8.0
-pytesseract>=0.3.10
-easyocr>=1.7.0
-Pillow>=10.0.0
+# Optimized for Railway 5GB RAM
+# ใช้ CPU-only versions เพื่อประหยัด memory
+
+# NumPy - ใช้ version ที่เสถียร
+numpy>=1.24.0,<2.0.0
+
+# OpenCV - headless version (ไม่มี GUI, เบากว่า)
+opencv-python-headless==4.8.0.76
+
+# Tesseract wrapper
+pytesseract==0.3.10
+
+# EasyOCR - จะใช้ PyTorch CPU-only
+easyocr==1.7.0
+
+# Image processing
+Pillow==10.0.0
+
+# Note: PyTorch CPU-only จะถูกติดตั้งใน Dockerfile
+# เพื่อให้แน่ใจว่าใช้ CPU version (ประหยัด memory มาก)

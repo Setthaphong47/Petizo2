@@ -1496,12 +1496,33 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
     console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log(' Petizo Server (Backward Compatible)');
+    console.log('🐾 Petizo Server (Backward Compatible)');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(` URL: http://localhost:${PORT}`);
     console.log(` DB Structure: ${DB_STRUCTURE.toUpperCase()}`);
-    console.log('\n Login:');
-    console.log('Admin: admin@petizo.com / admin123');
-    console.log('Member: user@petizo.com / user123');
+    console.log('\n 🔐 Login:');
+    console.log('   Admin: admin@petizo.com / admin123');
+    
+    
+    // แสดงข้อมูล Memory Usage
+    const memUsage = process.memoryUsage();
+    console.log('\n 💾 Memory Usage:');
+    console.log(`   RSS: ${(memUsage.rss / 1024 / 1024).toFixed(2)} MB`);
+    console.log(`   Heap Used: ${(memUsage.heapUsed / 1024 / 1024).toFixed(2)} MB`);
+    console.log(`   Heap Total: ${(memUsage.heapTotal / 1024 / 1024).toFixed(2)} MB`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    
+    // Monitor memory ทุก 5 นาที (optional)
+    if (process.env.NODE_ENV === 'production') {
+        setInterval(() => {
+            const mem = process.memoryUsage();
+            const rssGB = (mem.rss / 1024 / 1024 / 1024).toFixed(2);
+            console.log(`[Memory Monitor] RSS: ${rssGB} GB`);
+            
+            // เตือนถ้าใช้ memory เกิน 4GB (เหลือ buffer 1GB)
+            if (mem.rss > 4 * 1024 * 1024 * 1024) {
+                console.warn('⚠️  WARNING: High memory usage detected!');
+            }
+        }, 5 * 60 * 1000);
+    }
 });
