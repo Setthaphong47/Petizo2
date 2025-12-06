@@ -15,7 +15,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v4"  # v4: Add --no-deps to all pip installs to prevent GPU torch download
+INSTALL_VERSION="v5"  # v5: Install PyTorch WITH deps, others WITHOUT deps to prevent GPU torch
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -65,18 +65,19 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   echo "   Verifying NumPy installation..."
   python3 -c "import sys; sys.path.insert(0, '$PYTHON_PACKAGES'); import numpy; print(f'NumPy {numpy.__version__} installed successfully')"
   
-  # Install PyTorch CPU-only (will use existing NumPy 2.0+)
-  echo "   Installing PyTorch CPU-only..."
+  # Install PyTorch CPU-only WITH dependencies (filelock, fsspec, jinja2, sympy, etc.)
+  # Using --index-url ensures we get CPU version from PyTorch's CPU-only index
+  echo "   Installing PyTorch CPU-only with dependencies..."
   pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
-    --no-deps torch torchvision --index-url https://download.pytorch.org/whl/cpu
+    torch torchvision --index-url https://download.pytorch.org/whl/cpu
   PYTORCH_EXIT=$?
-  
+
   if [ $PYTORCH_EXIT -ne 0 ]; then
     echo "❌ Failed to install PyTorch (exit code: $PYTORCH_EXIT)"
     exit 1
   fi
-  
-  echo "   ✅ PyTorch CPU installed successfully (using NumPy 2.0+)"
+
+  echo "   ✅ PyTorch CPU installed successfully with all dependencies"
 
   # Install other basic packages WITHOUT dependencies (to prevent pulling torch GPU)
   echo "   Installing basic OCR packages (opencv, pillow, pytesseract)..."
