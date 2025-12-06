@@ -8,6 +8,10 @@ echo "🚀 Starting Petizo server with OCR support..."
 export PYTHON_PACKAGES="/app/petizo/data/python_packages"
 export PYTHONPATH="$PYTHON_PACKAGES:$PYTHONPATH"
 
+# Use Volume temp directory to avoid cross-device link errors
+export TMPDIR="/app/petizo/data/tmp"
+mkdir -p "$TMPDIR"
+
 # Set environment variables for EasyOCR and OpenCV
 export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
 export OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
