@@ -27,7 +27,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v15"  # v15: Add Nix site-packages to PYTHONPATH to fix cv2 import
+INSTALL_VERSION="v16"  # v16: Install opencv-python via pip instead of Nix
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -89,16 +89,21 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   fi
   echo "   ✅ PyTorch CPU installed (using Nix's NumPy)"
 
-  # Install pytesseract only (NumPy, OpenCV, Pillow มาจาก Nix แล้ว)
-  echo "   Installing pytesseract (NumPy, OpenCV, Pillow from Nix)..."
+  # Install pytesseract only (NumPy, Pillow มาจาก Nix แล้ว)
+  echo "   Installing pytesseract (NumPy, Pillow from Nix)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     pytesseract>=0.3.10
+
+  # Install OpenCV via pip (เพราะ Nix opencv4 ไม่มี Python bindings)
+  echo "   Installing opencv-python-headless (no GUI dependencies)..."
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
+    opencv-python-headless>=4.8.0
 
   # Install EasyOCR WITHOUT dependencies
   echo "   Installing EasyOCR (without torch/numpy/opencv dependencies)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps easyocr>=1.7.0
 
-  # Install EasyOCR's other dependencies (ยกเว้น numpy, pillow, opencv)
+  # Install EasyOCR's other dependencies (ยกเว้น numpy, pillow, opencv - มาจาก Nix และ pip แล้ว)
   echo "   Installing EasyOCR dependencies (scipy, scikit-image, etc.)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     scipy scikit-image python-bidi PyYAML Shapely pyclipper ninja

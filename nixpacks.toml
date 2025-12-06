@@ -1,14 +1,14 @@
 [phases.setup]
-# ติดตั้ง Node.js 20, Python 3.9, Tesseract OCR และ Python packages ที่มี C-extensions จาก Nix
-# NumPy + OpenCV จาก Nix = ไม่มี libz.so.1 error (compile กับ Nix's zlib แล้ว)
+# ติดตั้ง Node.js 20, Python 3.9, Tesseract OCR
+# NumPy + Pillow จาก Nix, OpenCV จาก pip (เพราะ python39Packages.opencv4 ไม่มี Python bindings)
 nixPkgs = [
   'nodejs_20',
   'python39',
   'python39Packages.pip',
   'python39Packages.numpy',
-  'python39Packages.opencv4',
   'python39Packages.pillow',
-  'tesseract'
+  'tesseract',
+  'zlib'
 ]
 aptPkgs = ['libgl1', 'libglib2.0-0']
 
