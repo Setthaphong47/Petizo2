@@ -8,8 +8,11 @@ aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'li
 cmds = ['cd petizo && npm install']
 
 [phases.build]
-# Skip - เราจะติดตั้ง Python packages ตอน runtime แทน (เพื่อหลีกเลี่ยง timeout)
-cmds = []
+# ติดตั้ง Python packages ตอน build (ไม่มี timeout เพราะ Nixpacks เร็ว)
+cmds = [
+  'cd petizo/ocr_system && python3 -m pip install --break-system-packages --upgrade pip',
+  'cd petizo/ocr_system && python3 -m pip install --break-system-packages -r requirements.txt'
+]
 
 [start]
 # เริ่ม server จากโฟลเดอร์ petizo - start.sh จะติดตั้ง Python packages ถ้ายังไม่มี
