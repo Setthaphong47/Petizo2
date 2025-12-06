@@ -16,10 +16,12 @@ export PYTHONUNBUFFERED=1
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
 
-# Force reinstall to clear corrupted packages from OOM
+# Force reinstall to clear corrupted packages (especially NumPy with old zlib)
+echo "🧹 Cleaning old Python packages..."
 rm -rf "$PYTHON_PACKAGES"
 rm -rf /app/petizo/data/tmp
 rm -f "$INSTALL_MARKER"
+echo "✅ Cleanup complete"
 
 # Create necessary directories in Volume AFTER cleanup
 mkdir -p /app/petizo/data/easyocr_models
