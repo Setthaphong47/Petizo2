@@ -25,7 +25,7 @@ export CUDA_VISIBLE_DEVICES=""
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v21"  # v21: Add mpmath dependency for EasyOCR (required by sympy)
+INSTALL_VERSION="v22"  # v22: Add lazy_loader (scikit-image) and MarkupSafe (jinja2)
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -78,7 +78,7 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   # Install PyTorch dependencies (ยกเว้น numpy)
   echo "   Installing PyTorch dependencies (filelock, fsspec, jinja2, etc.)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
-    filelock fsspec jinja2 sympy typing-extensions networkx mpmath
+    filelock fsspec jinja2 MarkupSafe sympy typing-extensions networkx mpmath
 
   PYTORCH_EXIT=$?
   if [ $PYTORCH_EXIT -ne 0 ]; then
@@ -111,7 +111,7 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   # Install EasyOCR's other dependencies (ยกเว้น numpy, pillow, opencv - ติดตั้งแล้ว)
   echo "   Installing EasyOCR dependencies (scipy, scikit-image, etc.)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
-    scipy scikit-image python-bidi PyYAML Shapely pyclipper ninja
+    scipy scikit-image lazy_loader python-bidi PyYAML Shapely pyclipper ninja
 
   PACKAGES_EXIT=$?
 
