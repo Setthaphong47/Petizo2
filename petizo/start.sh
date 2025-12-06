@@ -20,12 +20,15 @@ export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
 export OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
 export PYTHONUNBUFFERED=1
 
+# Set LD_LIBRARY_PATH for libstdc++.so.6 (from Nix stdenv.cc.cc.lib)
+export LD_LIBRARY_PATH="/root/.nix-profile/lib:${LD_LIBRARY_PATH:-}"
+
 # Force PyTorch to use CPU only (no CUDA)
 export CUDA_VISIBLE_DEVICES=""
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v24"  # v24: Pre-download EasyOCR models + increase timeout to 180s
+INSTALL_VERSION="v25"  # v25: Fix LD_LIBRARY_PATH for EasyOCR model download
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
