@@ -1,7 +1,16 @@
 [phases.setup]
-# ติดตั้ง Node.js 20, Python 3.9, และ Tesseract OCR สำหรับ OCR system
-nixPkgs = ['nodejs_20', 'python39', 'python39Packages.pip', 'tesseract']
-aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libgomp1', 'zlib1g']
+# ติดตั้ง Node.js 20, Python 3.9, Tesseract OCR และ Python packages ที่มี C-extensions จาก Nix
+# NumPy + OpenCV จาก Nix = ไม่มี libz.so.1 error (compile กับ Nix's zlib แล้ว)
+nixPkgs = [
+  'nodejs_20',
+  'python39',
+  'python39Packages.pip',
+  'python39Packages.numpy',
+  'python39Packages.opencv4',
+  'python39Packages.pillow',
+  'tesseract'
+]
+aptPkgs = ['libgl1', 'libglib2.0-0']
 
 [phases.install]
 # ติดตั้ง Node.js dependencies ใน petizo folder

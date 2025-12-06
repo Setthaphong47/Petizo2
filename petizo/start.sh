@@ -1,6 +1,7 @@
 #!/bin/sh
 # Startup script for Railway deployment with OCR support
-# Python packages installed to Volume (persist across deployments)
+# NumPy, OpenCV, Pillow จาก Nix (ติดตั้งตอน build)
+# PyTorch, EasyOCR จาก pip (ติดตั้งใน Volume ตอน runtime)
 
 echo "🚀 Starting Petizo server with OCR support..."
 
@@ -15,7 +16,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v11"  # v11: Remove LD_LIBRARY_PATH (caused GLIBC conflict), rely on Nix libraries
+INSTALL_VERSION="v12"  # v12: Use NumPy+OpenCV from Nix, install only PyTorch+EasyOCR via pip
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -59,34 +60,35 @@ if [ ! -f "$INSTALL_MARKER" ]; then
     echo "   ✅ pip installed successfully"
   fi
 
-  # Install PyTorch CPU-only WITH dependencies (filelock, fsspec, jinja2, sympy, numpy 1.26.3, etc.)
-  # Using --index-url ensures we get CPU version from PyTorch's CPU-only index
-  # PyTorch will install numpy 1.26.3 (not 2.0+) which doesn't have libstdc++ issues
-  echo "   Installing PyTorch CPU-only with dependencies (including numpy 1.26.3)..."
-  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" \
-    torch torchvision --index-url https://download.pytorch.org/whl/cpu
-  PYTORCH_EXIT=$?
+  # Install PyTorch CPU-only WITHOUT numpy (NumPy มาจาก Nix แล้ว)
+  # Note: torch จะพยายามติดตั้ง numpy ถ้าไม่มี แต่เราบังคับให้ใช้ Nix's numpy
+  echo "   Installing PyTorch CPU-only (without numpy, using Nix's numpy)..."
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
+    torch torchvision
 
+  # Install PyTorch dependencies (ยกเว้น numpy)
+  echo "   Installing PyTorch dependencies (filelock, fsspec, jinja2, etc.)..."
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
+    filelock fsspec jinja2 sympy typing-extensions networkx
+
+  PYTORCH_EXIT=$?
   if [ $PYTORCH_EXIT -ne 0 ]; then
     echo "❌ Failed to install PyTorch (exit code: $PYTORCH_EXIT)"
     exit 1
   fi
+  echo "   ✅ PyTorch CPU installed (using Nix's NumPy)"
 
-  echo "   ✅ PyTorch CPU + numpy 1.26.3 installed successfully (no libstdc++ issues)"
-
-  # Install other basic packages WITHOUT dependencies (to prevent pulling torch GPU)
-  echo "   Installing basic OCR packages (opencv, pillow, pytesseract)..."
+  # Install pytesseract only (NumPy, OpenCV, Pillow มาจาก Nix แล้ว)
+  echo "   Installing pytesseract (NumPy, OpenCV, Pillow from Nix)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
-    opencv-python-headless>=4.8.0 \
-    pytesseract>=0.3.10 \
-    Pillow>=10.0.0
+    pytesseract>=0.3.10
 
-  # Install EasyOCR WITHOUT dependencies (to avoid re-downloading GPU torch)
-  echo "   Installing EasyOCR (without torch/torchvision dependencies)..."
+  # Install EasyOCR WITHOUT dependencies
+  echo "   Installing EasyOCR (without torch/numpy/opencv dependencies)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps easyocr>=1.7.0
 
-  # Install EasyOCR's other dependencies WITHOUT deps (to prevent pulling torch GPU)
-  echo "   Installing EasyOCR dependencies (without pulling torch)..."
+  # Install EasyOCR's other dependencies (ยกเว้น numpy, pillow, opencv)
+  echo "   Installing EasyOCR dependencies (scipy, scikit-image, etc.)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     scipy scikit-image python-bidi PyYAML Shapely pyclipper ninja
 
