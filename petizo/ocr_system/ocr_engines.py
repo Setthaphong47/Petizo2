@@ -10,9 +10,11 @@ try:
     import easyocr
     EASYOCR_AVAILABLE = True
     _reader = None
-except ImportError:
+    print('[EasyOCR] Import successful', file=sys.stderr)
+except ImportError as e:
     EASYOCR_AVAILABLE = False
     _reader = None
+    print(f'[EasyOCR] Import failed: {e}', file=sys.stderr)
 
 
 def get_easyocr_reader():

@@ -672,6 +672,38 @@ app.get('/api/vaccinations', authenticateToken, (req, res) => {
 
 // ============= OCR VACCINE LABEL SCANNING =============
 
+// Endpoint สำหรับดาวน์โหลดภาพ debug
+app.get('/api/ocr/debug/:filename', authenticateToken, (req, res) => {
+    const filename = req.params.filename;
+    // ตรวจสอบว่าเป็นไฟล์ debug เท่านั้น
+    if (!filename.startsWith('debug_') || !filename.endsWith('.png')) {
+        return res.status(400).json({ error: 'Invalid debug file' });
+    }
+    
+    const filePath = path.join(__dirname, 'data', 'uploads', filename);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            res.status(404).json({ error: 'File not found' });
+        }
+    });
+});
+
+// Endpoint แสดงรายการไฟล์ debug
+app.get('/api/ocr/debug', authenticateToken, (req, res) => {
+    const uploadsDir = path.join(__dirname, 'data', 'uploads');
+    fs.readdir(uploadsDir, (err, files) => {
+        if (err) return res.status(500).json({ error: 'Cannot read directory' });
+        
+        const debugFiles = files
+            .filter(f => f.startsWith('debug_') && f.endsWith('.png'))
+            .sort()
+            .reverse()
+            .slice(0, 20); // แสดง 20 ไฟล์ล่าสุด
+        
+        res.json({ files: debugFiles });
+    });
+});
+
 app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'ไม่พบไฟล์รูปภาพ' });
