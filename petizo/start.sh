@@ -25,8 +25,9 @@ if [ ! -f "$CACHE_MARKER" ]; then
 
   # Install Python packages with cache in Volume
   # ใช้ --break-system-packages เพราะ Nixpacks ใช้ Nix-managed Python
-  pip3 install --break-system-packages --cache-dir=/app/petizo/data/pip_cache --upgrade pip
-  pip3 install --break-system-packages --cache-dir=/app/petizo/data/pip_cache -r ocr_system/requirements.txt
+  # ใช้ python3 -m pip แทน pip3 เพราะหลัง upgrade pip แล้ว pip3 หายจาก PATH
+  python3 -m pip install --break-system-packages --cache-dir=/app/petizo/data/pip_cache --upgrade pip
+  python3 -m pip install --break-system-packages --cache-dir=/app/petizo/data/pip_cache -r ocr_system/requirements.txt
 
   if [ $? -eq 0 ]; then
     # Mark as installed
