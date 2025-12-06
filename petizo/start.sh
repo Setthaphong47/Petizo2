@@ -52,9 +52,11 @@ if [ ! -f "$INSTALL_MARKER" ]; then
 
   # Install basic packages (opencv, numpy, pillow, pytesseract)
   echo "   Installing basic OCR packages (opencv, numpy, pillow, pytesseract)..."
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --force-reinstall --no-deps \
+    numpy>=2.0.0
+  
   pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
     opencv-python-headless>=4.8.0 \
-    numpy>=1.24.0 \
     pytesseract>=0.3.10 \
     Pillow>=10.0.0
 
