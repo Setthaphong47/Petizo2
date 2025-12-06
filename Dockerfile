@@ -27,7 +27,8 @@ WORKDIR /app
 COPY petizo/package*.json ./
 
 # ติดตั้ง Node.js dependencies (production only)
-RUN npm ci --only=production && npm cache clean --force
+# ใช้ npm install แทน npm ci เพราะไม่มี package-lock.json
+RUN npm install --only=production && npm cache clean --force
 
 # Copy Python requirements
 COPY petizo/ocr_system/requirements.txt ./ocr_system/
