@@ -16,12 +16,14 @@ export PYTHONUNBUFFERED=1
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
 
-# Force reinstall to clear corrupted packages (especially NumPy with old zlib)
-echo "🧹 Cleaning old Python packages..."
+# Force reinstall to clear corrupted packages
+# IMPORTANT: Also clear pip cache to remove old NumPy metadata
+echo "🧹 Cleaning old Python packages and pip cache..."
 rm -rf "$PYTHON_PACKAGES"
 rm -rf /app/petizo/data/tmp
+rm -rf /root/.cache/pip
 rm -f "$INSTALL_MARKER"
-echo "✅ Cleanup complete"
+echo "✅ Cleanup complete (packages + pip cache)"
 
 # Create necessary directories in Volume AFTER cleanup
 mkdir -p /app/petizo/data/easyocr_models
@@ -35,26 +37,36 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
   echo "   Target: $PYTHON_PACKAGES"
 
-  # Install PyTorch CPU-only first (smaller, avoids OOM)
+  # CRITICAL: Install NumPy 2.0+ FIRST (before PyTorch)
+  # This ensures we get a version compiled with zlib1g support
+  echo "   Installing NumPy 2.0+ with zlib support..."
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" "numpy>=2.0.0,<3.0.0"
+  NUMPY_EXIT=$?
+  
+  if [ $NUMPY_EXIT -ne 0 ]; then
+    echo "❌ Failed to install NumPy (exit code: $NUMPY_EXIT)"
+    exit 1
+  fi
+  
+  # Verify NumPy installation
+  echo "   Verifying NumPy installation..."
+  python3 -c "import sys; sys.path.insert(0, '$PYTHON_PACKAGES'); import numpy; print(f'NumPy {numpy.__version__} installed successfully')"
+  
+  # Install PyTorch CPU-only (will use existing NumPy 2.0+)
   echo "   Installing PyTorch CPU-only..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" torch torchvision --index-url https://download.pytorch.org/whl/cpu 2>&1 | tee /tmp/pytorch_install.log
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
+    --no-deps torch torchvision --index-url https://download.pytorch.org/whl/cpu
   PYTORCH_EXIT=$?
-
-  # Check if packages were actually installed (pip may return exit code 2 for warnings)
-  if grep -q "Successfully installed.*torch" /tmp/pytorch_install.log; then
-    echo "   ✅ PyTorch CPU installed successfully"
-  elif [ $PYTORCH_EXIT -ne 0 ]; then
+  
+  if [ $PYTORCH_EXIT -ne 0 ]; then
     echo "❌ Failed to install PyTorch (exit code: $PYTORCH_EXIT)"
     exit 1
-  else
-    echo "   ✅ PyTorch CPU installed successfully"
   fi
-
-  # Install basic packages (opencv, numpy, pillow, pytesseract)
-  echo "   Installing basic OCR packages (opencv, numpy, pillow, pytesseract)..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --force-reinstall --no-deps \
-    numpy>=2.0.0
   
+  echo "   ✅ PyTorch CPU installed successfully (using NumPy 2.0+)"
+
+  # Install other basic packages (opencv, pillow, pytesseract)
+  echo "   Installing basic OCR packages (opencv, pillow, pytesseract)..."
   pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
     opencv-python-headless>=4.8.0 \
     pytesseract>=0.3.10 \

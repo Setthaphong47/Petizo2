@@ -20,7 +20,18 @@
       "Bash(git checkout:*)",
       "Bash(tree:*)",
       "Bash(ls:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(railway open:*)",
+      "Bash(railway up:*)",
+      "Bash(curl:*)",
+      "Bash(timeout 10 railway logs:*)",
+      "Bash(timeout 20 railway logs:*)",
+      "Bash(for i in 1 2 3 4 5 6 7 8 9)",
+      "Bash(do sleep 10)",
+      "Bash(done)",
+      "Bash(timeout 15 railway logs:*)",
+      "Bash(for i in 1 2 3 4 5 6 7 8 9 10 11 12)",
+      "Bash(do sleep 15)"
     ],
     "deny": [],
     "ask": []
