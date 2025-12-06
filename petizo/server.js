@@ -1486,6 +1486,11 @@ app.post('/api/admin/upload-file', authenticateToken, isAdmin, upload.single('fi
 
 // ============= ERROR HANDLING & START =============
 
+// Health check endpoint (สำหรับ Railway)
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     if (err instanceof multer.MulterError) {

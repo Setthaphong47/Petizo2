@@ -64,9 +64,9 @@ ENV NODE_ENV=production \
     OPENBLAS_NUM_THREADS=2 \
     MKL_NUM_THREADS=2
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+# Health check - เพิ่ม start-period เป็น 120s เพื่อให้เวลา init database
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
+    CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start command
-CMD ["node", "server.js"]
+# Start command - init database ก่อนเริ่ม server
+CMD ["sh", "-c", "node scripts/setup/init-database.js && node server.js"]
