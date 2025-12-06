@@ -45,15 +45,11 @@ RUN pip3 install --no-cache-dir \
     Pillow==10.0.0 && \
     rm -rf /root/.cache/pip
 
-# Copy application code
+# Copy application code (รวม database)
 COPY petizo/ ./
 
 # สร้าง directories สำหรับ data และ uploads
 RUN mkdir -p data/uploads data/easyocr_models data/tmp
-
-# Copy database with existing data as template (after copying app code)
-# This ensures the database file is included even if .dockerignore blocks it
-COPY petizo/data/petizo.db ./data/petizo.db.template
 
 # Expose port
 EXPOSE 3000
@@ -73,5 +69,5 @@ ENV NODE_ENV=production \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start command - สร้าง database และเพิ่มข้อมูลตัวอย่างถ้ายังไม่มี
-CMD ["sh", "-c", "if [ ! -f data/petizo.db ]; then node scripts/setup/init-database.js && node scripts/setup/seed-data.js; else echo '✅ Database exists, skipping init'; fi && node server.js"]
+# Start command - ใช้ database ที่มีอยู่แล้ว ไม่ต้อง init ใหม่
+CMD ["node", "server.js"]
