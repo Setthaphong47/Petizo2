@@ -26,23 +26,26 @@ if [ ! -f "$INSTALL_MARKER" ]; then
 
   # Install PyTorch CPU-only first (smaller, avoids OOM)
   echo "   Installing PyTorch CPU-only..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
-    torch torchvision --index-url https://download.pytorch.org/whl/cpu
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" torch torchvision --index-url https://download.pytorch.org/whl/cpu
+  PYTORCH_EXIT=$?
 
-  if [ $? -ne 0 ]; then
-    echo "❌ Failed to install PyTorch"
+  if [ $PYTORCH_EXIT -ne 0 ]; then
+    echo "❌ Failed to install PyTorch (exit code: $PYTORCH_EXIT)"
     exit 1
   fi
+
+  echo "   ✅ PyTorch CPU installed successfully"
 
   # Install rest of packages
   echo "   Installing other OCR packages..."
   pip3 install --break-system-packages --target="$PYTHON_PACKAGES" -r ocr_system/requirements.txt
+  PACKAGES_EXIT=$?
 
-  if [ $? -eq 0 ]; then
+  if [ $PACKAGES_EXIT -eq 0 ]; then
     touch "$INSTALL_MARKER"
-    echo "✅ Python packages installed successfully!"
+    echo "✅ All Python packages installed successfully!"
   else
-    echo "❌ Failed to install Python packages"
+    echo "❌ Failed to install OCR packages (exit code: $PACKAGES_EXIT)"
     exit 1
   fi
 else
