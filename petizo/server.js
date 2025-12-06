@@ -16,6 +16,13 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
 const MODEL_NAME = process.env.MODEL_NAME || 'openai/gpt-4o-mini';
 
+// Debug: แสดง environment variables (ไม่แสดง secret จริง)
+console.log('\n🔍 Environment Check:');
+console.log(`   NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
+console.log(`   PORT: ${PORT}`);
+console.log(`   JWT_SECRET: ${JWT_SECRET ? '✅ SET (length: ' + JWT_SECRET.length + ')' : '❌ NOT SET'}`);
+console.log(`   OPENROUTER_API_KEY: ${OPENROUTER_API_KEY ? '✅ SET' : '❌ NOT SET'}`);
+
 // Global variable เก็บโครงสร้าง database
 let DB_STRUCTURE = 'old'; // 'old' = users table, 'new' = admins + members
 
