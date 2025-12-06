@@ -15,14 +15,27 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
+INSTALL_VERSION="v3"  # Change this to force reinstall with new system libraries
 
-# Force reinstall to clear corrupted packages
-# IMPORTANT: Also clear pip cache to remove old NumPy metadata
-echo "🧹 Cleaning old Python packages and pip cache..."
-rm -rf "$PYTHON_PACKAGES"
-rm -rf /app/petizo/data/tmp
-rm -rf /root/.cache/pip
-rm -f "$INSTALL_MARKER"
+# Force reinstall if version changed (e.g., after adding libstdc++6)
+if [ -f "$INSTALL_MARKER" ]; then
+  CURRENT_VERSION=$(cat "$INSTALL_MARKER" 2>/dev/null || echo "v0")
+  if [ "$CURRENT_VERSION" != "$INSTALL_VERSION" ]; then
+    echo "🔄 Detected system library update, forcing reinstall..."
+    rm -rf "$PYTHON_PACKAGES"
+    rm -rf /app/petizo/data/tmp
+    rm -rf /root/.cache/pip
+    rm -f "$INSTALL_MARKER"
+  fi
+else
+  # First time install - also clear everything
+  echo "🧹 Cleaning old Python packages and pip cache..."
+  rm -rf "$PYTHON_PACKAGES"
+  rm -rf /app/petizo/data/tmp
+  rm -rf /root/.cache/pip
+  rm -f "$INSTALL_MARKER"
+fi
+
 echo "✅ Cleanup complete (packages + pip cache)"
 
 # Create necessary directories in Volume AFTER cleanup
@@ -84,14 +97,14 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   PACKAGES_EXIT=$?
 
   if [ $PACKAGES_EXIT -eq 0 ]; then
-    touch "$INSTALL_MARKER"
-    echo "✅ All Python packages installed successfully!"
+    echo "$INSTALL_VERSION" > "$INSTALL_MARKER"
+    echo "✅ All Python packages installed successfully! (version: $INSTALL_VERSION)"
   else
     echo "❌ Failed to install OCR packages (exit code: $PACKAGES_EXIT)"
     exit 1
   fi
 else
-  echo "✅ Python packages already installed (using Volume cache)"
+  echo "✅ Python packages already installed (using Volume cache, version: $(cat $INSTALL_MARKER))"
 fi
 
 # Start the Node.js server
