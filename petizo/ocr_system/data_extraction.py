@@ -646,15 +646,28 @@ def extract_vaccine_data(left_text: str, right_text: str) -> Dict[str, Optional[
     # ถ้า EXP น้อยกว่า MFG ให้ลองหาใหม่
     if mfg_dt and exp_dt and exp_dt <= mfg_dt:
         print('[DATA] Warning: EXP date <= MFG date, trying to find correct dates...', file=sys.stderr)
-        # ลองหาวันที่ทั้งหมดแล้วเลือกที่เหมาะสม
-        all_dates = re.findall(r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})', right_normalized)
+        # ลองหาวันที่ทั้งหมด (รองรับ noise characters เช่น %7 DEC %0)
+        # Pattern 1: ปกติ (17 DEC 20)
+        clean_dates = re.findall(r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})', right_normalized)
+        # Pattern 2: มี noise (% หรือ ? ข้างหน้าตัวเลข) เช่น %7 DEC %0
+        noisy_dates = re.findall(r'[^A-Z0-9]?(\d{1,2})\s+([A-Z]{2,6})\s+[^A-Z0-9]?(\d{2,4})', right_normalized)
+        all_dates = list(dict.fromkeys(clean_dates + noisy_dates))  # รวมแบบไม่ซ้ำ
+        
         if len(all_dates) >= 2:
-            # ลองใช้วันที่สุดท้าย
-            day, month, year = all_dates[-1]
-            new_exp = format_date(day, month, year)
-            new_exp_dt = parse_standard_date(new_exp)
-            if new_exp_dt and new_exp_dt > mfg_dt:
-                data['exp_date'] = new_exp
+            # ลองทุกวันที่ เลือกอันที่ > MFG และห่างจาก MFG มากที่สุด (น่าจะเป็น EXP)
+            valid_exp_dates = []
+            for day, month, year in all_dates:
+                candidate = format_date(day, month, year)
+                candidate_dt = parse_standard_date(candidate)
+                if candidate_dt and candidate_dt > mfg_dt:
+                    days_diff = (candidate_dt - mfg_dt).days
+                    valid_exp_dates.append((candidate, candidate_dt, days_diff))
+            
+            if valid_exp_dates:
+                # เลือกวันที่ห่างจาก MFG มากที่สุด (EXP ต้องห่างจาก MFG หลายเดือน)
+                valid_exp_dates.sort(key=lambda x: x[2], reverse=True)
+                data['exp_date'] = valid_exp_dates[0][0]
+                print(f'[DATA] ✅ Fixed EXP date: {data["exp_date"]} (was {exp})', file=sys.stderr)
     
     # ถ้าไม่มี product_name ลองเดาจาก vaccine_name
     if not data.get('product_name'):
