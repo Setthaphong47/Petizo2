@@ -8,25 +8,26 @@ echo "🚀 Starting Petizo server with OCR support..."
 export PYTHON_PACKAGES="/app/petizo/data/python_packages"
 export PYTHONPATH="$PYTHON_PACKAGES:$PYTHONPATH"
 
-# Use Volume temp directory to avoid cross-device link errors
-export TMPDIR="/app/petizo/data/tmp"
-mkdir -p "$TMPDIR"
-
 # Set environment variables for EasyOCR and OpenCV
 export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
 export OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
 export PYTHONUNBUFFERED=1
 
-# Create necessary directories in Volume
-mkdir -p /app/petizo/data/easyocr_models
-mkdir -p "$PYTHON_PACKAGES"
-
 # Check if Python packages are installed
-INSTALL_MARKER="$PYTHON_PACKAGES/.installed"
+INSTALL_MARKER="/app/petizo/data/.installed"
 
 # Force reinstall to clear corrupted packages from OOM
 rm -rf "$PYTHON_PACKAGES"
+rm -rf /app/petizo/data/tmp
 rm -f "$INSTALL_MARKER"
+
+# Create necessary directories in Volume AFTER cleanup
+mkdir -p /app/petizo/data/easyocr_models
+mkdir -p "$PYTHON_PACKAGES"
+
+# Use Volume temp directory to avoid cross-device link errors
+export TMPDIR="/app/petizo/data/tmp"
+mkdir -p "$TMPDIR" || echo "⚠️  Warning: Could not create tmp directory"
 
 if [ ! -f "$INSTALL_MARKER" ]; then
   echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
@@ -47,9 +48,23 @@ if [ ! -f "$INSTALL_MARKER" ]; then
     echo "   ✅ PyTorch CPU installed successfully"
   fi
 
-  # Install rest of packages
-  echo "   Installing other OCR packages..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" -r ocr_system/requirements.txt
+  # Install basic packages (opencv, numpy, pillow, pytesseract)
+  echo "   Installing basic OCR packages (opencv, numpy, pillow, pytesseract)..."
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
+    opencv-python-headless>=4.8.0 \
+    numpy>=1.24.0 \
+    pytesseract>=0.3.10 \
+    Pillow>=10.0.0
+
+  # Install EasyOCR WITHOUT dependencies (to avoid re-downloading GPU torch)
+  echo "   Installing EasyOCR (without torch/torchvision dependencies)..."
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps easyocr>=1.7.0
+
+  # Install EasyOCR's other dependencies (excluding torch/torchvision)
+  echo "   Installing EasyOCR dependencies..."
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
+    scipy scikit-image python-bidi PyYAML Shapely pyclipper ninja
+
   PACKAGES_EXIT=$?
 
   if [ $PACKAGES_EXIT -eq 0 ]; then
