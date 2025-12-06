@@ -8,10 +8,13 @@ echo "🚀 Starting Petizo server with OCR support..."
 # Set Python packages path in Volume
 export PYTHON_PACKAGES="/app/petizo/data/python_packages"
 
-# Add both Volume packages AND Nix packages to PYTHONPATH
-# Nix packages จะอยู่ใน site-packages ของ python3 จาก Nix
-NIX_PYTHON_SITEPACKAGES=$(python3 -c "import site; print(':'.join(site.getsitepackages()))" 2>/dev/null || echo "")
-export PYTHONPATH="$PYTHON_PACKAGES:$NIX_PYTHON_SITEPACKAGES:$PYTHONPATH"
+# Add Volume packages to PYTHONPATH
+# Note: Nix Python already includes its own site-packages in sys.path, so we only need to prepend our custom packages
+export PYTHONPATH="$PYTHON_PACKAGES:$PYTHONPATH"
+
+# Debug: Show Python path to help diagnose issues
+echo "📍 PYTHON_PACKAGES: $PYTHON_PACKAGES"
+python3 -c "import sys; print('📍 Python sys.path:'); [print('   -', p) for p in sys.path[:5]]" 2>/dev/null || echo "⚠️  Warning: Could not get Python path"
 
 # Set environment variables for EasyOCR and OpenCV
 export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
@@ -20,7 +23,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v13"  # v13: Fix PYTHONPATH to include Nix's site-packages for cv2/numpy
+INSTALL_VERSION="v14"  # v14: Debug PYTHONPATH - check if Nix cv2 is in sys.path
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
