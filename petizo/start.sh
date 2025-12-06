@@ -25,7 +25,7 @@ export CUDA_VISIBLE_DEVICES=""
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v20"  # v20: Install PyTorch CPU-only from PyTorch CPU index
+INSTALL_VERSION="v21"  # v21: Add mpmath dependency for EasyOCR (required by sympy)
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -78,7 +78,7 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   # Install PyTorch dependencies (ยกเว้น numpy)
   echo "   Installing PyTorch dependencies (filelock, fsspec, jinja2, etc.)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
-    filelock fsspec jinja2 sympy typing-extensions networkx
+    filelock fsspec jinja2 sympy typing-extensions networkx mpmath
 
   PYTORCH_EXIT=$?
   if [ $PYTORCH_EXIT -ne 0 ]; then
