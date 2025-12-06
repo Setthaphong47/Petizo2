@@ -72,5 +72,5 @@ ENV NODE_ENV=production \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start command - ใช้ database template ถ้ายังไม่มี database ใน volume
-CMD ["sh", "-c", "if [ ! -f data/petizo.db ]; then cp data/petizo.db.template data/petizo.db; fi && node server.js"]
+# Start command - ใช้ seed data ถ้า database ใหม่
+CMD ["sh", "-c", "if [ ! -f data/petizo.db ]; then node scripts/setup/init-database.js && sqlite3 data/petizo.db < data/seed-data.sql; else echo 'Database exists, skipping init'; fi && node server.js"]
