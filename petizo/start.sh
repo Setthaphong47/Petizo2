@@ -22,7 +22,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v18"  # v18: Install numpy via pip (Nix numpy not working)
+INSTALL_VERSION="v19"  # v19: Add packaging module for pytesseract
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -93,9 +93,9 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" \
     pillow>=10.0.0
 
-  echo "   Installing pytesseract..."
-  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
-    pytesseract>=0.3.10
+  echo "   Installing pytesseract and its dependencies..."
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" \
+    pytesseract>=0.3.10 packaging
 
   echo "   Installing opencv-python-headless (no GUI dependencies)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
