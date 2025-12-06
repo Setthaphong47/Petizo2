@@ -15,7 +15,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v6"  # v6: Remove NumPy 2.0 install, let PyTorch install numpy 1.26.3 (no libstdc++ issue)
+INSTALL_VERSION="v7"  # v7: Use python3 -m pip instead of pip3 (Nixpacks compatibility)
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -54,7 +54,7 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   # Using --index-url ensures we get CPU version from PyTorch's CPU-only index
   # PyTorch will install numpy 1.26.3 (not 2.0+) which doesn't have libstdc++ issues
   echo "   Installing PyTorch CPU-only with dependencies (including numpy 1.26.3)..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" \
     torch torchvision --index-url https://download.pytorch.org/whl/cpu
   PYTORCH_EXIT=$?
 
@@ -67,18 +67,18 @@ if [ ! -f "$INSTALL_MARKER" ]; then
 
   # Install other basic packages WITHOUT dependencies (to prevent pulling torch GPU)
   echo "   Installing basic OCR packages (opencv, pillow, pytesseract)..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     opencv-python-headless>=4.8.0 \
     pytesseract>=0.3.10 \
     Pillow>=10.0.0
 
   # Install EasyOCR WITHOUT dependencies (to avoid re-downloading GPU torch)
   echo "   Installing EasyOCR (without torch/torchvision dependencies)..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps easyocr>=1.7.0
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps easyocr>=1.7.0
 
   # Install EasyOCR's other dependencies WITHOUT deps (to prevent pulling torch GPU)
   echo "   Installing EasyOCR dependencies (without pulling torch)..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
+  python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     scipy scikit-image python-bidi PyYAML Shapely pyclipper ninja
 
   PACKAGES_EXIT=$?
