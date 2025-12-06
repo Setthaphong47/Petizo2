@@ -1,7 +1,8 @@
 [phases.setup]
 # ติดตั้ง Node.js 20, Python 3.9, และ Tesseract OCR สำหรับ OCR system
 nixPkgs = ['nodejs_20', 'python39', 'python39Packages.pip', 'tesseract']
-aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libgomp1', 'zlib1g']
+# aptPkgs: เพิ่ม libstdc++6 สำหรับ NumPy 2.0+ C-extensions
+aptPkgs = ['libgl1', 'libglib2.0-0', 'libsm6', 'libxext6', 'libxrender-dev', 'libgomp1', 'zlib1g', 'libstdc++6']
 
 [phases.install]
 # ติดตั้ง Node.js dependencies ใน petizo folder
