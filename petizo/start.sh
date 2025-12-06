@@ -24,7 +24,18 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
   echo "   Target: $PYTHON_PACKAGES"
 
-  # Install to Volume using --target
+  # Install PyTorch CPU-only first (smaller, avoids OOM)
+  echo "   Installing PyTorch CPU-only..."
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
+    torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+  if [ $? -ne 0 ]; then
+    echo "❌ Failed to install PyTorch"
+    exit 1
+  fi
+
+  # Install rest of packages
+  echo "   Installing other OCR packages..."
   pip3 install --break-system-packages --target="$PYTHON_PACKAGES" -r ocr_system/requirements.txt
 
   if [ $? -eq 0 ]; then
