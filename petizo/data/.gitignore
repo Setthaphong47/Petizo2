@@ -1,3 +1,4 @@
-*.db
+# Allow petizo.db to be committed for Railway template
+# *.db
 *.db-*
 petizo.db.backup
