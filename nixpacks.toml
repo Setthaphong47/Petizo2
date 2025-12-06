@@ -1,12 +1,13 @@
 [phases.setup]
-# ติดตั้ง Node.js 20, Python 3.9, Tesseract OCR
-# NumPy, OpenCV, Pillow จาก pip (Nix packages ไม่ work)
+# ติดตั้ง Node.js 20, Python 3.9, Tesseract OCR, และ C++ libraries
+# NumPy, OpenCV, Pillow จาก pip (ต้องการ libstdc++.so.6)
 nixPkgs = [
   'nodejs_20',
   'python39',
   'python39Packages.pip',
   'tesseract',
-  'zlib'
+  'zlib',
+  'stdenv.cc.cc.lib'
 ]
 aptPkgs = ['libgl1', 'libglib2.0-0']
 
