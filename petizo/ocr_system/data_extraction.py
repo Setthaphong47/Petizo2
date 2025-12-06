@@ -14,13 +14,15 @@ def normalize_ocr_text(text: str) -> str:
     # แก้ไขข้อผิดพลาดที่พบบ่อย
     replacements = {
         'HLFG': 'MFG', 'HIFG': 'MFG', 'MIFG': 'MFG', 'MIFG:': 'MFG:',
+        'HLLG': 'MFG', 'HLLIG': 'MFG', 'HILG': 'MFG',  # เพิ่ม noise patterns
         'JAM': 'JAN', 'J A M': 'JAN', 'J A N': 'JAN',
         'J U N': 'JUN', 'J U L': 'JUL',
         '\\&': '4', '&': '4',
-        'SCR ': 'SER ', 'SET ': 'SER ',
+        'SCR ': 'SER ', 'SET ': 'SER ', 'SFR': 'SER',
         'RAY': 'MAY', 'R O V': 'NOV', 'ROV': 'NOV', 'R0V': 'NOV',
         'AO': 'APR', 'A0': 'APR',
         'OOT': 'OCT', '0CT': 'OCT', 'O0T': 'OCT', 'O0CT': 'OCT',
+        '%': '', '?': '',  # ลบ noise characters
     }
 
     domain_replacements = {
@@ -284,13 +286,21 @@ def extract_serial_number(text: str) -> Optional[str]:
     
     # 🔧 Fix: ปรับ pattern ให้จับ serial ที่มีตัวอักษรท้าย (เช่น 532764C)
     strict_pattern = r'\b(\d{5,7}[A-Z]{1,2})\b'  # ต้องมีตัวอักษรอย่างน้อย 1 ตัว
+    letter_prefix_pattern = r'\b([A-Z]\d{5,6})\b'  # Serial ที่ขึ้นต้นด้วยตัวอักษร (เช่น S81525)
     fallback_pattern = r'\b(\d{5,7})\b'  # ถ้าไม่เจอก็ใช้แค่ตัวเลข
     
-    # 🎯 Priority 1: หาจาก "SER:" keyword (แม่นที่สุด)
-    ser_match = re.search(r'(?:SER|SERIAL)\s*[:\-]?\s*([A-Z]*\s*)?(\d{5,7}[A-Z]{0,2})\b', t)
-    if ser_match:
-        raw = ser_match.group(2)  # ใช้ group 2 เพราะ group 1 คือ prefix ที่ไม่ต้องการ
-        if re.fullmatch(r'\d{5,7}[A-Z]{0,2}', raw):
+    # 🎯 Priority 1: หาจาก "SER:" keyword (แม่นที่สุด) - ทนทาน noise
+    # รองรับ: SER: 532764C, SER RFG: 532764C, SER: S81525
+    ser_patterns = [
+        r'(?:SER|SERIAL)\s*[:\-]?\s*(?:[A-Z]{1,5}\s*[:\-]?\s*)?([A-Z]?\d{5,7}[A-Z]{0,2})\b',  # รองรับ prefix
+        r'(?:SER|SERIAL)\s+([A-Z]\d{5,6})\b',  # Serial ขึ้นต้นด้วยตัวอักษร
+    ]
+    
+    for pattern in ser_patterns:
+        ser_match = re.search(pattern, t)
+        if ser_match:
+            raw = ser_match.group(1)
+            
             # ตรวจสอบว่าไม่ใช่เลขทะเบียนที่ผสมกัน
             reg_patterns = re.findall(r'(\d{1,3})/(\d{1,3})', t)
             
@@ -305,7 +315,7 @@ def extract_serial_number(text: str) -> Optional[str]:
             # 🔒 ข้ามถ้าเป็น zip code (เช่น 63521 จาก Nebraska)
             if raw.isdigit() and len(raw) == 5:
                 # ตรวจสอบว่าอยู่ใกล้คำว่า USA, Nebraska, Lincoln หรือไม่
-                ser_pos = t.find(f'SER')
+                ser_pos = t.find('SER')
                 if ser_pos >= 0:
                     context_before = t[max(0, ser_pos - 50):ser_pos]
                     if re.search(r'\b(USA|NEBRASKA|LINCOLN|INC)\b', context_before):
@@ -314,7 +324,22 @@ def extract_serial_number(text: str) -> Optional[str]:
             if not is_derived_from_reg:
                 return normalize_serial(raw)
     
-    # 🎯 Priority 2: หาจาก pattern ที่มีตัวอักษรท้าย (เช่น 532764C)
+    # 🎯 Priority 2: หาจาก pattern ที่ขึ้นต้นด้วยตัวอักษร (เช่น S81525)
+    matches_letter_prefix = re.findall(letter_prefix_pattern, t)
+    
+    for match in matches_letter_prefix:
+        match_pos = t.find(match)
+        if match_pos >= 0:
+            context_start = max(0, match_pos - 30)
+            context = t[context_start:match_pos + len(match) + 30]
+            
+            # ข้ามถ้าอยู่ใกล้ REG
+            if re.search(r'\b(REG|REGNO|FEG|GEG|RSG|RGS)\b', context[:match_pos - context_start + 10]):
+                continue
+        
+        return normalize_serial(match)
+    
+    # 🎯 Priority 3: หาจาก pattern ที่มีตัวอักษรท้าย (เช่น 532764C)
     matches_with_letter = re.findall(strict_pattern, t)
     
     reg_patterns = re.findall(r'(\d{1,3})/(\d{1,3})', t)
@@ -332,7 +357,7 @@ def extract_serial_number(text: str) -> Optional[str]:
         
         return normalize_serial(match)
     
-    # 🎯 Priority 3: หาจาก pattern ตัวเลขอย่างเดียว (แต่ต้องไม่ใช่ zip code)
+    # 🎯 Priority 4: หาจาก pattern ตัวเลขอย่างเดียว (แต่ต้องไม่ใช่ zip code)
     matches_digits = re.findall(fallback_pattern, t)
     
     for match in matches_digits:
@@ -399,26 +424,47 @@ def normalize_serial(raw: str) -> str:
 
 
 def extract_date(text: str, date_type: str = 'MFG') -> Optional[str]:
-    """ดึงวันที่ (MFG หรือ EXP)"""
+    """ดึงวันที่ (MFG หรือ EXP) - ปรับให้ทนทาน noise และรองรับหลายรูปแบบ"""
     t = normalize_ocr_text(text)
     
-    # 🔧 Fix: หา MFG และ EXP แยกกันชัดเจน
-    # รูปแบบ: MFG: 01 JAN 2024 หรือ EXP: 01 JAN 2024
-    pattern = rf'{date_type}\s*[:.#]?\s*(\d{{1,2}})\s+([A-Z]{{2,6}})\s+(\d{{2,4}})'
-    match = re.search(pattern, t)
+    # 🎯 Keywords ที่เป็นไปได้สำหรับ MFG และ EXP
+    mfg_keywords = ['MFG', 'HLFG', 'HIFG', 'HLLG', 'HILG', 'MANUFACTURED', 'PROD']
+    exp_keywords = ['EXP', 'EXPIRY', 'EXPIRE', 'USE BY', 'BEST BEFORE']
     
-    if match:
-        day = match.group(1)
-        month = match.group(2)
-        year = match.group(3)
-        return format_date(day, month, year)
+    if date_type == 'MFG':
+        keywords = mfg_keywords
+    else:
+        keywords = exp_keywords
     
-    # 🎯 ถ้าไม่เจอ keyword ให้ใช้ตำแหน่ง (MFG = วันที่แรก, EXP = วันที่หลัง)
-    all_dates = re.findall(r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})', t)
+    # 🔧 Pattern 1: หาจาก keyword โดยตรง (ทนทาน noise มากขึ้น)
+    # รองรับ: MFG: 01 JAN 2024, MFG 01 JAN 24, MFG:01JAN24
+    for keyword in keywords:
+        # ใช้ .{0,5} เพื่อข้าม noise characters ระหว่าง keyword กับ date
+        pattern = rf'{keyword}\s*[:.#]?\s*[^A-Z0-9]{{0,5}}(\d{{1,2}})\s+([A-Z]{{2,6}})\s+(\d{{2,4}})'
+        match = re.search(pattern, t)
+        
+        if match:
+            day = match.group(1)
+            month = match.group(2)
+            year = match.group(3)
+            return format_date(day, month, year)
+    
+    # 🔧 Pattern 2: หา date ที่มี noise characters (เช่น %7 DEC 0, 7 DEC 20)
+    # รองรับ: 17 DEC 20, %7 DEC %0, 13 JUN 23
+    noisy_pattern = r'[^A-Z0-9]?(\d{1,2})\s+([A-Z]{2,6})\s+[^A-Z0-9]?(\d{2,4})'
+    all_dates_noisy = re.findall(noisy_pattern, t)
+    
+    # 🔧 Pattern 3: หา date มาตรฐาน (เช่น 01 JAN 2024)
+    standard_pattern = r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})'
+    all_dates_standard = re.findall(standard_pattern, t)
+    
+    # รวม dates ทั้งหมด (ไม่ซ้ำ)
+    all_dates = list(dict.fromkeys(all_dates_noisy + all_dates_standard))
     
     if not all_dates:
         return None
     
+    # 🎯 ถ้าไม่เจอ keyword ให้ใช้ตำแหน่ง
     if date_type == 'MFG':
         # MFG: ใช้วันที่แรกเสมอ
         day, month, year = all_dates[0]
