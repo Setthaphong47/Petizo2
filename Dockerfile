@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
     libstdc++6 \
     zlib1g \
+    sqlite3 \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
