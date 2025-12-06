@@ -12,8 +12,8 @@ export PYTHON_PACKAGES="/app/petizo/data/python_packages"
 NIX_PYTHON_SITE_PACKAGES=$(python3 -c "import sys; import os; print(os.path.join(sys.base_prefix, 'lib', 'python' + sys.version[:3], 'site-packages'))" 2>/dev/null || echo "")
 
 # Add both Nix site-packages AND Volume packages to PYTHONPATH
-# Order: Volume packages first (pip installs), then Nix packages (NumPy, OpenCV, Pillow)
-export PYTHONPATH="$PYTHON_PACKAGES:$NIX_PYTHON_SITE_PACKAGES:$PYTHONPATH"
+# Order: Nix packages FIRST (numpy, pillow), then Volume packages (torch, easyocr, opencv)
+export PYTHONPATH="$NIX_PYTHON_SITE_PACKAGES:$PYTHON_PACKAGES:$PYTHONPATH"
 
 # Debug: Show Python path to verify cv2 is accessible
 echo "📍 PYTHON_PACKAGES: $PYTHON_PACKAGES"
@@ -27,7 +27,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v16"  # v16: Install opencv-python via pip instead of Nix
+INSTALL_VERSION="v17"  # v17: Fix PYTHONPATH order - Nix packages first for numpy
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
