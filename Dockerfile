@@ -47,11 +47,12 @@ RUN pip3 install --no-cache-dir \
 # Copy application code
 COPY petizo/ ./
 
-# Copy database with existing data (will be used as template)
-COPY petizo/data/petizo.db ./data/petizo.db.template
-
 # สร้าง directories สำหรับ data และ uploads
 RUN mkdir -p data/uploads data/easyocr_models data/tmp
+
+# Copy database with existing data as template (after copying app code)
+# This ensures the database file is included even if .dockerignore blocks it
+COPY petizo/data/petizo.db ./data/petizo.db.template
 
 # Expose port
 EXPOSE 3000

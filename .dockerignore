@@ -9,10 +9,18 @@ README.md
 .vscode
 .idea
 *.log
-# Allow petizo.db for Docker image template
+
+# Data directories - exclude all except petizo.db
 petizo/data/uploads/*
 petizo/data/python_packages
 petizo/data/easyocr_models
+petizo/data/*.db-*
+petizo/data/*.backup
+
+# IMPORTANT: Allow petizo.db to be copied into Docker image
+!petizo/data/petizo.db
+
+# Python cache
 petizo/ocr_system/__pycache__
 **/__pycache__
 *.pyc
