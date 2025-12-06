@@ -25,7 +25,7 @@ export CUDA_VISIBLE_DEVICES=""
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v23"  # v23: Add tifffile (scikit-image) and packaging dependencies
+INSTALL_VERSION="v24"  # v24: Pre-download EasyOCR models + increase timeout to 180s
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -116,6 +116,20 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   PACKAGES_EXIT=$?
 
   if [ $PACKAGES_EXIT -eq 0 ]; then
+    # Pre-download EasyOCR models (ครั้งแรก ~30-60 วินาที)
+    echo "📥 Pre-downloading EasyOCR models (English, first time only)..."
+    python3 -c "
+import os
+os.environ['EASYOCR_MODULE_PATH'] = '/app/petizo/data/easyocr_models'
+try:
+    import easyocr
+    print('   Initializing EasyOCR reader...')
+    reader = easyocr.Reader(['en'], gpu=False, verbose=False, download_enabled=True)
+    print('   ✅ EasyOCR models downloaded successfully')
+except Exception as e:
+    print(f'   ⚠️  EasyOCR model download warning: {e}')
+" 2>&1 || echo "   ⚠️  Could not pre-download EasyOCR models (will download on first use)"
+    
     echo "$INSTALL_VERSION" > "$INSTALL_MARKER"
     echo "✅ All Python packages installed successfully! (version: $INSTALL_VERSION)"
   else

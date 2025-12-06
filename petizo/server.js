@@ -747,23 +747,23 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req,
         shell: true
     });
 
-    // ตั้ง timeout 120 วินาที (เพิ่มเป็น 2 นาทีสำหรับ download models ครั้งแรก)
+    // ตั้ง timeout 180 วินาที (3 นาที สำหรับ EasyOCR download models ครั้งแรก)
     let isTimeout = false;
     let isResponseSent = false;
     
     const timeout = setTimeout(() => {
         isTimeout = true;
         python.kill('SIGTERM');
-        console.error('[OCR API] Process timeout after 120s');
+        console.error('[OCR API] Process timeout after 180s');
         
         if (!isResponseSent) {
             isResponseSent = true;
             res.status(504).json({
                 error: 'OCR processing timeout',
-                message: 'กรุณาลองใหม่อีกครั้งหรือกรอกข้อมูลด้วยตนเอง'
+                message: 'กรุณาลองใหม่อีกครั้ง (ครั้งแรกอาจใช้เวลานาน)'
             });
         }
-    }, 120000); // เพิ่มเป็น 120 วินาที
+    }, 180000); // เพิ่มเป็น 180 วินาที (3 นาที)
     
     let stdout = '';
     let stderr = '';
