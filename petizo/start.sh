@@ -8,6 +8,9 @@ echo "🚀 Starting Petizo server with OCR support..."
 export PYTHON_PACKAGES="/app/petizo/data/python_packages"
 export PYTHONPATH="$PYTHON_PACKAGES:$PYTHONPATH"
 
+# Set LD_LIBRARY_PATH for NumPy to find zlib from Nix
+export LD_LIBRARY_PATH="/root/.nix-profile/lib:$LD_LIBRARY_PATH"
+
 # Set environment variables for EasyOCR and OpenCV
 export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
 export OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
