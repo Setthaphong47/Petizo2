@@ -745,9 +745,6 @@
                     <button class="btn-secondary" onclick="viewVaccinationRecord()">
                         <img src="/icon/medical-book.png" alt="Vac Book" style="width:25px;height:25px;"> สมุดวัคซีน
                     </button>
-                    <button class="btn-secondary" onclick="goToVaccineSchedule()">
-                        <img src="/icon/health-check.png" alt="Schedule" style="width:25px;height:25px;"> ดูตารางวัคซีนทั้งหมด
-                    </button>
                 </div>
             </div>
 
@@ -894,11 +891,6 @@
         function getPetIdFromURL() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
-        }
-
-        // Go to vaccine schedule
-        function goToVaccineSchedule() {
-            window.location.href = `vaccine-schedule.html?petId=${currentPetId}`;
         }
 
         // View vaccination record
