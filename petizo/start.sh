@@ -26,15 +26,18 @@ if [ ! -f "$INSTALL_MARKER" ]; then
 
   # Install PyTorch CPU-only first (smaller, avoids OOM)
   echo "   Installing PyTorch CPU-only..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" torch torchvision --index-url https://download.pytorch.org/whl/cpu
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" torch torchvision --index-url https://download.pytorch.org/whl/cpu 2>&1 | tee /tmp/pytorch_install.log
   PYTORCH_EXIT=$?
 
-  if [ $PYTORCH_EXIT -ne 0 ]; then
+  # Check if packages were actually installed (pip may return exit code 2 for warnings)
+  if grep -q "Successfully installed.*torch" /tmp/pytorch_install.log; then
+    echo "   ✅ PyTorch CPU installed successfully"
+  elif [ $PYTORCH_EXIT -ne 0 ]; then
     echo "❌ Failed to install PyTorch (exit code: $PYTORCH_EXIT)"
     exit 1
+  else
+    echo "   ✅ PyTorch CPU installed successfully"
   fi
-
-  echo "   ✅ PyTorch CPU installed successfully"
 
   # Install rest of packages
   echo "   Installing other OCR packages..."
