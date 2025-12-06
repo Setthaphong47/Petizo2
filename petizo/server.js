@@ -697,15 +697,24 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req,
     // ลอง python3 ก่อน ถ้าไม่ได้ค่อยใช้ python
     const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
     console.log(`[OCR API] Using Python command: ${pythonCmd}`);
+    console.log(`[OCR API] PYTHONPATH in Node.js: ${process.env.PYTHONPATH}`);
 
-    // เรียก Python script พร้อมส่ง LD_LIBRARY_PATH เพื่อให้ NumPy หา zlib ได้
+    // เรียก Python script พร้อมส่ง PYTHONPATH และ LD_LIBRARY_PATH
     const { spawn } = require('child_process');
+    const pythonEnv = {
+        ...process.env,
+        LD_LIBRARY_PATH: '/root/.nix-profile/lib:' + (process.env.LD_LIBRARY_PATH || '')
+    };
+    
+    // ให้แน่ใจว่า PYTHONPATH ถูกส่งไป (ถ้ามีค่าใน process.env)
+    if (process.env.PYTHONPATH) {
+        pythonEnv.PYTHONPATH = process.env.PYTHONPATH;
+    }
+    
+    console.log(`[OCR API] PYTHONPATH passed to Python: ${pythonEnv.PYTHONPATH}`);
+    
     const python = spawn(pythonCmd, [pythonScript, imagePath], {
-        env: {
-            ...process.env,
-            PYTHONPATH: process.env.PYTHONPATH,
-            LD_LIBRARY_PATH: '/root/.nix-profile/lib:' + (process.env.LD_LIBRARY_PATH || '')
-        }
+        env: pythonEnv
     });
 
     // ตั้ง timeout 120 วินาที (เพิ่มเป็น 2 นาทีสำหรับ download models ครั้งแรก)
