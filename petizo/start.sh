@@ -15,7 +15,7 @@ export PYTHONUNBUFFERED=1
 
 # Check if Python packages are installed
 INSTALL_MARKER="/app/petizo/data/.installed"
-INSTALL_VERSION="v3"  # Change this to force reinstall with new system libraries
+INSTALL_VERSION="v4"  # v4: Add --no-deps to all pip installs to prevent GPU torch download
 
 # Force reinstall if version changed (e.g., after adding libstdc++6)
 if [ -f "$INSTALL_MARKER" ]; then
@@ -78,9 +78,9 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   
   echo "   ✅ PyTorch CPU installed successfully (using NumPy 2.0+)"
 
-  # Install other basic packages (opencv, pillow, pytesseract)
+  # Install other basic packages WITHOUT dependencies (to prevent pulling torch GPU)
   echo "   Installing basic OCR packages (opencv, pillow, pytesseract)..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     opencv-python-headless>=4.8.0 \
     pytesseract>=0.3.10 \
     Pillow>=10.0.0
@@ -89,9 +89,9 @@ if [ ! -f "$INSTALL_MARKER" ]; then
   echo "   Installing EasyOCR (without torch/torchvision dependencies)..."
   pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps easyocr>=1.7.0
 
-  # Install EasyOCR's other dependencies (excluding torch/torchvision)
-  echo "   Installing EasyOCR dependencies..."
-  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" \
+  # Install EasyOCR's other dependencies WITHOUT deps (to prevent pulling torch GPU)
+  echo "   Installing EasyOCR dependencies (without pulling torch)..."
+  pip3 install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     scipy scikit-image python-bidi PyYAML Shapely pyclipper ninja
 
   PACKAGES_EXIT=$?
