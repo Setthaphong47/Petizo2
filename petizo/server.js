@@ -703,6 +703,7 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req,
     const python = spawn(pythonCmd, [pythonScript, imagePath], {
         env: {
             ...process.env,
+            PYTHONPATH: process.env.PYTHONPATH,
             LD_LIBRARY_PATH: '/root/.nix-profile/lib:' + (process.env.LD_LIBRARY_PATH || '')
         }
     });
