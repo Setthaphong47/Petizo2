@@ -520,7 +520,7 @@
 
                 <div class="message error-message" id="loginError"></div>
 
-                <form onsubmit="handleLogin(event)">
+                <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label>อีเมล</label>
                         <input type="email" id="loginEmail" required placeholder="info.madhu786@gmail.com">
@@ -636,8 +636,10 @@
                 form.reset();
                 // Also clear any autofilled values
                 setTimeout(() => {
-                    document.getElementById('email').value = '';
-                    document.getElementById('password').value = '';
+                    const emailInput = document.getElementById('loginEmail');
+                    const passwordInput = document.getElementById('loginPassword');
+                    if (emailInput) emailInput.value = '';
+                    if (passwordInput) passwordInput.value = '';
                 }, 50);
             }
         });
