@@ -149,6 +149,30 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+// Optional authentication - allows access without token but extracts user info if provided
+const optionalAuth = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        req.user = null; // No user logged in
+        return next();
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            req.user = null; // Invalid token, treat as guest
+        } else {
+            // Normalize userType
+            if (!user.userType) {
+                user.userType = user.role === 'admin' ? 'admin' : 'member';
+            }
+            req.user = user;
+        }
+        next();
+    });
+};
+
 const isAdmin = (req, res, next) => {
     if (req.user.role !== 'admin' && req.user.userType !== 'admin') {
         return res.status(403).json({ error: 'ต้องมีสิทธิ์ Admin' });
@@ -1472,7 +1496,7 @@ app.get('/api/admin/dashboard/trends', authenticateToken, isAdmin, (req, res) =>
 
 // ============= AI CHAT ENDPOINT =============
 
-app.post('/api/chat', authenticateToken, async (req, res) => {
+app.post('/api/chat', optionalAuth, async (req, res) => {
     try {
         const { message } = req.body;
 
@@ -1527,7 +1551,8 @@ app.post('/api/chat', authenticateToken, async (req, res) => {
         const data = await response.json();
         const aiResponse = data.choices?.[0]?.message?.content || 'ขออภัย ไม่สามารถสร้างคำตอบได้';
 
-        console.log(`AI Chat: User ${req.user.id} - "${message.substring(0, 30)}..."`);
+        const userId = req.user ? req.user.id : 'guest';
+        console.log(`AI Chat: User ${userId} - "${message.substring(0, 30)}..."`);
 
         res.json({ 
             response: aiResponse,
