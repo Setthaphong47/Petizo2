@@ -129,7 +129,7 @@
         /* Pet Image Section (Blog-style) */
         .pet-image {
             width: 100%;
-            height: 240px;
+            height: 260px;
             position: relative;
             overflow: hidden;
             background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
@@ -169,9 +169,9 @@
         }
 
         .action-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.95);
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
             border: none;
             border-radius: 50%;
@@ -179,15 +179,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
+            font-size: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
 
         .action-icon:hover {
-            transform: scale(1.15) rotate(5deg);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 188, 212, 0.25);
+            background: white;
         }
 
         .action-icon::after {
@@ -213,7 +214,7 @@
         }
 
         .pet-card-body {
-            padding: 24px;
+            padding: 28px 24px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -229,13 +230,14 @@
         }
 
         .pet-name {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
+            letter-spacing: -0.3px;
         }
 
         .gender-badge {
@@ -245,31 +247,48 @@
 
         .pet-breed {
             display: inline-block;
-            padding: 4px 12px;
-            background: #e0f7fa;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
             color: #00695c;
-            border-radius: 12px;
+            border-radius: 16px;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(0, 188, 212, 0.15);
+            letter-spacing: 0.3px;
         }
 
         .pet-details {
             color: #6c757d;
             font-size: 14px;
-            line-height: 1.8;
+            line-height: 1.6;
         }
 
         .detail-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 4px 0;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
         }
 
         .detail-icon {
-            font-size: 16px;
-            opacity: 0.8;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .detail-icon img {
+            width: 22px !important;
+            height: 22px !important;
+            opacity: 0.75;
         }
 
         .add-pet-card {
@@ -1080,17 +1099,17 @@
                                     ` : ''}
                                     ${pet.color ? `
                                         <div class="detail-item">
-                                            <span class="detail-icon"><img src="/icon/stray-cat.png" alt="Color" style="width:30px;height:30px;"></span>
+                                            <span class="detail-icon"><img src="/icon/stray-cat.png" alt="Color"></span>
                                             <span>${pet.color}</span>
                                         </div>
                                     ` : ''}
                                     <div class="detail-item">
-                                        <span class="detail-icon"><img src="/icon/birthday.png" alt="Birth Date" style="width:30px;height:30px;"></span>
+                                        <span class="detail-icon"><img src="/icon/birthday.png" alt="Birth Date"></span>
                                         <span>${birthDate}</span>
                                     </div>
                                     ${pet.weight ? `
                                         <div class="detail-item">
-                                            <span class="detail-icon"><img src="/icon/scale.png" alt="Weight" style="width:30px;height:30px;"></span>
+                                            <span class="detail-icon"><img src="/icon/scale.png" alt="Weight"></span>
                                             <span>${pet.weight} กก.</span>
                                         </div>
                                     ` : ''}
