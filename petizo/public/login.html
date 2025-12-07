@@ -15,26 +15,29 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             height: 100vh;
             overflow: hidden;
+            background: #f0f2f5;
         }
 
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             height: 100vh;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.1);
+            background: white;
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.15);
         }
 
         /* Left Side - Image Section */
         .image-section {
-            background: linear-gradient(135deg, rgba(0, 188, 212, 0.95) 0%, rgba(0, 229, 255, 0.85) 100%),
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.85) 0%, rgba(0, 150, 199, 0.75) 100%),
                         url('/icon/cat.png') center/cover;
             position: relative;
             display: flex;
             flex-direction: column;
-            padding: 40px;
+            padding: 48px;
             color: white;
+            overflow: hidden;
         }
 
         .image-section::before {
@@ -44,7 +47,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(0, 188, 212, 0.9) 0%, rgba(0, 150, 199, 0.8) 100%);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
             z-index: 1;
         }
 
@@ -58,14 +61,15 @@
         }
 
         .logo-icon {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             background: white;
-            border-radius: 12px;
+            border-radius: 50%;
             padding: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .logo-icon img {
@@ -75,77 +79,73 @@
         }
 
         .logo-text {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .hero-content {
             position: relative;
             z-index: 2;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
 
         .hero-content h1 {
-            font-size: 48px;
+            font-size: 44px;
             font-weight: 800;
             margin-bottom: 16px;
             line-height: 1.2;
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
         }
 
         .hero-content p {
-            font-size: 18px;
+            font-size: 17px;
             opacity: 0.95;
             line-height: 1.6;
-            max-width: 500px;
+            max-width: 460px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
         }
 
         .feature-dots {
             position: relative;
             z-index: 2;
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .dot {
-            width: 12px;
-            height: 12px;
+            width: 32px;
+            height: 4px;
             background: rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .dot.active {
-            width: 40px;
-            border-radius: 6px;
             background: white;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
         }
 
         /* Right Side - Form Section */
         .form-section {
             background: white;
-            padding: 60px 80px;
+            padding: 48px 64px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             overflow-y: auto;
         }
 
-        .form-content {
-            max-width: 440px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
         .form-header {
             text-align: right;
-            margin-bottom: 40px;
+            margin-bottom: 48px;
         }
 
         .btn-signup-link {
-            padding: 10px 24px;
-            background: #333;
+            padding: 12px 28px;
+            background: #1a1a1a;
             color: white;
             border: none;
             border-radius: 8px;
@@ -163,17 +163,21 @@
             box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
         }
 
+        .form-content {
+            max-width: 100%;
+        }
+
         .form-content h2 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
             color: #1a1a1a;
             margin-bottom: 8px;
         }
 
         .form-subtitle {
-            color: #666;
+            color: #6c757d;
             margin-bottom: 32px;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .form-group {
@@ -183,17 +187,21 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #1a1a1a;
-            font-weight: 600;
+            color: #333;
+            font-weight: 500;
             font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
         }
 
         .form-group input {
             width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e8eaed;
+            padding: 13px 16px;
+            border: 1.5px solid #e0e0e0;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             transition: all 0.3s;
             font-family: inherit;
         }
@@ -202,6 +210,21 @@
             outline: none;
             border-color: #00bcd4;
             box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .password-toggle:hover {
+            color: #00bcd4;
         }
 
         .form-options {
@@ -230,6 +253,7 @@
             color: #333;
             cursor: pointer;
             user-select: none;
+            font-weight: 400;
         }
 
         .forgot-password {
@@ -247,22 +271,22 @@
 
         .btn-login {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            padding: 15px;
+            background: #1a1a1a;
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             margin-bottom: 24px;
-            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
         }
 
         .btn-login:hover {
+            background: #00bcd4;
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 188, 212, 0.4);
+            box-shadow: 0 6px 16px rgba(0, 188, 212, 0.3);
         }
 
         .btn-login:active {
@@ -289,28 +313,29 @@
             background: white;
             padding: 0 16px;
             color: #999;
-            font-size: 14px;
+            font-size: 13px;
             position: relative;
             z-index: 1;
         }
 
         .social-login {
             display: flex;
+            flex-direction: column;
             gap: 12px;
             margin-bottom: 24px;
         }
 
         .btn-social {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
+            width: 100%;
+            padding: 13px;
+            border: 1.5px solid #e0e0e0;
             border-radius: 8px;
             background: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             font-size: 14px;
             font-weight: 600;
             color: #333;
@@ -320,6 +345,7 @@
         .btn-social:hover {
             border-color: #00bcd4;
             background: #f8fdff;
+            transform: translateY(-1px);
         }
 
         .btn-social svg {
@@ -364,11 +390,7 @@
             }
 
             .form-section {
-                padding: 40px 50px;
-            }
-
-            .form-content {
-                max-width: 400px;
+                padding: 40px 48px;
             }
 
             .hero-content h1 {
@@ -391,10 +413,6 @@
                 padding: 32px 24px;
             }
 
-            .form-content {
-                max-width: 100%;
-            }
-
             .form-header {
                 display: none;
             }
@@ -408,10 +426,10 @@
             }
 
             .mobile-logo-icon {
-                width: 60px;
-                height: 60px;
+                width: 56px;
+                height: 56px;
                 background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
-                border-radius: 16px;
+                border-radius: 50%;
                 padding: 12px;
                 display: flex;
                 align-items: center;
@@ -422,10 +440,11 @@
                 width: 100%;
                 height: 100%;
                 object-fit: contain;
+                filter: brightness(0) invert(1);
             }
 
             .mobile-logo-text {
-                font-size: 28px;
+                font-size: 26px;
                 font-weight: 800;
                 background: linear-gradient(135deg, #00bcd4 0%, #0096c7 100%);
                 -webkit-background-clip: text;
@@ -434,16 +453,12 @@
             }
 
             .form-content h2 {
-                font-size: 28px;
+                font-size: 24px;
                 text-align: center;
             }
 
             .form-subtitle {
                 text-align: center;
-            }
-
-            .social-login {
-                flex-direction: column;
             }
         }
 
@@ -453,7 +468,7 @@
             }
 
             .form-content h2 {
-                font-size: 24px;
+                font-size: 22px;
             }
 
             .hero-content h1 {
@@ -485,7 +500,7 @@
 
             <div class="hero-content">
                 <h1>ดูแลสัตว์เลี้ยง<br>ของคุณ</h1>
-                <p>จัดการข้อมูลสัตว์เลี้ยง บันทึกประวัติวัคซีน และรับคำแนะนำจาก AI Chatbot ได้ง่ายๆ ในที่เดียว</p>
+                <p>จัดการข้อมูลสัตว์เลี้ยง บันทึกประวัติวัคซีน และรับคำแนะนำจาก AI ได้ง่ายๆ ในคลิกเดียว - รวดเร็ว สะดวก น่าเชื่อถือ</p>
             </div>
 
             <div class="feature-dots">
@@ -498,7 +513,7 @@
         <!-- Right Side - Form Section -->
         <div class="form-section">
             <div class="form-header">
-                <a href="register.html" class="btn-signup-link">สมัครสมาชิก</a>
+                <a href="register.html" class="btn-signup-link">Sign in</a>
             </div>
 
             <!-- Mobile Logo -->
@@ -510,35 +525,38 @@
             </div>
 
             <div class="form-content">
-                <h2>ยินดีต้อนรับกลับมา!</h2>
-                <p class="form-subtitle">เข้าสู่ระบบบัญชีของคุณ</p>
+                <h2>Welcome Back to Petizo!</h2>
+                <p class="form-subtitle">Sign in your account</p>
 
                 <div class="message error-message" id="loginError"></div>
 
                 <form onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label>อีเมลของคุณ</label>
-                        <input type="email" id="loginEmail" required placeholder="your@email.com">
+                        <label>Your Email</label>
+                        <input type="email" id="loginEmail" required placeholder="info.madhu786@gmail.com">
                     </div>
 
                     <div class="form-group">
-                        <label>รหัสผ่าน</label>
-                        <input type="password" id="loginPassword" required placeholder="รหัสผ่านของคุณ">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="loginPassword" required placeholder="••••••••">
+                            <span class="password-toggle" onclick="togglePassword()">👁️</span>
+                        </div>
                     </div>
 
                     <div class="form-options">
                         <div class="remember-me">
                             <input type="checkbox" id="rememberMe">
-                            <label for="rememberMe">จดจำฉันไว้</label>
+                            <label for="rememberMe">Remember Me</label>
                         </div>
-                        <a href="#" class="forgot-password">ลืมรหัสผ่าน?</a>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
                     </div>
 
-                    <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+                    <button type="submit" class="btn-login">Login</button>
                 </form>
 
                 <div class="divider">
-                    <span>หรือเข้าสู่ระบบด้วย</span>
+                    <span>Instant Login</span>
                 </div>
 
                 <div class="social-login">
@@ -549,18 +567,18 @@
                             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                         </svg>
-                        Google
+                        Continue with Google
                     </button>
                     <button class="btn-social" onclick="loginWithFacebook()">
                         <svg viewBox="0 0 24 24">
                             <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
-                        Facebook
+                        Continue with Facebook
                     </button>
                 </div>
 
                 <div class="signup-link">
-                    ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+                    Don't have any account? <a href="register.html">Register</a>
                 </div>
             </div>
         </div>
@@ -569,6 +587,13 @@
     <script src="/js/config.js"></script>
     <script>
         const API_URL = CONFIG.API_URL;
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('loginPassword');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+        }
 
         // Show message
         function showMessage(id, text) {
