@@ -285,6 +285,7 @@
         container.innerHTML = notifications.map(notif => {
             const urgencyClass = notif.type || 'info';
             const dueHtml = notif.dueDate ? `<div style="margin-top:8px;"><span class="notification-date">กำหนดฉีด: ${formatThaiDate(notif.dueDate)}</span></div>` : '';
+            const descHtml = notif.description ? `<div class="vaccine-description">${escapeHtml(notif.description)}</div>` : '';
             return `
                 <div class="notification-item ${urgencyClass}" data-petid="${notif.petId}">
                     <div class="notification-top">
@@ -292,6 +293,7 @@
                         <div class="notification-details">
                             <div class="pet-name">${escapeHtml(notif.petName || 'ไม่ทราบชื่อ')}</div>
                             <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
+                            ${descHtml}
                             <div class="notification-message">${escapeHtml(notif.message || '')}</div>
                             ${dueHtml}
                         </div>
