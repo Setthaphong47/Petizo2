@@ -396,9 +396,9 @@ app.get('/api/user/profile', authenticateToken, (req, res) => {
     
     let query;
     if (DB_STRUCTURE === 'new' && req.user.userType === 'admin') {
-        query = `SELECT id, username, email, full_name, phone, created_at, updated_at FROM ${tableName} WHERE id = ?`;
+        query = `SELECT id, username, email, full_name, phone, profile_picture, created_at, updated_at FROM ${tableName} WHERE id = ?`;
     } else {
-        query = `SELECT id, username, email, full_name, phone, created_at, updated_at,
+        query = `SELECT id, username, email, full_name, phone, profile_picture, created_at, updated_at,
                  (SELECT COUNT(*) FROM pets WHERE ${petColumn} = ${tableName}.id) as pet_count
                  FROM ${tableName} WHERE id = ?`;
     }
