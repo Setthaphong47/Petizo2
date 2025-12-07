@@ -528,16 +528,15 @@ app.post('/api/vaccine-schedules', authenticateToken, isAdmin, (req, res) => {
         age_weeks_min,
         age_weeks_max,
         is_booster,
-        frequency_years,
-        vaccine_type
+        frequency_years
     } = req.body;
 
     db.run(
         `INSERT INTO vaccine_schedules (
             vaccine_name, description, age_weeks_min, age_weeks_max,
-            is_booster, frequency_years, vaccine_type
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [vaccine_name, description, age_weeks_min, age_weeks_max, is_booster, frequency_years, vaccine_type],
+            is_booster, frequency_years
+        ) VALUES (?, ?, ?, ?, ?, ?)`,
+        [vaccine_name, description, age_weeks_min, age_weeks_max, is_booster ? 1 : 0, frequency_years],
         function(err) {
             if (err) return res.status(500).json({ error: 'ไม่สามารถเพิ่มข้อมูลได้' });
             res.json({ message: 'เพิ่มสำเร็จ', scheduleId: this.lastID });
@@ -553,16 +552,15 @@ app.put('/api/vaccine-schedules/:id', authenticateToken, isAdmin, (req, res) => 
         age_weeks_min,
         age_weeks_max,
         is_booster,
-        frequency_years,
-        vaccine_type
+        frequency_years
     } = req.body;
 
     db.run(
         `UPDATE vaccine_schedules SET
             vaccine_name = ?, description = ?, age_weeks_min = ?, age_weeks_max = ?,
-            is_booster = ?, frequency_years = ?, vaccine_type = ?
+            is_booster = ?, frequency_years = ?
          WHERE id = ?`,
-        [vaccine_name, description, age_weeks_min, age_weeks_max, is_booster, frequency_years, vaccine_type, req.params.id],
+        [vaccine_name, description, age_weeks_min, age_weeks_max, is_booster ? 1 : 0, frequency_years, req.params.id],
         function(err) {
             if (err) return res.status(500).json({ error: 'ไม่สามารถแก้ไขได้' });
             if (this.changes === 0) return res.status(404).json({ error: 'ไม่พบข้อมูล' });
