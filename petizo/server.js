@@ -944,6 +944,12 @@ app.get('/api/admin/blog/:id', authenticateToken, isAdmin, (req, res) => {
         (err, blog) => {
             if (err || !blog) return res.status(404).json({ error: 'ไม่พบบทความ' });
             try { blog.tags = JSON.parse(blog.tags || '[]'); } catch { blog.tags = []; }
+            // Parse source_name to array
+            if (blog.source_name) {
+                blog.source = blog.source_name.split(',').map(s => s.trim()).filter(Boolean);
+            } else {
+                blog.source = [];
+            }
             res.json(blog);
         }
     );

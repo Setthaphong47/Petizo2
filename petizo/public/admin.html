@@ -3242,13 +3242,30 @@
                 }
             }
 
-            function populateSourcesTextarea(sourcesArray) {
+            function populateSourcesTextarea(sourcesData) {
                 const ta = document.getElementById('sourcesInput');
                 const countEl = document.getElementById('sourcesCount');
                 if (!ta) return;
-                if (!Array.isArray(sourcesArray)) sourcesArray = [];
+                
+                let sourcesArray = [];
+                
+                // Handle different data types
+                if (Array.isArray(sourcesData)) {
+                    sourcesArray = sourcesData;
+                } else if (typeof sourcesData === 'string' && sourcesData.trim()) {
+                    sourcesArray = sourcesData.split(',').map(s => s.trim()).filter(Boolean);
+                } else if (sourcesData) {
+                    try {
+                        const parsed = JSON.parse(sourcesData);
+                        if (Array.isArray(parsed)) sourcesArray = parsed;
+                        else sourcesArray = String(sourcesData).split(',').map(s => s.trim()).filter(Boolean);
+                    } catch {
+                        sourcesArray = String(sourcesData).split(',').map(s => s.trim()).filter(Boolean);
+                    }
+                }
+                
                 ta.value = sourcesArray.join(', ');
-                countEl && (countEl.textContent = `${sourcesArray.length} รายการ`);
+                if (countEl) countEl.textContent = `${sourcesArray.length} รายการ`;
             }
 
             function collectSourcesFromTextarea() {
