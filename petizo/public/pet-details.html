@@ -18,6 +18,7 @@
         "Scottish Fold": "สก็อตติช โฟลด์",
         "Persian": "เปอร์เซีย",
         "British Shorthair": "บริติช ช็อตแฮร์",
+        "Ragdoll": "แร็กดอลล์",
         // เพิ่มสายพันธุ์อื่น ๆ ตามต้องการ
     };
     function getThaiBreed(breed) {
@@ -946,7 +947,7 @@
                         ${currentPet.breed ? `
                             <div class="detail-row">
                                 <span class="detail-label">สายพันธุ์ :</span>
-                                <span>${getThaiBreed(currentPet.breed)}</span>
+                                <span>${currentPet.breed}</span>
                             </div>
                         ` : ''}
                         <div class="detail-row">
