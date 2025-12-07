@@ -1224,7 +1224,8 @@ app.get('/api/admin/users-with-pets', authenticateToken, isAdmin, (req, res) => 
     
     db.all(
         `SELECT u.id, u.username, u.email, u.full_name, u.created_at,
-         (SELECT COUNT(*) FROM pets WHERE ${userIdColumn} = u.id) as pet_count
+         (SELECT COUNT(*) FROM pets WHERE ${userIdColumn} = u.id) as pet_count,
+         (SELECT MAX(created_at) FROM pets WHERE ${userIdColumn} = u.id) as latest_pet_date
          FROM ${userTable} u ${whereClause} ORDER BY u.created_at DESC`,
         (err, users) => {
             if (err) return res.status(500).json({ error: 'ไม่สามารถโหลดได้' });
