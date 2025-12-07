@@ -1,4 +1,6 @@
 // ลบแจ้งเตือนวัคซีน (ลบ vaccination record ตาม petId และ vaccineName)
+// ===== Custom API: ลบแจ้งเตือนวัคซีน (ลบ vaccination record ตาม petId และ vaccineName) =====
+// วางไว้หลัง app = express() และหลัง middleware
 app.delete('/api/notifications/:petId/:vaccineName', authenticateToken, (req, res) => {
     const petColumn = getPetUserColumn();
     const { petId, vaccineName } = req.params;
