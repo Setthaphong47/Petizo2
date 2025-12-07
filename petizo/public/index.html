@@ -28,7 +28,7 @@
             padding: 0;
             margin: 0;
             width: 100%;
-            height: 500px;
+            height: 600px;
             overflow: hidden;
             position: relative;
         }
@@ -56,9 +56,10 @@
         .hero-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             object-position: center;
             display: block;
+            background: #f8f9fa;
         }
 
         .features {
@@ -226,7 +227,7 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero {
-                height: 400px;
+                height: 450px;
             }
 
             .features {
@@ -311,7 +312,7 @@
 
         @media (max-width: 480px) {
             .hero {
-                height: 300px;
+                height: 350px;
             }
 
             .features {
