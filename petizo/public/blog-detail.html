@@ -65,14 +65,111 @@
             line-height:1.9;
             color:#111827;
             background:#fff;
-            padding:22px;
+            padding:32px;
             border-radius:12px;
             box-shadow:0 8px 30px rgba(2,6,23,0.03);
             white-space: pre-wrap;
             word-wrap: break-word;
         }
 
-        .article-content img { width:100%; border-radius:8px; margin:12px 0; }
+        /* Typography improvements */
+        .article-content p {
+            margin-bottom: 1.5em;
+            text-align: justify;
+        }
+
+        .article-content h1,
+        .article-content h2,
+        .article-content h3 {
+            margin-top: 2em;
+            margin-bottom: 1em;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #1a1a1a;
+        }
+
+        .article-content h1 { font-size: 28px; }
+        .article-content h2 { font-size: 24px; }
+        .article-content h3 { font-size: 20px; }
+
+        .article-content ul,
+        .article-content ol {
+            margin: 1.5em 0;
+            padding-left: 2em;
+        }
+
+        .article-content li {
+            margin-bottom: 0.8em;
+            line-height: 1.8;
+        }
+
+        .article-content strong,
+        .article-content b {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .article-content em,
+        .article-content i {
+            font-style: italic;
+        }
+
+        .article-content blockquote {
+            margin: 2em 0;
+            padding: 1.5em 1.5em 1.5em 2em;
+            border-left: 4px solid #00bcd4;
+            background: #f0f7f9;
+            border-radius: 8px;
+            font-style: italic;
+            color: #2c3e50;
+        }
+
+        .article-content code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .article-content pre {
+            background: #1a1a1a;
+            color: #f5f7fa;
+            padding: 1.5em;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5em 0;
+        }
+
+        .article-content pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        .article-content a {
+            color: #00bcd4;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .article-content a:hover {
+            border-bottom-color: #00bcd4;
+        }
+
+        .article-content hr {
+            border: none;
+            border-top: 2px solid #e9ecef;
+            margin: 3em 0;
+        }
+
+        .article-content img { 
+            width:100%; 
+            border-radius:8px; 
+            margin:2em 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
         .references a { display:inline-block; max-width: 72ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
         .ref-copy-btn { margin-left:8px; } 
