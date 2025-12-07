@@ -83,19 +83,57 @@
             overflow: visible;
             position: relative;
             cursor: pointer;
-            border: 4px solid #f0f0f0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
             background: #f5f7fa;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Gradient Ring Effect (Instagram-style) */
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 
+                0 8px 24px rgba(0,0,0,0.12),
+                0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .profile-avatar::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, 
+                #00bcd4 0%, 
+                #00e5ff 25%, 
+                #4facfe 50%, 
+                #00f2fe 75%, 
+                #00bcd4 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            opacity: 0.8;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
         }
 
         .profile-avatar:hover {
-            transform: scale(1.02);
-            border-color: #00bcd4;
-            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 
+                0 12px 32px rgba(0, 188, 212, 0.25),
+                0 8px 16px rgba(0, 188, 212, 0.15);
+        }
+
+        .profile-avatar:hover::before {
+            opacity: 1;
+            inset: -6px;
+            background: linear-gradient(135deg, 
+                #00e5ff 0%, 
+                #4facfe 25%, 
+                #00f2fe 50%, 
+                #00bcd4 75%, 
+                #00e5ff 100%);
         }
 
         .profile-avatar img {
@@ -114,18 +152,20 @@
 
         .camera-badge {
             position: absolute;
-            bottom: 4px;
-            right: 4px;
-            width: 36px;
-            height: 36px;
+            bottom: 2px;
+            right: 2px;
+            width: 42px;
+            height: 42px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.15),
+                0 2px 6px rgba(0, 0, 0, 0.1);
             border: 3px solid white;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 2;
         }
 
@@ -137,15 +177,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .profile-avatar:hover .camera-badge {
+            transform: scale(1.1);
+            box-shadow: 
+                0 6px 16px rgba(0, 188, 212, 0.3),
+                0 3px 8px rgba(0, 188, 212, 0.2);
         }
 
         .profile-avatar:hover .camera-badge-inner {
-            background: linear-gradient(135deg, #00a5bd 0%, #00d4e6 100%);
+            background: linear-gradient(135deg, #00e5ff 0%, #4facfe 100%);
         }
 
         .camera-badge svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             color: white;
         }
 
