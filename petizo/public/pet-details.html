@@ -895,7 +895,7 @@
             const header = document.getElementById('petHeader');
             
             const birthDate = currentPet.birth_date 
-                ? new Date(currentPet.birth_date).toLocaleDateString('th-TH')
+                ? new Date(currentPet.birth_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
                 : 'ไม่ระบุ';
 
             const gender = currentPet.gender === 'male' ? 'เพศผู้' : 

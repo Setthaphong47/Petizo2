@@ -1912,7 +1912,7 @@
                             </div>
                             <div class="pet-info-item">
                                 <div class="pet-info-label">วันเกิด</div>
-                                <div class="pet-info-value">${pet.birth_date ? new Date(pet.birth_date).toLocaleDateString('th-TH') : 'ไม่ระบุ'}</div>
+                                <div class="pet-info-value">${pet.birth_date ? new Date(pet.birth_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : 'ไม่ระบุ'}</div>
                             </div>
                             <div class="pet-info-item">
                                 <div class="pet-info-label">อายุ</div>
