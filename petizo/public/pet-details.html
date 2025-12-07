@@ -152,26 +152,6 @@
             box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4);
         }
 
-        .btn-secondary {
-            padding: 12px 24px;
-            background: white;
-            color: #00bcd4;
-            border: 2px solid #00bcd4;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-secondary:hover {
-            background: #00bcd4;
-            color: white;
-        }
-
         /* Vaccine Timeline */
         .vaccine-timeline {
             display: flex;
@@ -694,24 +674,6 @@
                 width: 32px !important;
                 height: 32px !important;
             }
-
-            .header-buttons {
-                width: 100% !important;
-                flex-direction: column !important;
-                gap: 10px !important;
-            }
-
-            .btn-secondary {
-                width: 100%;
-                justify-content: center;
-                padding: 14px 20px !important;
-                font-size: 15px !important;
-            }
-
-            .btn-secondary img {
-                width: 22px !important;
-                height: 22px !important;
-            }
         }
     </style>
 </head>
@@ -741,11 +703,6 @@
                 <h2 class="section-title">
                     <img src="/icon/health-check.png" alt="Suggest" style="width:40px;height:40px;"> ตารางวัคซีนแนะนำ
                 </h2>
-                <div class="header-buttons" style="display: flex; gap: 12px;">
-                    <button class="btn-secondary" onclick="viewVaccinationRecord()">
-                        <img src="/icon/medical-book.png" alt="Vac Book" style="width:25px;height:25px;"> สมุดวัคซีน
-                    </button>
-                </div>
             </div>
 
             <div id="petAgeInfo" class="pet-age-info" style="display: none;">

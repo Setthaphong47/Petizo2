@@ -13,80 +13,158 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 50%, #0096c7 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            max-width: 1000px;
-            width: 100%;
+        .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            height: 100vh;
         }
 
-        .welcome-section {
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
-            color: white;
-            padding: 60px 40px;
+        /* Left Side - Image Section */
+        .image-section {
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.95) 0%, rgba(0, 229, 255, 0.85) 100%),
+                        url('/icon/cat.png') center/cover;
+            position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            padding: 40px;
+            color: white;
         }
 
-        .brand-icon {
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
+        .image-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.9) 0%, rgba(0, 150, 199, 0.8) 100%);
+            z-index: 1;
+        }
+
+        .logo-section {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: auto;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
         }
 
-        .welcome-section h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 24px;
             font-weight: 700;
+            color: white;
         }
 
-        .welcome-section p {
-            font-size: 1.1rem;
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 60px;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 18px;
             opacity: 0.95;
             line-height: 1.6;
-            max-width: 400px;
+            max-width: 500px;
         }
 
+        .feature-dots {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            width: 40px;
+            border-radius: 6px;
+            background: white;
+        }
+
+        /* Right Side - Form Section */
         .form-section {
-            padding: 60px 40px;
+            background: white;
+            padding: 60px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow-y: auto;
         }
 
-        .form-section h2 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2rem;
-            font-weight: 700;
+        .form-header {
+            text-align: right;
+            margin-bottom: 40px;
+        }
+
+        .btn-signup-link {
+            padding: 10px 24px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-signup-link:hover {
+            background: #00bcd4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+        }
+
+        .form-content h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 8px;
         }
 
         .form-subtitle {
-            color: #6c757d;
-            margin-bottom: 30px;
-            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 32px;
+            font-size: 15px;
         }
 
         .form-group {
@@ -96,43 +174,86 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
+            color: #1a1a1a;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 14px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
+            padding: 14px 16px;
+            border: 2px solid #e8eaed;
+            border-radius: 8px;
+            font-size: 15px;
             transition: all 0.3s;
+            font-family: inherit;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #00d4ff;
-            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+            border-color: #00bcd4;
+            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #00bcd4;
+        }
+
+        .remember-me label {
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .forgot-password {
+            color: #00bcd4;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #0096c7;
+            text-decoration: underline;
         }
 
         .btn-login {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
+            padding: 16px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 10px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 6px 16px rgba(0, 188, 212, 0.4);
         }
 
         .btn-login:active {
@@ -141,33 +262,84 @@
 
         .divider {
             text-align: center;
-            margin: 25px 0;
-            color: #999;
-            font-size: 0.9rem;
+            margin: 24px 0;
+            position: relative;
         }
 
-        .toggle-form {
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            color: #999;
+            font-size: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn-social {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .btn-social:hover {
+            border-color: #00bcd4;
+            background: #f8fdff;
+        }
+
+        .btn-social svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .signup-link {
             text-align: center;
             color: #666;
-            font-size: 0.95rem;
+            font-size: 14px;
         }
 
-        .toggle-form a {
-            color: #00d4ff;
+        .signup-link a {
+            color: #00bcd4;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .toggle-form a:hover {
+        .signup-link a:hover {
             text-decoration: underline;
         }
 
         .message {
-            padding: 12px 15px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
             margin-bottom: 20px;
             display: none;
-            font-size: 0.9rem;
+            font-size: 14px;
         }
 
         .error-message {
@@ -176,209 +348,197 @@
             border: 1px solid #ffccc7;
         }
 
-        .back-home {
-            display: none;
-        }
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .form-section {
+                padding: 40px;
+            }
 
-        .mobile-logo {
-            display: none;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .mobile-logo-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 50px;
-            margin-bottom: 12px;
-        }
-
-        .mobile-logo-text {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00d4ff 0%, #0096c7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            .hero-content h1 {
+                font-size: 38px;
+            }
         }
 
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .login-container {
+            .container {
                 grid-template-columns: 1fr;
-                border-radius: 16px;
             }
 
-            .welcome-section {
-                padding: 40px 20px;
-            }
-
-            .welcome-section h1 {
-                font-size: 2rem;
-            }
-
-            .welcome-section p {
-                font-size: 1rem;
+            .image-section {
+                display: none;
             }
 
             .form-section {
-                padding: 40px 20px;
+                padding: 32px 24px;
             }
 
-            .form-section h2 {
-                font-size: 1.75rem;
-            }
-
-            .back-home {
-                position: relative;
-                top: 0;
-                left: 0;
-                margin-bottom: 20px;
-                color: #00d4ff;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 0;
-                background: white;
-            }
-
-            .login-container {
-                border-radius: 0;
-                box-shadow: none;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .welcome-section {
+            .form-header {
                 display: none;
             }
 
             .mobile-logo {
-                display: block;
-                padding-top: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 32px;
             }
 
             .mobile-logo-icon {
                 width: 60px;
                 height: 60px;
-                font-size: 36px;
-                margin-bottom: 6px;
-            }
-
-            .mobile-logo-text {
-                font-size: 22px;
-            }
-
-            .form-section {
-                padding: 16px 24px 20px;
-                height: 100vh;
-                overflow: hidden;
+                background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+                border-radius: 16px;
+                padding: 12px;
                 display: flex;
-                flex-direction: column;
+                align-items: center;
                 justify-content: center;
             }
 
-            .form-section h2 {
-                font-size: 1.5rem;
-                margin-bottom: 6px;
+            .mobile-logo-icon img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .mobile-logo-text {
+                font-size: 28px;
+                font-weight: 800;
+                background: linear-gradient(135deg, #00bcd4 0%, #0096c7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .form-content h2 {
+                font-size: 28px;
                 text-align: center;
             }
 
             .form-subtitle {
-                font-size: 0.85rem;
-                margin-bottom: 20px;
                 text-align: center;
             }
 
-            .form-group {
-                margin-bottom: 14px;
+            .social-login {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-section {
+                padding: 24px 20px;
             }
 
-            .form-group label {
-                font-size: 0.85rem;
-                margin-bottom: 5px;
+            .form-content h2 {
+                font-size: 24px;
             }
 
-            .form-group input {
-                padding: 12px 14px;
-                font-size: 16px;
-                border: 2px solid #e0e0e0;
+            .hero-content h1 {
+                font-size: 32px;
             }
 
-            .form-group input:focus {
-                border-color: #00d4ff;
-                outline: none;
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
             }
+        }
 
-            .btn-login {
-                padding: 14px;
-                font-size: 16px;
-                margin-top: 10px;
-                font-weight: 600;
-            }
-
-            .divider {
-                margin: 16px 0;
-                font-size: 0.85rem;
-            }
-
-            .toggle-form {
-                margin-top: 12px;
-                font-size: 0.85rem;
-                text-align: center;
-            }
+        .mobile-logo {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-home">← กลับหน้าแรก</a>
+    <div class="container">
+        <!-- Left Side - Image Section -->
+        <div class="image-section">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img src="/icon/logo.png" alt="Petizo">
+                </div>
+                <div class="logo-text">Petizo</div>
+            </div>
 
-    <div class="login-container">
-        <!-- Welcome Section -->
-        <div class="welcome-section">
-            <div class="brand-icon"><img src="/icon/logo.png" alt="Petizo" style="width:48px;height:48px;"></div>
-            <h1>Petizo</h1>
-            <p>ระบบจัดการข้อมูลสัตว์เลี้ยงแมว พร้อมบทความให้ความรู้และ AI Chatbot ที่ช่วยดูแลน้องแมวของคุณ</p>
+            <div class="hero-content">
+                <h1>ดูแลสัตว์เลี้ยง<br>ของคุณ</h1>
+                <p>จัดการข้อมูลสัตว์เลี้ยง บันทึกประวัติวัคซีน และรับคำแนะนำจาก AI Chatbot ได้ง่ายๆ ในที่เดียว</p>
+            </div>
+
+            <div class="feature-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
         </div>
 
-        <!-- Form Section -->
+        <!-- Right Side - Form Section -->
         <div class="form-section">
+            <div class="form-header">
+                <a href="register.html" class="btn-signup-link">สมัครสมาชิก</a>
+            </div>
+
+            <!-- Mobile Logo -->
             <div class="mobile-logo">
-                <div class="mobile-logo-icon"><img src="/icon/logo.png" alt="Petizo" style="width:32px;height:32px;"></div>
+                <div class="mobile-logo-icon">
+                    <img src="/icon/logo.png" alt="Petizo">
+                </div>
                 <div class="mobile-logo-text">Petizo</div>
             </div>
-            <h2>เข้าสู่ระบบ</h2>
-            <p class="form-subtitle">ยินดีต้อนรับกลับมา! กรุณากรอกข้อมูลเพื่อเข้าสู่ระบบ</p>
-            
-            <div class="message error-message" id="loginError"></div>
-            
-            <form onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>อีเมล</label>
-                    <input type="email" id="loginEmail" required placeholder="your@email.com">
+
+            <div class="form-content">
+                <h2>ยินดีต้อนรับกลับมา!</h2>
+                <p class="form-subtitle">เข้าสู่ระบบบัญชีของคุณ</p>
+
+                <div class="message error-message" id="loginError"></div>
+
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>อีเมลของคุณ</label>
+                        <input type="email" id="loginEmail" required placeholder="your@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>รหัสผ่าน</label>
+                        <input type="password" id="loginPassword" required placeholder="รหัสผ่านของคุณ">
+                    </div>
+
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <label for="rememberMe">จดจำฉันไว้</label>
+                        </div>
+                        <a href="#" class="forgot-password">ลืมรหัสผ่าน?</a>
+                    </div>
+
+                    <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+                </form>
+
+                <div class="divider">
+                    <span>หรือเข้าสู่ระบบด้วย</span>
                 </div>
-                <div class="form-group">
-                    <label>รหัสผ่าน</label>
-                    <input type="password" id="loginPassword" required placeholder="รหัสผ่านของคุณ">
+
+                <div class="social-login">
+                    <button class="btn-social" onclick="loginWithGoogle()">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Google
+                    </button>
+                    <button class="btn-social" onclick="loginWithFacebook()">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                    </button>
                 </div>
-                <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
-            </form>
-            
-            <div class="divider">หรือ</div>
-            
-            <div class="toggle-form">
-                ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+
+                <div class="signup-link">
+                    ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+                </div>
             </div>
         </div>
     </div>
@@ -402,10 +562,10 @@
         // Handle Login
         async function handleLogin(event) {
             event.preventDefault();
-            
+
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            
+
             try {
                 const response = await fetch(`${API_URL}/auth/login`, {
                     method: 'POST',
@@ -414,14 +574,14 @@
                     },
                     body: JSON.stringify({ email, password })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok) {
                     // Save token and user info
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    
+
                     // Redirect based on role
                     if (data.user.role === 'admin') {
                         window.location.href = 'admin.html';
@@ -437,11 +597,20 @@
             }
         }
 
+        // Social login placeholders
+        function loginWithGoogle() {
+            alert('ฟีเจอร์ Login ด้วย Google กำลังพัฒนา');
+        }
+
+        function loginWithFacebook() {
+            alert('ฟีเจอร์ Login ด้วย Facebook กำลังพัฒนา');
+        }
+
         // Check if already logged in
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
             const user = localStorage.getItem('user');
-            
+
             if (token && user) {
                 const userData = JSON.parse(user);
                 if (userData.role === 'admin') {
@@ -451,6 +620,16 @@
                 }
             }
         });
+
+        // Carousel dots animation
+        const dots = document.querySelectorAll('.dot');
+        let currentDot = 0;
+
+        setInterval(() => {
+            dots[currentDot].classList.remove('active');
+            currentDot = (currentDot + 1) % dots.length;
+            dots[currentDot].classList.add('active');
+        }, 3000);
     </script>
 </body>
 </html>
