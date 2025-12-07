@@ -60,8 +60,8 @@
 }
 
 .nav-link.active {
-    background: #00bcd4;
-    color: white;
+    background: none;
+    color: inherit;
 }
 
 .nav-actions {

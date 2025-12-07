@@ -509,13 +509,13 @@
                 </p>
                 <div class="profile-meta">
                     <span class="badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:16px;height:16px">
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:16px;height:16px">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
                         <span id="infoPetCount">0</span> สัตว์เลี้ยง
                     </span>
-                    <span style="color: #ddd;">•</span>
-                    <span id="infoCreatedAt">สมัครเมื่อ: -</span>
+                    <!-- <span style="color: #ddd;">•</span>
+                    <span id="infoCreatedAt">สมัครเมื่อ: -</span> -->
                 </div>
             </div>
         </div>
@@ -764,23 +764,7 @@
             document.getElementById('infoPhone').value = user.phone || '';
             document.getElementById('infoPetCount').textContent = user.pet_count || 0;
             
-            // Update created date
-            if (user.created_at) {
-                try {
-                    const date = new Date(user.created_at);
-                    const formattedDate = date.toLocaleDateString('th-TH', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-                    document.getElementById('infoCreatedAt').textContent = formattedDate;
-                } catch (e) {
-                    console.error('Date formatting error:', e);
-                    document.getElementById('infoCreatedAt').textContent = '-';
-                }
-            } else {
-                document.getElementById('infoCreatedAt').textContent = '-';
-            }
+            // ไม่แสดงวันที่สมัคร
         }
 
         // Handle profile image change
@@ -806,8 +790,11 @@
                 reader.onload = function(e) {
                     const avatarImg = document.getElementById('profileAvatarImg');
                     avatarImg.src = e.target.result;
+                    avatarImg.style.objectFit = 'cover';
+                    avatarImg.style.borderRadius = '50%';
                     avatarImg.style.width = '100%';
                     avatarImg.style.height = '100%';
+                    avatarImg.className = '';
                 };
                 reader.readAsDataURL(file);
 
