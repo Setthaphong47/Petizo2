@@ -344,7 +344,6 @@
         currentNotifications.splice(idx, 1);
         displayNotifications(currentNotifications);
     }
-    }
 
     function displayEmptyState() {
         const container = document.getElementById('notificationList');
