@@ -1558,7 +1558,6 @@ app.post('/api/chat', optionalAuth, async (req, res) => {
         const data = await response.json();
         const aiResponse = data.choices?.[0]?.message?.content || 'ขออภัย ไม่สามารถสร้างคำตอบได้';
 
-        const userId = req.user ? req.user.id : 'guest';
         console.log(`AI Chat: User ${userId} - "${message.substring(0, 30)}..."`);
 
         res.json({ 
