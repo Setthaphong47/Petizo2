@@ -72,60 +72,80 @@
 
         .avatar-section {
             position: relative;
+            width: 140px;
+            height: 140px;
         }
 
         .profile-avatar {
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            overflow: hidden;
+            overflow: visible;
             position: relative;
             cursor: pointer;
             border: 4px solid #f0f0f0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            background: #f5f7fa;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .profile-avatar:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
             border-color: #00bcd4;
-            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.2);
         }
 
         .profile-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .profile-avatar img.default-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 0;
         }
 
         .camera-badge {
             position: absolute;
-            bottom: 8px;
-            right: 8px;
-            width: 40px;
-            height: 40px;
-            background: #00bcd4;
+            bottom: 4px;
+            right: 4px;
+            width: 36px;
+            height: 36px;
+            background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.5);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             border: 3px solid white;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            z-index: 2;
         }
 
-        .profile-avatar:hover .camera-badge {
-            background: #00a5bd;
-            transform: scale(1.1);
+        .camera-badge-inner {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar:hover .camera-badge-inner {
+            background: linear-gradient(135deg, #00a5bd 0%, #00d4e6 100%);
         }
 
         .camera-badge svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             color: white;
         }
 
@@ -419,8 +439,10 @@
         <div class="profile-header-card">
             <div class="avatar-section">
                 <div class="profile-avatar" onclick="document.getElementById('profileImageInput').click()">
-                    <img id="profileAvatarImg" src="/icon/love.png" alt="Profile">
-                    <div class="camera-badge">
+                    <img id="profileAvatarImg" src="/icon/love.png" alt="Profile" class="default-icon">
+                </div>
+                <div class="camera-badge">
+                    <div class="camera-badge-inner">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -680,14 +702,11 @@
             const avatarImg = document.getElementById('profileAvatarImg');
             if (user.profile_picture) {
                 avatarImg.src = user.profile_picture;
-                avatarImg.style.width = '100%';
-                avatarImg.style.height = '100%';
+                avatarImg.className = '';
             } else {
                 // Show default icon centered
                 avatarImg.src = '/icon/love.png';
-                avatarImg.style.width = '60px';
-                avatarImg.style.height = '60px';
-                avatarImg.style.objectFit = 'contain';
+                avatarImg.className = 'default-icon';
             }
 
             // Update info section
