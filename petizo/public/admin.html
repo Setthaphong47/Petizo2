@@ -2323,12 +2323,16 @@
                         </div>
 
                         <!-- Tags -->
-                        <div id="blogTagsContainer" style="display: grid; 
-                                    grid-template-columns: repeat(2, 1fr); 
-                                    gap: 10px; 
-                                    padding: 14px 18px; 
-                                    border: 2px solid #e0e0e0; 
-                                    border-radius: 12px;">
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333; font-size: 14px;">
+                                แท็ก
+                            </label>
+                            <div id="blogTagsContainer" style="display: grid; 
+                                        grid-template-columns: repeat(2, 1fr); 
+                                        gap: 10px; 
+                                        padding: 14px 18px; 
+                                        border: 2px solid #e0e0e0; 
+                                        border-radius: 12px;">
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;">
                                 <input type="checkbox" name="blogTags" value="สุขภาพ" style="width: 18px; height: 18px; cursor: pointer;">
                                 <span>สุขภาพ</span>
@@ -2357,22 +2361,30 @@
                                 <input type="checkbox" name="blogTags" value="ทั่วไป" style="width: 18px; height: 18px; cursor: pointer;">
                                 <span>ทั่วไป</span>
                             </label>
+                            </div>
+                            <small style="display: block; margin-top: 8px; color: #999; font-size: 12px;">
+                                เลือกได้หลายแท็ก
+                            </small>
                         </div>
-                        <small style="color: #999; font-size: 12px;">
-                            เลือกได้หลายแท็ก
-                        </small>
 
                         <!-- Sources -->
-                        <div class="form-group">
-                        <label for="sourcesInput" style="font-weight:600; display:block; margin-bottom:8px;">
-                            อ้างอิง
-                        </label>
-                        <textarea id="sourcesInput"
-                                    placeholder="ใส่ URL หรือข้อความอ้างอิง"
-                                    rows="3"
-                                    style="width:100%; box-sizing:border-box; padding:10px 12px; border-radius:10px; border:1px solid #e6e6e6; resize:vertical;"></textarea>
-                            <small style="color:#777;">คั่นด้วยเครื่องหมาย , </small>
-                            <small id="sourcesCount" style="color:#666;">0 รายการ</small>
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333; font-size: 14px;">
+                                อ้างอิง
+                            </label>
+                            <textarea id="sourcesInput"
+                                        placeholder="ใส่ URL หรือข้อความอ้างอิง"
+                                        rows="3"
+                                        style="width: 100%; 
+                                                padding: 14px 18px; 
+                                                border: 2px solid #e0e0e0; 
+                                                border-radius: 12px;
+                                                font-size: 15px;
+                                                transition: all 0.3s;
+                                                resize: vertical;"></textarea>
+                            <small style="display: block; margin-top: 8px; color: #999; font-size: 12px;">
+                                คั่นด้วยเครื่องหมาย , | <span id="sourcesCount" style="color: #666;">0 รายการ</span>
+                            </small>
                         </div>
 
                         <!-- Button Actions -->
