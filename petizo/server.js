@@ -750,20 +750,32 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
                 schedules.forEach(schedule => {
                     const isCompleted = !!completedMap[schedule.id];
                     let status = 'upcoming', dueDate = null, daysUntilDue = null, shouldShow = true;
-                    
+
+                    // --- Logic: ถ้ายังไม่เคยฉีดครั้งที่ 1 จะไม่แสดง/แจ้งเตือนครั้งที่ 2, 3, ... ---
+                    // ตรวจจับ "ครั้งที่ n" ในชื่อวัคซีน
+                    const matchDose = schedule.vaccine_name.match(/ครั้งที่\s*(\d+)/);
+                    if (matchDose && parseInt(matchDose[1]) > 1) {
+                        // หาชื่อวัคซีนชุดเดียวกันแต่เป็น "ครั้งที่ 1"
+                        const firstDoseName = schedule.vaccine_name.replace(/ครั้งที่\s*\d+/, 'ครั้งที่ 1');
+                        // หา schedule ของครั้งที่ 1
+                        const firstDoseSchedule = schedules.find(sch => sch.vaccine_name === firstDoseName);
+                        // ถ้ายังไม่เคยฉีดครั้งที่ 1 ให้ข้าม
+                        if (firstDoseSchedule && !completedMap[firstDoseSchedule.id]) {
+                            shouldShow = false;
+                        }
+                    }
+
                     if (schedule.is_booster) {
                         if (ageInWeeks < schedule.age_weeks_min) {
                             shouldShow = false;
                         } else {
                             const baseName = schedule.vaccine_name.replace(/\s*(Booster|บูสเตอร์).*$/i, '').trim();
                             const related = completed.filter(v => v.vaccine_name.includes(baseName) || baseName.includes(v.vaccine_name));
-                            
                             if (related.length > 0) {
                                 const lastDate = new Date(related[0].vaccination_date);
                                 dueDate = new Date(lastDate);
                                 dueDate.setFullYear(dueDate.getFullYear() + (schedule.frequency_years || 1));
                                 daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
-                                
                                 if (daysUntilDue < -30) status = 'overdue';
                                 else if (daysUntilDue <= 30) status = 'due';
                                 else shouldShow = false;
@@ -771,7 +783,6 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
                                 dueDate = new Date(birthDate);
                                 dueDate.setDate(dueDate.getDate() + (schedule.age_weeks_min * 7));
                                 daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
-                                
                                 if (daysUntilDue < -30) status = 'overdue';
                                 else if (daysUntilDue <= 30) status = 'due';
                             }
@@ -783,14 +794,13 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
                             dueDate = new Date(birthDate);
                             dueDate.setDate(dueDate.getDate() + (schedule.age_weeks_min * 7));
                             daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
-                            
                             if (isCompleted) status = 'completed';
                             else if (ageInWeeks < schedule.age_weeks_min) status = 'upcoming';
                             else if (!schedule.age_weeks_max || ageInWeeks <= schedule.age_weeks_max) status = 'due';
                             else status = 'overdue';
                         }
                     }
-                    
+
                     if (shouldShow) {
                         recommendations.push({
                             ...schedule, status, due_date: dueDate, days_until_due: daysUntilDue,
