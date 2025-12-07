@@ -295,7 +295,6 @@
             }
             return `
                 <div class=\"notification-item ${urgencyClass}\" data-petid=\"${notif.petId}\" data-idx=\"${idx}\">
-                    <button class=\"notification-close-btn\" title=\"ลบแจ้งเตือน\" tabindex=\"0\">×</button>
                     <div class=\"notification-top\">
                         <div class=\"notification-icon\"><img src=\"/icon/syringe.png\" alt=\"Vaccine\" style=\"width:24px;height:24px;\"></div>
                         <div class=\"notification-details\">
@@ -327,34 +326,7 @@
         }
     }
 
-        // add click handlers for close (delete) buttons
-        Array.from(container.querySelectorAll('.notification-close-btn')).forEach((btn, idx) => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const notif = notifications[idx];
-                if (!notif || !notif.petId || !notif.vaccineName) {
-                    removeNotification(idx);
-                    return;
-                }
-                // Confirm delete (optional)
-                // if (!confirm('ต้องการลบแจ้งเตือนนี้ใช่หรือไม่?')) return;
-                try {
-                    const token = localStorage.getItem('token');
-                    const res = await fetch(`/api/notifications/${notif.petId}/${encodeURIComponent(notif.vaccineName)}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (res.ok) {
-                        removeNotification(idx);
-                    } else {
-                        const data = await res.json().catch(() => ({}));
-                        alert(data.error || 'เกิดข้อผิดพลาดในการลบแจ้งเตือน');
-                    }
-                } catch (err) {
-                    alert('เกิดข้อผิดพลาดในการลบแจ้งเตือน');
-                }
-            });
-        });
+        // ไม่มีปุ่มลบแจ้งเตือนอีกต่อไป
 
         // add click handlers for items (navigate to pet details)
         Array.from(container.querySelectorAll('.notification-item')).forEach(item => {
