@@ -751,18 +751,42 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
                     const isCompleted = !!completedMap[schedule.id];
                     let status = 'upcoming', dueDate = null, daysUntilDue = null, shouldShow = true;
 
-                    // --- Logic: ถ้ายังไม่เคยฉีดครั้งที่ 1 จะไม่แสดง/แจ้งเตือนครั้งที่ 2, 3, ... ---
-                    // ตรวจจับ "ครั้งที่ n" ในชื่อวัคซีน
-                    const matchDose = schedule.vaccine_name.match(/ครั้งที่\s*(\d+)/);
-                    if (matchDose && parseInt(matchDose[1]) > 1) {
-                        // หาชื่อวัคซีนชุดเดียวกันแต่เป็น "ครั้งที่ 1"
-                        const firstDoseName = schedule.vaccine_name.replace(/ครั้งที่\s*\d+/, 'ครั้งที่ 1');
-                        // หา schedule ของครั้งที่ 1
-                        const firstDoseSchedule = schedules.find(sch => sch.vaccine_name === firstDoseName);
-                        // ถ้ายังไม่เคยฉีดครั้งที่ 1 ให้ข้าม
-                        if (firstDoseSchedule && !completedMap[firstDoseSchedule.id]) {
-                            shouldShow = false;
+                    // --- Logic ใหม่: ใช้ชื่อวัคซีนและ description (ครั้งที่ X) ---
+                    // ดึงชื่อชุดวัคซีน เช่น "FVRCP", "FeLV", "Rabies"
+                    const baseVaccineName = schedule.vaccine_name.replace(/ครั้งที่\s*\d+/g, '').replace(/\s+/g, ' ').trim();
+                    // ดึงลำดับเข็มจาก description
+                    let doseNum = 1;
+                    if (schedule.description) {
+                        const doseMatch = schedule.description.match(/ครั้งที่\s*(\d+)/);
+                        if (doseMatch) doseNum = parseInt(doseMatch[1]);
+                    }
+                    // ถ้าเป็นเข็มที่ 2+ ต้องเช็คว่ามีการฉีดเข็มที่ 1 แล้วหรือยัง
+                    if (doseNum > 1) {
+                        // หา schedule ของเข็มที่ 1 ในชุดเดียวกัน
+                        const firstDoseSchedule = schedules.find(sch => {
+                            const schBaseName = sch.vaccine_name.replace(/ครั้งที่\s*\d+/g, '').replace(/\s+/g, ' ').trim();
+                            let schDoseNum = 1;
+                            if (sch.description) {
+                                const schDoseMatch = sch.description.match(/ครั้งที่\s*(\d+)/);
+                                if (schDoseMatch) schDoseNum = parseInt(schDoseMatch[1]);
+                            }
+                            return schBaseName === baseVaccineName && schDoseNum === 1;
+                        });
+                        // ตรวจสอบว่ามีการฉีดเข็มที่ 1 แล้วหรือยัง (ดูจาก completed)
+                        let hasFirstDose = false;
+                        if (firstDoseSchedule) {
+                            hasFirstDose = completed.some(v => {
+                                // เทียบชื่อวัคซีนและ description
+                                const vBaseName = v.vaccine_name.replace(/ครั้งที่\s*\d+/g, '').replace(/\s+/g, ' ').trim();
+                                let vDoseNum = 1;
+                                if (v.description) {
+                                    const vDoseMatch = v.description.match(/ครั้งที่\s*(\d+)/);
+                                    if (vDoseMatch) vDoseNum = parseInt(vDoseMatch[1]);
+                                }
+                                return vBaseName === baseVaccineName && vDoseNum === 1;
+                            });
                         }
+                        if (!hasFirstDose) shouldShow = false;
                     }
 
                     if (schedule.is_booster) {
