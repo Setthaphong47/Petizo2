@@ -533,6 +533,128 @@ app.delete('/api/pets/:id', authenticateToken, (req, res) => {
 
 
 // ============= VACCINATIONS =============
+// ============= NOTIFICATIONS ALL-IN-ONE =============
+app.get('/api/notifications/all', authenticateToken, async (req, res) => {
+    const petColumn = getPetUserColumn();
+    try {
+        // 1. Load user's pets
+        const pets = await new Promise((resolve, reject) => {
+            db.all(`SELECT * FROM pets WHERE ${petColumn} = ? ORDER BY created_at DESC`, [req.user.id], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        // 2. Load vaccine schedules
+        const vaccineSchedules = await new Promise((resolve, reject) => {
+            db.all('SELECT * FROM vaccine_schedules ORDER BY age_weeks_min ASC', (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        // 3. For each pet, load vaccination history & recommended vaccines
+        let notifications = [];
+        let recommendedVaccines = {};
+        for (const pet of pets) {
+            // Vaccination history
+            const vaccinations = await new Promise((resolve, reject) => {
+                db.all('SELECT * FROM vaccinations WHERE pet_id = ? ORDER BY vaccination_date DESC', [pet.id], (err, rows) => {
+                    if (err) reject(err);
+                    else resolve(rows);
+                });
+            });
+
+            // Notification logic (urgent/warning)
+            if (Array.isArray(vaccinations)) {
+                for (const vaccination of vaccinations) {
+                    if (!vaccination) continue;
+                    if (vaccination.next_due_date) {
+                        const today = new Date();
+                        const dueDate = new Date(vaccination.next_due_date);
+                        const diffTime = dueDate - today;
+                        const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        if (daysLeft < 0) {
+                            notifications.push({ type:'urgent', petName:pet.name, petId:pet.id, vaccineName:vaccination.vaccine_name, message:`วัคซีนเลยกำหนดฉีดแล้ว ${Math.abs(daysLeft)} วัน`, dueDate:vaccination.next_due_date, daysLeft });
+                        } else if (daysLeft <= 30) {
+                            notifications.push({ type:'warning', petName:pet.name, petId:pet.id, vaccineName:vaccination.vaccine_name, message:`ใกล้ถึงกำหนดฉีดวัคซีนในอีก ${daysLeft} วัน`, dueDate:vaccination.next_due_date, daysLeft });
+                        }
+                    }
+                }
+            }
+
+            // Recommended vaccines
+            let petRecommendations = [];
+            if (pet.birth_date) {
+                const birthDate = new Date(pet.birth_date);
+                const today = new Date();
+                const ageInWeeks = Math.floor((today - birthDate) / (7 * 24 * 60 * 60 * 1000));
+                const ageInYears = ageInWeeks / 52;
+
+                // Completed vaccines map
+                const completedMap = {};
+                vaccinations.forEach(v => { if (v.schedule_id) completedMap[v.schedule_id] = v; });
+
+                vaccineSchedules.forEach(schedule => {
+                    const isCompleted = !!completedMap[schedule.id];
+                    let status = 'upcoming', dueDate = null, daysUntilDue = null, shouldShow = true;
+
+                    if (schedule.is_booster) {
+                        if (ageInWeeks < schedule.age_weeks_min) {
+                            shouldShow = false;
+                        } else {
+                            const baseName = schedule.vaccine_name.replace(/\s*(Booster|บูสเตอร์).*$/i, '').trim();
+                            const related = vaccinations.filter(v => v.vaccine_name.includes(baseName) || baseName.includes(v.vaccine_name));
+                            if (related.length > 0) {
+                                const lastDate = new Date(related[0].vaccination_date);
+                                dueDate = new Date(lastDate);
+                                dueDate.setFullYear(dueDate.getFullYear() + (schedule.frequency_years || 1));
+                                daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
+                                if (daysUntilDue < -30) status = 'overdue';
+                                else if (daysUntilDue <= 30) status = 'due';
+                                else shouldShow = false;
+                            } else {
+                                dueDate = new Date(birthDate);
+                                dueDate.setDate(dueDate.getDate() + (schedule.age_weeks_min * 7));
+                                daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
+                                if (daysUntilDue < -30) status = 'overdue';
+                                else if (daysUntilDue <= 30) status = 'due';
+                            }
+                        }
+                    } else {
+                        if (ageInYears > 1) {
+                            shouldShow = false;
+                        } else {
+                            dueDate = new Date(birthDate);
+                            dueDate.setDate(dueDate.getDate() + (schedule.age_weeks_min * 7));
+                            daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
+                            if (isCompleted) status = 'completed';
+                            else if (ageInWeeks < schedule.age_weeks_min) status = 'upcoming';
+                            else if (!schedule.age_weeks_max || ageInWeeks <= schedule.age_weeks_max) status = 'due';
+                            else status = 'overdue';
+                        }
+                    }
+                    if (shouldShow) {
+                        petRecommendations.push({
+                            ...schedule, status, due_date: dueDate, days_until_due: daysUntilDue,
+                            is_completed: isCompleted, pet_age_weeks: ageInWeeks
+                        });
+                    }
+                });
+            }
+            recommendedVaccines[pet.id] = petRecommendations;
+        }
+
+        res.json({
+            pets,
+            vaccineSchedules,
+            notifications,
+            recommendedVaccines
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'เกิดข้อผิดพลาด', details: err.message });
+    }
+});
 
 app.get('/api/vaccine-schedules', (req, res) => {
     db.all('SELECT * FROM vaccine_schedules ORDER BY age_weeks_min ASC', (err, schedules) => {
