@@ -1,3 +1,18 @@
+// ลบแจ้งเตือนวัคซีน (ลบ vaccination record ตาม petId และ vaccineName)
+app.delete('/api/notifications/:petId/:vaccineName', authenticateToken, (req, res) => {
+    const petColumn = getPetUserColumn();
+    const { petId, vaccineName } = req.params;
+    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงนี้
+    db.get(`SELECT * FROM pets WHERE id = ? AND ${petColumn} = ?`, [petId, req.user.id], (err, pet) => {
+        if (err || !pet) return res.status(404).json({ error: 'ไม่พบสัตว์เลี้ยง' });
+        // ลบ vaccination record ที่ตรงกับ vaccineName (case-insensitive)
+        db.run('DELETE FROM vaccinations WHERE pet_id = ? AND LOWER(vaccine_name) = LOWER(?)', [petId, vaccineName], function(err) {
+            if (err) return res.status(500).json({ error: 'ไม่สามารถลบแจ้งเตือนได้' });
+            if (this.changes === 0) return res.status(404).json({ error: 'ไม่พบข้อมูลวัคซีนที่ต้องการลบ' });
+            res.json({ message: 'ลบแจ้งเตือนสำเร็จ' });
+        });
+    });
+});
 require('dotenv').config();
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
