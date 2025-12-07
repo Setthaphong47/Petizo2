@@ -19,12 +19,33 @@ const MODEL_NAME = process.env.MODEL_NAME || 'openai/gpt-4o-mini';
 // Global variable เก็บโครงสร้าง database
 let DB_STRUCTURE = 'old'; // 'old' = users table, 'new' = admins + members
 
-const slugify = (s) =>
-    s ? s.toString().toLowerCase().trim()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w\-]+/g, '')
-        .replace(/\-\-+/g, '-')
-    : '';
+const slugify = (s) => {
+    if (!s) return '';
+    
+    // Convert to string and trim
+    let slug = s.toString().trim();
+    
+    // For Thai content, use URL encoding approach
+    // Replace spaces with hyphens
+    slug = slug.replace(/\s+/g, '-');
+    
+    // Remove special characters but keep Thai Unicode, alphanumeric, and hyphens
+    // Keep Unicode letters (including Thai), numbers, and hyphens
+    slug = slug.replace(/[^\u0E00-\u0E7F\w\-]/g, '');
+    
+    // Replace multiple consecutive hyphens with single hyphen
+    slug = slug.replace(/\-\-+/g, '-');
+    
+    // Remove leading/trailing hyphens
+    slug = slug.replace(/^-+|-+$/g, '');
+    
+    // If slug is empty or just hyphens after processing, use timestamp
+    if (!slug || slug === '-' || slug.length === 0) {
+        slug = 'post-' + Date.now();
+    }
+    
+    return slug;
+};
 
 // Middleware
 app.use(cors());
@@ -923,10 +944,13 @@ app.post('/api/ocr/scan', authenticateToken, upload.single('image'), async (req,
 // ใช้ตาราง 'blogs' และ columns: admin_id, source_name, source_url
 
 app.post('/api/admin/blog', authenticateToken, isAdmin, upload.single('featured_image'), (req, res) => {
+    console.log('📝 POST /api/admin/blog - Creating new blog');
+    console.log('Request body:', { title: req.body.title, category: req.body.category, status: req.body.status });
+    console.log('User ID:', req.user.id);
+    console.log('Has file:', !!req.file);
+    
     const { title, content, excerpt, category, status, tags, source_name, source_url } = req.body;
     const featured_image = req.file ? `/uploads/${req.file.filename}` : null;
-    const slug = slugify(title) + '-' + Date.now();
-    const published_at = status === 'published' ? new Date().toISOString() : null;
     
     let tagsJson = '[]';
     if (tags) {
@@ -936,18 +960,34 @@ app.post('/api/admin/blog', authenticateToken, isAdmin, upload.single('featured_
         } catch { tagsJson = JSON.stringify([tags]); }
     }
     
-    db.run(
-        `INSERT INTO blogs (admin_id, title, slug, content, excerpt, featured_image, category, tags, source_name, source_url, status, published_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [req.user.id, title, slug, content, excerpt, featured_image, category, tagsJson, source_name || null, source_url || null, status, published_at],
-        function(err) {
-            if (err) {
-                console.error('Blog create error:', err);
-                return res.status(500).json({ error: 'ไม่สามารถสร้างบทความได้' });
-            }
-            res.json({ message: 'สร้างบทความสำเร็จ', id: this.lastID, slug });
+    // First, get the next ID to generate slug
+    db.get('SELECT MAX(id) as maxId FROM blogs', [], (err, row) => {
+        if (err) {
+            console.error('❌ Error getting max ID:', err);
+            return res.status(500).json({ error: 'ไม่สามารถสร้างบทความได้' });
         }
-    );
+        
+        const nextId = (row.maxId || 0) + 1;
+        const titleSlug = slugify(title);
+        const slug = `${nextId}-${titleSlug}`;
+        const published_at = status === 'published' ? new Date().toISOString() : null;
+        
+        console.log('Generated slug:', slug);
+        
+        db.run(
+            `INSERT INTO blogs (admin_id, title, slug, content, excerpt, featured_image, category, tags, source_name, source_url, status, published_at) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [req.user.id, title, slug, content, excerpt, featured_image, category, tagsJson, source_name || null, source_url || null, status, published_at],
+            function(err) {
+                if (err) {
+                    console.error('❌ Blog create error:', err);
+                    return res.status(500).json({ error: 'ไม่สามารถสร้างบทความได้: ' + err.message });
+                }
+                console.log('✅ Blog created successfully! ID:', this.lastID, 'Slug:', slug);
+                res.json({ message: 'สร้างบทความสำเร็จ', id: this.lastID, slug });
+            }
+        );
+    });
 });
 
 app.put('/api/admin/blog/:id', authenticateToken, isAdmin, upload.single('featured_image'), (req, res) => {
