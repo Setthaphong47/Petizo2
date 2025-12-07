@@ -11,6 +11,28 @@
             'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
         return `${date.getDate()} ${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
     }
+
+    // Breed mapping EN->TH
+    const breedMap = {
+        "Scottish Straight": "สก็อตติช สเตรท",
+        "Scottish Fold": "สก็อตติช โฟลด์",
+        "Persian": "เปอร์เซีย",
+        "British Shorthair": "บริติช ช็อตแฮร์",
+        // เพิ่มสายพันธุ์อื่น ๆ ตามต้องการ
+    };
+    function getThaiBreed(breed) {
+        return breedMap[breed] || breed;
+    }
+    </script>
+    <script>
+    function formatThaiDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '-';
+        const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+            'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        return `${date.getDate()} ${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
+    }
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -923,7 +945,7 @@
                         ${currentPet.breed ? `
                             <div class="detail-row">
                                 <span class="detail-label">สายพันธุ์ :</span>
-                                <span>${currentPet.breed}</span>
+                                <span>${getThaiBreed(currentPet.breed)}</span>
                             </div>
                         ` : ''}
                         <div class="detail-row">
