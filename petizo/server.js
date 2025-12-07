@@ -1505,8 +1505,15 @@ app.post('/api/chat', optionalAuth, async (req, res) => {
         }
 
         if (!OPENROUTER_API_KEY) {
-            return res.status(500).json({ error: 'API key ไม่ได้ถูกตั้งค่า' });
+            console.error('OPENROUTER_API_KEY is not configured');
+            return res.status(500).json({ 
+                error: 'ขออภัย ระบบ AI ยังไม่พร้อมใช้งาน',
+                details: 'API key not configured' 
+            });
         }
+
+        const userId = req.user ? req.user.id : 'guest';
+        console.log(`AI Chat Request from User ${userId}: "${message.substring(0, 50)}..."`);
 
         // System prompt สำหรับ AI CAT chatbot
         const systemPrompt = `คุณคือ AI CAT ผู้ช่วยให้คำแนะนำเกี่ยวกับการดูแลแมวและสัตว์เลี้ยง คุณมีความรู้เกี่ยวกับ:
@@ -1525,7 +1532,7 @@ app.post('/api/chat', optionalAuth, async (req, res) => {
             headers: {
                 'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
                 'Content-Type': 'application/json',
-                'HTTP-Referer': 'http://localhost:3000',
+                'HTTP-Referer': process.env.HTTP_REFERER || 'http://localhost:3000',
                 'X-Title': 'Petizo AI Chat'
             },
             body: JSON.stringify({
@@ -1541,10 +1548,10 @@ app.post('/api/chat', optionalAuth, async (req, res) => {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            console.error('OpenRouter API Error:', errorData);
+            console.error('OpenRouter API Error:', response.status, errorData);
             return res.status(500).json({ 
                 error: 'ไม่สามารถเชื่อมต่อกับ AI ได้',
-                details: errorData.error?.message || 'Unknown error'
+                details: errorData.error?.message || `HTTP ${response.status}`
             });
         }
 

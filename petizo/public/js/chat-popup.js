@@ -61,11 +61,11 @@ function sendChatMessage() {
         body: JSON.stringify({ message })
     })
     .then(async r => {
-        const data = await r.json();
         if (!r.ok) {
-            throw new Error(data.error || data.details || 'API Error');
+            const data = await r.json().catch(() => ({ error: 'Unknown error' }));
+            throw new Error(data.error || data.details || `HTTP ${r.status}`);
         }
-        return data;
+        return r.json();
     })
     .then(data => {
         if (loadingMessage.parentNode) messages.removeChild(loadingMessage);
