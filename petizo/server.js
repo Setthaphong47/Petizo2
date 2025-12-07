@@ -520,6 +520,66 @@ app.get('/api/vaccine-schedules', (req, res) => {
     });
 });
 
+// Admin: Create new vaccine schedule
+app.post('/api/vaccine-schedules', authenticateToken, isAdmin, (req, res) => {
+    const {
+        vaccine_name,
+        description,
+        age_weeks_min,
+        age_weeks_max,
+        is_booster,
+        frequency_years,
+        vaccine_type
+    } = req.body;
+
+    db.run(
+        `INSERT INTO vaccine_schedules (
+            vaccine_name, description, age_weeks_min, age_weeks_max,
+            is_booster, frequency_years, vaccine_type
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [vaccine_name, description, age_weeks_min, age_weeks_max, is_booster, frequency_years, vaccine_type],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'ไม่สามารถเพิ่มข้อมูลได้' });
+            res.json({ message: 'เพิ่มสำเร็จ', scheduleId: this.lastID });
+        }
+    );
+});
+
+// Admin: Update vaccine schedule
+app.put('/api/vaccine-schedules/:id', authenticateToken, isAdmin, (req, res) => {
+    const {
+        vaccine_name,
+        description,
+        age_weeks_min,
+        age_weeks_max,
+        is_booster,
+        frequency_years,
+        vaccine_type
+    } = req.body;
+
+    db.run(
+        `UPDATE vaccine_schedules SET
+            vaccine_name = ?, description = ?, age_weeks_min = ?, age_weeks_max = ?,
+            is_booster = ?, frequency_years = ?, vaccine_type = ?
+         WHERE id = ?`,
+        [vaccine_name, description, age_weeks_min, age_weeks_max, is_booster, frequency_years, vaccine_type, req.params.id],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'ไม่สามารถแก้ไขได้' });
+            if (this.changes === 0) return res.status(404).json({ error: 'ไม่พบข้อมูล' });
+            res.json({ message: 'แก้ไขสำเร็จ' });
+        }
+    );
+});
+
+// Admin: Delete vaccine schedule
+app.delete('/api/vaccine-schedules/:id', authenticateToken, isAdmin, (req, res) => {
+    db.run('DELETE FROM vaccine_schedules WHERE id = ?', [req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: 'ไม่สามารถลบได้' });
+        if (this.changes === 0) return res.status(404).json({ error: 'ไม่พบข้อมูล' });
+        res.json({ message: 'ลบสำเร็จ' });
+    });
+});
+
 app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) => {
     const petColumn = getPetUserColumn();
     
