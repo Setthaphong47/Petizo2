@@ -228,6 +228,8 @@
                                         message: `เกินกำหนดแล้ว ${daysLate} วัน`,
                                         dueDate: vaccine.due_date,
                                         daysLeft: vaccine.days_until_due,
+                                        age_weeks_min: vaccine.age_weeks_min,
+                                        age_weeks_max: vaccine.age_weeks_max
                                     });
                                 } else if (vaccine.status === 'due') {
                                     const daysLeft = vaccine.days_until_due || 0;
@@ -239,6 +241,8 @@
                                         message: daysLeft >= 0 ? `ใกล้ถึงกำหนดฉีดในอีก ${daysLeft} วัน` : `ถึงกำหนดฉีดแล้ว`,
                                         dueDate: vaccine.due_date,
                                         daysLeft: vaccine.days_until_due,
+                                        age_weeks_min: vaccine.age_weeks_min,
+                                        age_weeks_max: vaccine.age_weeks_max
                                     });
                                 }
                                 // ไม่แสดง 'upcoming' และ 'completed' ในการแจ้งเตือน
@@ -284,6 +288,13 @@
             return;
         }
 
+        function formatAgeRange(min, max) {
+            if (min == null && max == null) return '-';
+            if (min == null) return `${max} สัปดาห์`;
+            if (max == null) return `${min} สัปดาห์`;
+            if (min === max) return `${min} สัปดาห์`;
+            return `${min}-${max} สัปดาห์`;
+        }
         container.innerHTML = notifications.map((notif, idx) => {
             const urgencyClass = notif.type || 'info';
             const dueHtml = notif.dueDate ? `<div style=\"margin-top:8px;\"><span class=\"notification-date\">กำหนดฉีด: ${formatThaiDate(notif.dueDate)}</span></div>` : '';
@@ -293,6 +304,7 @@
             if (notif.type === 'urgent' && typeof notif.daysLeft === 'number' && notif.daysLeft < 0) {
                 message = `เกินกำหนดแล้ว ${formatOverdue(Math.abs(notif.daysLeft))}`;
             }
+            const ageRangeHtml = `<div class=\"vaccine-age-range\">ช่วงอายุ : ${formatAgeRange(notif.age_weeks_min, notif.age_weeks_max)}</div>`;
             return `
                 <div class=\"notification-item ${urgencyClass}\" data-petid=\"${notif.petId}\" data-idx=\"${idx}\">
                     <div class=\"notification-top\">
@@ -301,6 +313,7 @@
                             <div class=\"pet-name\">${escapeHtml(notif.petName || 'ไม่ทราบชื่อ')}</div>
                             <div class=\"vaccine-name\">${escapeHtml(notif.vaccineName || '')}</div>
                             ${descHtml}
+                            ${ageRangeHtml}
                             <div class=\"notification-message\">${escapeHtml(message)}</div>
                             ${dueHtml}
                         </div>
