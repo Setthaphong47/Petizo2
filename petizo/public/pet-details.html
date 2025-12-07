@@ -1032,11 +1032,11 @@
             const ageText = calculateAgeText(data.pet_age_weeks);
             document.getElementById('petAgeInfo').style.display = 'block';
             document.getElementById('petAgeText').textContent = ageText;
-            
-            // Build timeline (แสดงแค่ 5 รายการแรก)
+        
+            // Build timeline (แสดงทุกรายการ)
             let html = '<div class="vaccine-timeline">';
-            
-            const displayVaccines = data.vaccines.slice(0, 5);
+        
+            const displayVaccines = data.vaccines;
             
             // ฟังก์ชันแปลงช่วงอายุเป็นข้อความภาษาไทย
             function formatAgeRange(min, max) {
