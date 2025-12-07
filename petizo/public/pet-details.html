@@ -2,6 +2,16 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <script>
+    function formatThaiDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '-';
+        const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+            'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        return `${date.getDate()} ${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
+    }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -1017,7 +1027,7 @@
                 }
                 
                 const dueDate = vaccine.due_date 
-                    ? new Date(vaccine.due_date).toLocaleDateString('th-TH')
+                    ? formatThaiDate(vaccine.due_date)
                     : '-';
 
                 html += `
