@@ -2,6 +2,19 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <script>
+    // Breed mapping EN->TH
+    const breedMap = {
+        "Scottish Straight": "สก็อตติช สเตรท",
+        "Scottish Fold": "สก็อตติช โฟลด์",
+        "Persian": "เปอร์เซีย",
+        "British Shorthair": "บริติช ช็อตแฮร์",
+        // เพิ่มสายพันธุ์อื่น ๆ ตามต้องการ
+    };
+    function getThaiBreed(breed) {
+        return breedMap[breed] || breed;
+    }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -1110,7 +1123,7 @@
                                 <div class="pet-name">
                                     ${pet.name}
                                 </div>
-                                ${pet.breed ? `<div class="pet-breed">${pet.breed}</div>` : ''}
+                                ${pet.breed ? `<div class="pet-breed">${getThaiBreed(pet.breed)}</div>` : ''}
                                 <div class="pet-details">
                                     ${genderText ? `
                                         <div class="detail-item">

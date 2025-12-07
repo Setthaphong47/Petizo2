@@ -2,6 +2,19 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <script>
+    // Breed mapping EN->TH
+    const breedMap = {
+        "Scottish Straight": "สก็อตติช สเตรท",
+        "Scottish Fold": "สก็อตติช โฟลด์",
+        "Persian": "เปอร์เซีย",
+        "British Shorthair": "บริติช ช็อตแฮร์",
+        // เพิ่มสายพันธุ์อื่น ๆ ตามต้องการ
+    };
+    function getThaiBreed(breed) {
+        return breedMap[breed] || breed;
+    }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -1821,7 +1834,7 @@
                             <img src="${imageUrl}" class="pet-card-image" alt="${pet.name}" onerror="this.src=&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23ddd'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='18' fill='%23999'%3ENo Photo%3C/text%3E%3C/svg%3E&quot;">
                             <div class="pet-card-content">
                                 <div class="pet-card-name">${pet.name}</div>
-                                <div class="pet-card-breed">${pet.breed || 'ไม่ระบุสายพันธุ์'}</div>
+                                <div class="pet-card-breed">${pet.breed ? getThaiBreed(pet.breed) : 'ไม่ระบุสายพันธุ์'}</div>
                                 <div class="pet-card-info">
                                     <div class="pet-card-info-item">
                                         <span>${pet.gender === 'male' ? '<img src="/icon/gender (1).png" alt="Boy" style="width:25px;height:25px;">' : '<img src="/icon/gender.png" alt="Girl" style="width:25px;height:25px;">'}</span>
@@ -1904,7 +1917,7 @@
                             </div>
                             <div class="pet-info-item">
                                 <div class="pet-info-label">สายพันธุ์</div>
-                                <div class="pet-info-value">${pet.breed || 'ไม่ระบุ'}</div>
+                                <div class="pet-info-value">${pet.breed ? getThaiBreed(pet.breed) : 'ไม่ระบุ'}</div>
                             </div>
                             <div class="pet-info-item">
                                 <div class="pet-info-label">เพศ</div>
