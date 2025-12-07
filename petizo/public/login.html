@@ -598,6 +598,9 @@
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
 
+                    // Clear form before redirect
+                    document.getElementById('loginForm').reset();
+
                     // Redirect based on role
                     if (data.user.role === 'admin') {
                         window.location.href = 'admin.html';
@@ -625,6 +628,17 @@
                 } else {
                     window.location.href = 'index.html';
                 }
+            }
+
+            // Clear form fields on page load (especially after logout or successful login)
+            const form = document.getElementById('loginForm');
+            if (form) {
+                form.reset();
+                // Also clear any autofilled values
+                setTimeout(() => {
+                    document.getElementById('email').value = '';
+                    document.getElementById('password').value = '';
+                }, 50);
             }
         });
 
