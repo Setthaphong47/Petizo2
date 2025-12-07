@@ -1038,10 +1038,17 @@
             
             const displayVaccines = data.vaccines.slice(0, 5);
             
+            // ฟังก์ชันแปลงช่วงอายุเป็นข้อความภาษาไทย
+            function formatAgeRange(min, max) {
+                if (min == null && max == null) return '-';
+                if (min == null) return `${max} สัปดาห์`;
+                if (max == null) return `${min} สัปดาห์`;
+                if (min === max) return `${min} สัปดาห์`;
+                return `${min}-${max} สัปดาห์`;
+            }
             displayVaccines.forEach(vaccine => {
                 const statusClass = vaccine.status;
                 const statusBadgeClass = `badge-${vaccine.status}`;
-                
                 let statusText = '';
                 switch(vaccine.status) {
                     case 'completed': statusText = 'ฉีดแล้ว'; break;
@@ -1049,28 +1056,23 @@
                     case 'overdue': statusText = 'เกินกำหนด'; break;
                     case 'upcoming': statusText = 'กำลังจะถึง'; break;
                 }
-                
                 const dueDate = vaccine.due_date 
                     ? formatThaiDate(vaccine.due_date)
                     : '-';
-
+                // ใช้ age_weeks_min/max จาก API
+                const ageRangeText = formatAgeRange(vaccine.age_weeks_min, vaccine.age_weeks_max);
                 html += `
                     <div class="vaccine-item ${statusClass}">
                         <div class="vaccine-header">
                             <div class="vaccine-name">${vaccine.vaccine_name}</div>
                             <div class="vaccine-status-badge ${statusBadgeClass}">${statusText}</div>
                         </div>
-                        
-                        ${vaccine.description ? `
-                            <div class="vaccine-description">${vaccine.description}</div>
-                        ` : ''}
-                        
+                        ${vaccine.description ? `<div class="vaccine-description">${vaccine.description}</div>` : ''}
                         <div class="vaccine-details">
-                            <div><strong>ช่วงอายุ :</strong> ${vaccine.age_range_text || '-'}</div>
+                            <div><strong>ช่วงอายุ :</strong> ${ageRangeText}</div>
                             <div><strong>วันที่ควรฉีด :</strong> ${dueDate}</div>
                             ${vaccine.is_booster ? '<div><strong>ประเภท :</strong> Booster</div>' : ''}
                         </div>
-                        
                         <div class="vaccine-actions">
                             ${!vaccine.is_completed && (vaccine.status === 'due' || vaccine.status === 'overdue') ? `
                                 <button class="btn-record" onclick="openRecordVaccineModal(${vaccine.id}, '${vaccine.vaccine_name}')">
