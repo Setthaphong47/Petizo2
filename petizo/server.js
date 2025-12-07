@@ -79,7 +79,7 @@ const uploadsDir = path.join(__dirname, 'data', 'uploads');
 try {
     if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true });
-        console.log('✅ สร้าง data/uploads folder เรียบร้อย');
+        console.log('สร้าง data/uploads folder เรียบร้อย');
     }
 } catch (err) {
     console.error('ไม่สามารถสร้างโฟลเดอร์ data/uploads:', err.message);

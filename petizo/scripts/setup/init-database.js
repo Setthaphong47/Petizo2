@@ -2,27 +2,27 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 
-console.log('🚀 กำลังสร้าง Database...\n');
+console.log('กำลังสร้าง Database...\n');
 
 // สร้าง data folder ถ้ายังไม่มี
 const dataDir = './data';
 if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
-    console.log('✅ สร้าง data folder เรียบร้อย\n');
+    console.log('สร้าง data folder เรียบร้อย\n');
 }
 
 const db = new sqlite3.Database('./data/petizo.db', (err) => {
     if (err) {
-        console.error('❌ Error opening database:', err);
+        console.error('Error opening database:', err);
         process.exit(1);
     } else {
-        console.log('✅ เชื่อมต่อ SQLite database สำเร็จ\n');
+        console.log('เชื่อมต่อ SQLite database สำเร็จ\n');
         createTables();
     }
 });
 
 function createTables() {
-    console.log('📋 กำลังสร้างตาราง...\n');
+    console.log('กำลังสร้างตาราง...\n');
 
     // ตาราง Admins (ผู้ดูแลระบบ)
     db.run(`
@@ -37,8 +37,8 @@ function createTables() {
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating admins table:', err);
-        else console.log('✅ ตาราง admins สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating admins table:', err);
+        else console.log('ตาราง admins สร้างเสร็จแล้ว');
     });
 
     // ตาราง Members (สมาชิกทั่วไป)
@@ -55,8 +55,8 @@ function createTables() {
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating members table:', err);
-        else console.log('✅ ตาราง members สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating members table:', err);
+        else console.log('ตาราง members สร้างเสร็จแล้ว');
     });
 
     // ตาราง Pets (เชื่อมกับ members)
@@ -78,8 +78,8 @@ function createTables() {
             FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating pets table:', err);
-        else console.log('✅ ตาราง pets สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating pets table:', err);
+        else console.log('ตาราง pets สร้างเสร็จแล้ว');
     });
 
     // ตาราง Vaccine Schedules
@@ -95,8 +95,8 @@ function createTables() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating vaccine_schedules table:', err);
-        else console.log('✅ ตาราง vaccine_schedules สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating vaccine_schedules table:', err);
+        else console.log('ตาราง vaccine_schedules สร้างเสร็จแล้ว');
     });
 
     // ตาราง Vaccinations
@@ -121,8 +121,8 @@ function createTables() {
             FOREIGN KEY (schedule_id) REFERENCES vaccine_schedules(id)
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating vaccinations table:', err);
-        else console.log('✅ ตาราง vaccinations สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating vaccinations table:', err);
+        else console.log('ตาราง vaccinations สร้างเสร็จแล้ว');
     });
 
     // ตาราง Blog Posts (เชื่อมกับ admins) - สร้างทั้ง blog_posts และ blogs
@@ -146,8 +146,8 @@ function createTables() {
             FOREIGN KEY (admin_id) REFERENCES admins(id)
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating blog_posts table:', err);
-        else console.log('✅ ตาราง blog_posts สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating blog_posts table:', err);
+        else console.log('ตาราง blog_posts สร้างเสร็จแล้ว');
     });
 
     // ตาราง blogs (เหมือน blog_posts - สำหรับ compatibility)
@@ -172,8 +172,8 @@ function createTables() {
             FOREIGN KEY (admin_id) REFERENCES admins(id)
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating blogs table:', err);
-        else console.log('✅ ตาราง blogs สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating blogs table:', err);
+        else console.log('ตาราง blogs สร้างเสร็จแล้ว');
     });
 
     // ตาราง Chat History (เชื่อมกับ members)
@@ -187,8 +187,8 @@ function createTables() {
             FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE SET NULL
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating chat_history table:', err);
-        else console.log('✅ ตาราง chat_history สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating chat_history table:', err);
+        else console.log('ตาราง chat_history สร้างเสร็จแล้ว');
     });
 
     // ตาราง Breeds
@@ -201,13 +201,13 @@ function createTables() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `, (err) => {
-        if (err) console.error('❌ Error creating breeds table:', err);
-        else console.log('✅ ตาราง breeds สร้างเสร็จแล้ว');
+        if (err) console.error('Error creating breeds table:', err);
+        else console.log('ตาราง breeds สร้างเสร็จแล้ว');
     });
 
     // สร้าง Indexes
     setTimeout(() => {
-        console.log('\n📊 กำลังสร้าง Indexes...\n');
+        console.log('\nกำลังสร้าง Indexes...\n');
         
         db.run('CREATE INDEX IF NOT EXISTS idx_pets_member_id ON pets(member_id)');
         db.run('CREATE INDEX IF NOT EXISTS idx_vaccinations_pet_id ON vaccinations(pet_id)');
@@ -220,14 +220,14 @@ function createTables() {
         db.run('CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email)');
         db.run('CREATE INDEX IF NOT EXISTS idx_members_email ON members(email)');
         
-        console.log('✅ Indexes สร้างเสร็จแล้ว\n');
+        console.log('Indexes สร้างเสร็จแล้ว\n');
         
         createSampleData();
     }, 1000);
 }
 
 async function createSampleData() {
-    console.log('👤 กำลังสร้างผู้ใช้งานตัวอย่าง...\n');
+    console.log('กำลังสร้างผู้ใช้งานตัวอย่าง...\n');
 
     try {
         // สร้าง Admin
@@ -238,13 +238,13 @@ async function createSampleData() {
             VALUES ('admin', 'admin@petizo.com', ?, 'ผู้ดูแลระบบ', '0981234765')
         `, [adminPassword], function(err) {
             if (err) {
-                console.error('❌ Error creating admin:', err);
+                console.error('Error creating admin:', err);
             } else if (this.changes > 0) {
-                console.log('✅ สร้าง Admin สำเร็จ');
-                console.log('   📧 Email: admin@petizo.com');
-                console.log('   🔑 Password: admin123\n');
+                console.log('สร้าง Admin สำเร็จ');
+                console.log('   Email: admin@petizo.com');
+                console.log('   Password: admin123\n');
             } else {
-                console.log('ℹ️  Admin มีอยู่แล้ว\n');
+                console.log('Admin มีอยู่แล้ว\n');
             }
         });
 
@@ -256,11 +256,11 @@ async function createSampleData() {
             VALUES ('testuser', 'user@petizo.com', ?, 'ผู้ใช้ทดสอบ', '081-234-5678')
         `, [memberPassword], function(err) {
             if (err) {
-                console.error('❌ Error creating test member:', err);
+                console.error('Error creating test member:', err);
             } else if (this.changes > 0) {
-                console.log('✅ สร้าง Test Member สำเร็จ');
-                console.log('   📧 Email: user@petizo.com');
-                console.log('   🔑 Password: user123\n');
+                console.log('สร้าง Test Member สำเร็จ');
+                console.log('   Email: user@petizo.com');
+                console.log('   Password: user123\n');
             }
         });
 
@@ -280,12 +280,12 @@ async function createSampleData() {
                     'INSERT OR IGNORE INTO vaccine_schedules (vaccine_name, age_weeks_min, age_weeks_max, is_booster, frequency_years, description) VALUES (?, ?, ?, ?, ?, ?)',
                     v,
                     (err) => {
-                        if (err) console.error('❌ Error creating vaccine schedule:', err);
+                        if (err) console.error('Error creating vaccine schedule:', err);
                     }
                 );
             });
 
-            console.log('✅ สร้างตัวอย่าง vaccine schedules สำเร็จ\n');
+            console.log('สร้างตัวอย่าง vaccine schedules สำเร็จ\n');
 
             // บทความตัวอย่าง (ใช้ admin_id แทน author_id)
             db.run(`
@@ -303,9 +303,9 @@ async function createSampleData() {
                 )
             `, function(err) {
                 if (err) {
-                    console.error('❌ Error creating sample blog post:', err);
+                    console.error('Error creating sample blog post:', err);
                 } else if (this.changes > 0) {
-                    console.log('✅ สร้างบทความตัวอย่างสำเร็จ\n');
+                    console.log('สร้างบทความตัวอย่างสำเร็จ\n');
                 }
                 
                 finishSetup();
@@ -313,23 +313,23 @@ async function createSampleData() {
         }, 500);
 
     } catch (error) {
-        console.error('❌ Error creating sample data:', error);
+        console.error('Error creating sample data:', error);
         finishSetup();
     }
 }
 
 function finishSetup() {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('✨ Database สร้างเสร็จสมบูรณ์!\n');
-    console.log('📊 โครงสร้างใหม่:');
-    console.log('   👑 admins   - ผู้ดูแลระบบ');
-    console.log('   👤 members  - สมาชิกทั่วไป');
-    console.log('   🐱 pets     - สัตว์เลี้ยง (เชื่อมกับ members)');
-    console.log('   📝 blog_posts - บทความ (เชื่อมกับ admins)');
-    console.log('\n📝 คุณสามารถใช้งานได้ด้วยบัญชีเหล่านี้:');
-    console.log('👑 Admin: admin@petizo.com / admin123');
-    console.log('👤 Member: user@petizo.com / user123');
-    console.log('\n🚀 ขั้นตอนถัดไป:');
+    console.log('Database สร้างเสร็จสมบูรณ์!\n');
+    console.log('โครงสร้างใหม่:');
+    console.log('   admins   - ผู้ดูแลระบบ');
+    console.log('   members  - สมาชิกทั่วไป');
+    console.log('   pets     - สัตว์เลี้ยง (เชื่อมกับ members)');
+    console.log('   blog_posts - บทความ (เชื่อมกับ admins)');
+    console.log('\nคุณสามารถใช้งานได้ด้วยบัญชีเหล่านี้:');
+    console.log('Admin: admin@petizo.com / admin123');
+    console.log('Member: user@petizo.com / user123');
+    console.log('\nขั้นตอนถัดไป:');
     console.log('   1. รัน: node server.js');
     console.log('   2. เปิด: http://localhost:3000');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');

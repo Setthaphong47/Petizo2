@@ -58,7 +58,7 @@ def ocr_easyocr(image: np.ndarray) -> str:
         if reader is None:
             return 'EasyOCR not available'
         
-        # 🚀 Optimization: เพิ่ม low_text parameter เพื่อข้าม detection ที่ confidence ต่ำ
+        # Optimization: เพิ่ม low_text parameter เพื่อข้าม detection ที่ confidence ต่ำ
         results = reader.readtext(
             image, 
             detail=0, 

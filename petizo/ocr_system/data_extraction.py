@@ -104,7 +104,7 @@ def extract_registration_number(text: str) -> Optional[str]:
     t = t.replace('GEG', 'REG').replace('FEG', 'REG')
     t = t.replace('RO.', 'NO.').replace('R O', 'NO')
     
-    # 🔧 Fix: แปลง comma เป็น slash (เช่น 2,56 → 2/56)
+    # Fix: แปลง comma เป็น slash (เช่น 2,56 → 2/56)
     t = re.sub(r'(\d{1,3}),(\d{1,3})', r'\1/\2', t)
     
     # หารูปแบบเศษส่วน (111/222)
@@ -287,12 +287,12 @@ def extract_serial_number(text: str) -> Optional[str]:
     """ดึง Serial Number"""
     t = normalize_ocr_text(text)
     
-    # 🔧 Fix: ปรับ pattern ให้จับ serial ที่มีตัวอักษรท้าย (เช่น 532764C)
+    # Fix: ปรับ pattern ให้จับ serial ที่มีตัวอักษรท้าย (เช่น 532764C)
     strict_pattern = r'\b(\d{5,7}[A-Z]{1,2})\b'  # ต้องมีตัวอักษรอย่างน้อย 1 ตัว
     letter_prefix_pattern = r'\b([A-Z]\d{5,6})\b'  # Serial ที่ขึ้นต้นด้วยตัวอักษร (เช่น S81525)
     fallback_pattern = r'\b(\d{5,7})\b'  # ถ้าไม่เจอก็ใช้แค่ตัวเลข
     
-    # 🎯 Priority 1: หาจาก "SER:" keyword (แม่นที่สุด) - ทนทาน noise
+    # Priority 1: หาจาก "SER:" keyword (แม่นที่สุด) - ทนทาน noise
     # รองรับ: SER: 532764C, SER RFG: 532764C, SER: S81525
     ser_patterns = [
         r'(?:SER|SERIAL)\s*[:\-]?\s*(?:[A-Z]{1,5}\s*[:\-]?\s*)?([A-Z]?\d{5,7}[A-Z]{0,2})\b',  # รองรับ prefix
@@ -315,7 +315,7 @@ def extract_serial_number(text: str) -> Optional[str]:
                         is_derived_from_reg = True
                         break
             
-            # 🔒 ข้ามถ้าเป็น zip code (เช่น 63521 จาก Nebraska)
+            # ข้ามถ้าเป็น zip code (เช่น 63521 จาก Nebraska)
             if raw.isdigit() and len(raw) == 5:
                 # ตรวจสอบว่าอยู่ใกล้คำว่า USA, Nebraska, Lincoln หรือไม่
                 ser_pos = t.find('SER')
@@ -327,7 +327,7 @@ def extract_serial_number(text: str) -> Optional[str]:
             if not is_derived_from_reg:
                 return normalize_serial(raw)
     
-    # 🎯 Priority 2: หาจาก pattern ที่ขึ้นต้นด้วยตัวอักษร (เช่น S81525)
+    # Priority 2: หาจาก pattern ที่ขึ้นต้นด้วยตัวอักษร (เช่น S81525)
     matches_letter_prefix = re.findall(letter_prefix_pattern, t)
     
     for match in matches_letter_prefix:
@@ -342,7 +342,7 @@ def extract_serial_number(text: str) -> Optional[str]:
         
         return normalize_serial(match)
     
-    # 🎯 Priority 3: หาจาก pattern ที่มีตัวอักษรท้าย (เช่น 532764C)
+    # Priority 3: หาจาก pattern ที่มีตัวอักษรท้าย (เช่น 532764C)
     matches_with_letter = re.findall(strict_pattern, t)
     
     reg_patterns = re.findall(r'(\d{1,3})/(\d{1,3})', t)
@@ -360,7 +360,7 @@ def extract_serial_number(text: str) -> Optional[str]:
         
         return normalize_serial(match)
     
-    # 🎯 Priority 4: หาจาก pattern ตัวเลขอย่างเดียว (แต่ต้องไม่ใช่ zip code)
+    # Priority 4: หาจาก pattern ตัวเลขอย่างเดียว (แต่ต้องไม่ใช่ zip code)
     matches_digits = re.findall(fallback_pattern, t)
     
     for match in matches_digits:
@@ -408,7 +408,7 @@ def normalize_serial(raw: str) -> str:
     if not s:
         return raw
     
-    # 🔧 Fix: Pattern 1 - Letter prefix (S81525)
+    # Fix: Pattern 1 - Letter prefix (S81525)
     # รูปแบบ: [A-Z]\d{5,6} เช่น S81525, S81S25 → S81525
     letter_prefix_pattern = re.match(r'^([A-Z])(\d{2})([A-Z0-9])(\d{2,3})$', s)
     if letter_prefix_pattern:
@@ -450,7 +450,7 @@ def extract_date(text: str, date_type: str = 'MFG') -> Optional[str]:
     """ดึงวันที่ (MFG หรือ EXP) - ปรับให้ทนทาน noise และรองรับหลายรูปแบบ"""
     t = normalize_ocr_text(text)
     
-    # 🎯 Keywords ที่เป็นไปได้สำหรับ MFG และ EXP
+    # Keywords ที่เป็นไปได้สำหรับ MFG และ EXP
     mfg_keywords = ['MFG', 'HLFG', 'HIFG', 'HLLG', 'HILG', 'MANUFACTURED', 'PROD']
     exp_keywords = ['EXP', 'EXPIRY', 'EXPIRE', 'USE BY', 'BEST BEFORE']
     
@@ -459,7 +459,7 @@ def extract_date(text: str, date_type: str = 'MFG') -> Optional[str]:
     else:
         keywords = exp_keywords
     
-    # 🔧 Pattern 1: หาจาก keyword โดยตรง (ทนทาน noise มากขึ้น)
+    # Pattern 1: หาจาก keyword โดยตรง (ทนทาน noise มากขึ้น)
     # รองรับ: MFG: 01 JAN 2024, MFG 01 JAN 24, MFG:01JAN24
     for keyword in keywords:
         # ใช้ .{0,5} เพื่อข้าม noise characters ระหว่าง keyword กับ date
@@ -472,19 +472,19 @@ def extract_date(text: str, date_type: str = 'MFG') -> Optional[str]:
             year = match.group(3)
             return format_date(day, month, year)
     
-    # 🔧 Pattern 2: หา date ที่มี noise characters (เช่น %7 DEC 0, 7 DEC 20, nhuqi? SEP 23)
+    # Pattern 2: หา date ที่มี noise characters (เช่น %7 DEC 0, 7 DEC 20, nhuqi? SEP 23)
     # รองรับ: 17 DEC 20, %7 DEC %0, 13 JUN 23, nhuqi? SEP 23 (กรณีไม่มีเลขวันที่ชัด)
     noisy_pattern = r'[^A-Z0-9]?(\d{1,2})\s+([A-Z]{2,6})\s+[^A-Z0-9]?(\d{2,4})'
     all_dates_noisy = re.findall(noisy_pattern, t)
     
-    # 🔧 Pattern 2b: หา date ที่มี noise มาก จนไม่มีเลขวันที่ชัดเจน (เช่น nhuqi? SEP 23)
+    # Pattern 2b: หา date ที่มี noise มาก จนไม่มีเลขวันที่ชัดเจน (เช่น nhuqi? SEP 23)
     # รองรับ: nhuqi? SEP 23, ???? SEP 23, %SEP 23 (ไม่มีเลขวันชัดเจน แต่มีเดือนและปี)
     very_noisy_pattern = r'[A-Z]*[^A-Z0-9]*\s*([A-Z]{3,6})\s+(\d{2,4})'
     very_noisy_dates = re.findall(very_noisy_pattern, t)
     # แปลงให้อยู่ในรูปแบบเดียวกับ all_dates (day, month, year) โดยกำหนดวันที่เป็น "12" (กลางเดือน)
     very_noisy_dates_formatted = [("12", month, year) for month, year in very_noisy_dates if len(month) in [3, 4]]
     
-    # 🔧 Pattern 3: หา date มาตรฐาน (เช่น 01 JAN 2024)
+    # Pattern 3: หา date มาตรฐาน (เช่น 01 JAN 2024)
     standard_pattern = r'(\d{1,2})\s+([A-Z]{2,6})\s+(\d{2,4})'
     all_dates_standard = re.findall(standard_pattern, t)
     
@@ -494,7 +494,7 @@ def extract_date(text: str, date_type: str = 'MFG') -> Optional[str]:
     if not all_dates:
         return None
     
-    # 🎯 ถ้าไม่เจอ keyword ให้ใช้ตำแหน่ง
+    # ถ้าไม่เจอ keyword ให้ใช้ตำแหน่ง
     if date_type == 'MFG':
         # MFG: ใช้วันที่แรกเสมอ
         day, month, year = all_dates[0]
@@ -667,7 +667,7 @@ def extract_vaccine_data(left_text: str, right_text: str) -> Dict[str, Optional[
                 # เลือกวันที่ห่างจาก MFG มากที่สุด (EXP ต้องห่างจาก MFG หลายเดือน)
                 valid_exp_dates.sort(key=lambda x: x[2], reverse=True)
                 data['exp_date'] = valid_exp_dates[0][0]
-                print(f'[DATA] ✅ Fixed EXP date: {data["exp_date"]} (was {exp})', file=sys.stderr)
+                print(f'[DATA] Fixed EXP date: {data["exp_date"]} (was {exp})', file=sys.stderr)
     
     # ถ้าไม่มี product_name ลองเดาจาก vaccine_name
     if not data.get('product_name'):
