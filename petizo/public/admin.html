@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Admin Panel - Petizo</title>
     <style>
         * {
@@ -1669,6 +1672,8 @@
                 if (confirm('ต้องการออกจากระบบหรือไม่?')) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
+                    // Clear browser history state to prevent back button access
+                    window.history.replaceState(null, '', 'login.html');
                     window.location.href = '/login.html';
                 }
             }
@@ -4605,12 +4610,22 @@
             if (confirm('ต้องการออกจากระบบ?')) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
+                // Clear browser history state to prevent back button access
+                window.history.replaceState(null, '', 'index.html');
                 window.location.href = 'index.html';
             }
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', checkAuth);
+
+        // Re-check authentication when page is loaded from browser cache (back button)
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                // Page was loaded from cache, re-check authentication
+                checkAuth();
+            }
+        });
     </script>
 
     <!-- Profile Modal -->

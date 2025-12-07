@@ -143,6 +143,8 @@ class NavigationBar {
                 if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
+                    // Clear browser history state to prevent back button access
+                    window.history.replaceState(null, '', 'index.html');
                     window.location.href = 'index.html';
                 }
             }
