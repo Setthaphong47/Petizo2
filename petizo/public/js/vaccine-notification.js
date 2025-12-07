@@ -300,7 +300,7 @@
         container.innerHTML = notifications.map((notif, idx) => {
             const urgencyClass = notif.type || 'info';
             const dueHtml = notif.dueDate ? `<div style=\"margin-top:8px;\"><span class=\"notification-date\">กำหนดฉีด: ${formatThaiDate(notif.dueDate)}</span></div>` : '';
-            const descHtml = notif.description ? `<div class=\"vaccine-description\">${escapeHtml(notif.description)}</div>` : '';
+            const descHtml = notif.description ? `<div class=\"vaccine-description\" style=\"background:none;padding:0;margin-bottom:8px;\">${escapeHtml(notif.description)}</div>` : '';
             // ปรับข้อความแจ้งเตือน overdue
             let message = notif.message || '';
             if (notif.type === 'urgent' && typeof notif.daysLeft === 'number' && notif.daysLeft < 0) {
