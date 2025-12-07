@@ -13,103 +13,240 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 50%, #0096c7 100%);
             min-height: 100vh;
+            background: #2c3e50;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .register-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            max-width: 1000px;
-            width: 100%;
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: url('/images/login1.jpg') center/cover;
+            filter: blur(20px);
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-        }
-
-        .welcome-section {
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
-            color: white;
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .brand-icon {
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-        }
-
-        .welcome-section h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .welcome-section p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-            line-height: 1.6;
-            max-width: 400px;
-        }
-
-        .form-section {
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            max-height: 100vh;
+            width: 90vw;
+            max-width: 1100px;
+            max-height: 85vh;
+            margin: 0;
+            background: white;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+            border-radius: 24px;
             overflow: hidden;
+            position: relative;
+            z-index: 1;
         }
 
-        .form-section h2 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2rem;
+        /* Left Side - Image Section */
+        .image-section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 40px;
+            color: white;
+            overflow: hidden;
+            border-radius: 24px 0 0 24px;
+            background: #00bcd4;
+        }
+
+        .background-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+        }
+
+        .slide-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center top;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide-image.active {
+            opacity: 1;
+        }
+
+        .slide-image:nth-child(1) {
+            background-image: url('/images/login1.jpg');
+        }
+
+        .slide-image:nth-child(2) {
+            background-image: url('/images/login2.jpg');
+        }
+
+        .slide-image:nth-child(3) {
+            background-image: url('/images/login3.jpg');
+        }
+
+        .image-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg,
+                rgba(0, 0, 0, 0.5) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.1) 100%);
+            z-index: 1;
+        }
+
+        .logo-section {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: auto;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo-section:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 50%;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 20px;
             font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 40px;
+        }
+
+        .hero-content h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content p {
+            font-size: 16px;
+            opacity: 1;
+            line-height: 1.7;
+            max-width: 460px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-dots {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 32px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Right Side - Form Section */
+        .form-section {
+            background: white;
+            padding: 60px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 0 24px 24px 0;
+            overflow-y: auto;
+        }
+
+        .form-content {
+            max-width: 100%;
+        }
+
+        .form-content h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 8px;
         }
 
         .form-subtitle {
             color: #6c757d;
-            margin-bottom: 30px;
-            font-size: 0.95rem;
+            margin-bottom: 32px;
+            font-size: 14px;
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             color: #333;
-            font-weight: 600;
-            font-size: 0.95rem;
+            font-weight: 500;
+            font-size: 14px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
+            padding: 13px 16px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
             transition: all 0.3s;
+            font-family: inherit;
         }
 
         .form-group input:focus {
@@ -126,16 +263,17 @@
 
         .btn-register {
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
         }
 
         .btn-register:hover {
@@ -147,35 +285,29 @@
             transform: translateY(0);
         }
 
-        .divider {
-            text-align: center;
-            margin: 25px 0;
-            color: #999;
-            font-size: 0.9rem;
-        }
-
-        .toggle-form {
+        .login-link {
+            margin-top: 20px;
             text-align: center;
             color: #666;
-            font-size: 0.95rem;
+            font-size: 14px;
         }
 
-        .toggle-form a {
+        .login-link a {
             color: #00d4ff;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .toggle-form a:hover {
+        .login-link a:hover {
             text-decoration: underline;
         }
 
         .message {
-            padding: 12px 15px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
             margin-bottom: 20px;
             display: none;
-            font-size: 0.9rem;
+            font-size: 14px;
         }
 
         .error-message {
@@ -190,35 +322,23 @@
             border: 1px solid #b7eb8f;
         }
 
-        .back-home {
-            display: none;
-        }
-
         .mobile-logo {
             display: none;
-            text-align: center;
-            margin-bottom: 30px;
         }
 
-        .mobile-logo-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 50px;
-            margin-bottom: 12px;
-        }
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .form-section {
+                padding: 50px 35px;
+            }
 
-        .mobile-logo-text {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00d4ff 0%, #0096c7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            .image-section {
+                padding: 50px 35px;
+            }
+
+            .hero-content h1 {
+                font-size: 38px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -226,203 +346,163 @@
                 padding: 10px;
             }
 
-            .register-container {
+            .container {
                 grid-template-columns: 1fr;
                 border-radius: 16px;
             }
 
-            .welcome-section {
-                padding: 40px 20px;
-            }
-
-            .welcome-section h1 {
-                font-size: 2rem;
-            }
-
-            .welcome-section p {
-                font-size: 1rem;
+            .image-section {
+                display: none;
             }
 
             .form-section {
                 padding: 40px 20px;
+                border-radius: 16px;
             }
 
-            .form-section h2 {
-                font-size: 1.75rem;
+            .mobile-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 32px;
+            }
+
+            .mobile-logo-icon {
+                width: 56px;
+                height: 56px;
+                background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+                border-radius: 50%;
+                padding: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mobile-logo-icon img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                filter: brightness(0) invert(1);
+            }
+
+            .mobile-logo-text {
+                font-size: 26px;
+                font-weight: 800;
+                background: linear-gradient(135deg, #00bcd4 0%, #0096c7 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .form-content h2 {
+                font-size: 24px;
+                text-align: center;
+            }
+
+            .form-subtitle {
+                text-align: center;
             }
 
             .form-row {
                 grid-template-columns: 1fr;
             }
-
-            .back-home {
-                position: relative;
-                top: 0;
-                left: 0;
-                margin-bottom: 20px;
-                color: #00d4ff;
-            }
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 0;
-                background: white;
-            }
-
-            .register-container {
-                border-radius: 0;
-                box-shadow: none;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .welcome-section {
-                display: none;
-            }
-
-            .mobile-logo {
-                display: block;
-                padding-top: 8px;
-                margin-bottom: 8px;
-            }
-
-            .mobile-logo-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 28px;
-                margin-bottom: 4px;
-            }
-
-            .mobile-logo-text {
-                font-size: 18px;
-            }
-
             .form-section {
-                padding: 8px 24px 12px;
-                height: 100vh;
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
+                padding: 24px 20px;
             }
 
-            .form-section h2 {
-                font-size: 1.3rem;
-                margin-bottom: 3px;
-                text-align: center;
+            .form-content h2 {
+                font-size: 22px;
             }
 
-            .form-subtitle {
-                font-size: 0.75rem;
-                margin-bottom: 8px;
-                text-align: center;
-            }
-
-            .form-group {
-                margin-bottom: 8px;
-            }
-
-            .form-group label {
-                font-size: 0.75rem;
-                margin-bottom: 3px;
-            }
-
-            .form-group input,
-            .form-group select {
-                padding: 9px 12px;
-                font-size: 16px;
-                border: 2px solid #e0e0e0;
-            }
-
-            .form-group input:focus,
-            .form-group select:focus {
-                border-color: #00d4ff;
-                outline: none;
-            }
-
-            .form-row {
-                gap: 8px;
-            }
-
-            .btn-register {
-                padding: 11px;
-                font-size: 16px;
-                margin-top: 6px;
-                font-weight: 600;
-            }
-
-            .divider {
-                margin: 8px 0;
-                font-size: 0.75rem;
-            }
-
-            .toggle-form {
-                margin-top: 8px;
-                font-size: 0.8rem;
-                text-align: center;
+            .hero-content h1 {
+                font-size: 32px;
             }
         }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-home">← กลับหน้าแรก</a>
+    <div class="container">
+        <!-- Left Side - Image Section -->
+        <div class="image-section">
+            <div class="background-slider">
+                <div class="slide-image active"></div>
+                <div class="slide-image"></div>
+                <div class="slide-image"></div>
+            </div>
 
-    <div class="register-container">
-        <!-- Welcome Section -->
-        <div class="welcome-section">
-            <div class="brand-icon"><img src="/icon/logo.png" alt="Petizo" style="width:50px;height:50px;"></div>
-            <h1>เริ่มต้นใช้งาน</h1>
-            <p>สร้างบัญชีเพื่อเริ่มต้นจัดการข้อมูลสัตว์เลี้ยงแมวของคุณอย่างมีประสิทธิภาพ</p>
+            <a href="index.html" class="logo-section">
+                <div class="logo-icon">
+                    <img src="/icon/logo.png" alt="Petizo">
+                </div>
+                <div class="logo-text">Petizo</div>
+            </a>
+
+            <div class="hero-content">
+                <h1>เริ่มต้นใช้งาน<br>กับเรา</h1>
+                <p>สร้างบัญชีเพื่อเริ่มต้นจัดการข้อมูลสัตว์เลี้ยง บันทึกประวัติวัคซีน และรับคำแนะนำจาก AI ได้ง่ายๆ</p>
+            </div>
+
+            <div class="feature-dots">
+                <div class="dot active" onclick="changeSlide(0)"></div>
+                <div class="dot" onclick="changeSlide(1)"></div>
+                <div class="dot" onclick="changeSlide(2)"></div>
+            </div>
         </div>
 
-        <!-- Form Section -->
+        <!-- Right Side - Form Section -->
         <div class="form-section">
+            <!-- Mobile Logo -->
             <div class="mobile-logo">
-                <div class="mobile-logo-icon"><img src="/icon/logo.png" alt="Petizo" style="width:40px;height:40px;"></div>
+                <div class="mobile-logo-icon">
+                    <img src="/icon/logo.png" alt="Petizo">
+                </div>
                 <div class="mobile-logo-text">Petizo</div>
             </div>
-            <h2>สมัครสมาชิก</h2>
-            <p class="form-subtitle">กรอกข้อมูลด้านล่างเพื่อสร้างบัญชีของคุณ</p>
-            
-            <div class="message error-message" id="registerError"></div>
-            <div class="message success-message" id="registerSuccess"></div>
-            
-            <form onsubmit="handleRegister(event)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>ชื่อผู้ใช้ *</label>
-                        <input type="text" id="registerUsername" required placeholder="username">
+
+            <div class="form-content">
+                <h2>สมัครสมาชิก</h2>
+                <p class="form-subtitle">กรอกข้อมูลด้านล่างเพื่อสร้างบัญชีของคุณ</p>
+
+                <div class="message error-message" id="registerError"></div>
+                <div class="message success-message" id="registerSuccess"></div>
+
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ชื่อผู้ใช้ *</label>
+                            <input type="text" id="registerUsername" required placeholder="username">
+                        </div>
+                        <div class="form-group">
+                            <label>ชื่อ-นามสกุล *</label>
+                            <input type="text" id="registerFullName" required placeholder="ชื่อเต็มของคุณ">
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label>ชื่อ-นามสกุล *</label>
-                        <input type="text" id="registerFullName" required placeholder="ชื่อเต็มของคุณ">
+                        <label>อีเมล *</label>
+                        <input type="email" id="registerEmail" required placeholder="your@email.com">
                     </div>
+
+                    <div class="form-group">
+                        <label>เบอร์โทรศัพท์</label>
+                        <input type="tel" id="registerPhone" placeholder="08x-xxx-xxxx">
+                    </div>
+
+                    <div class="form-group">
+                        <label>รหัสผ่าน *</label>
+                        <input type="password" id="registerPassword" required minlength="6" placeholder="อย่างน้อย 6 ตัวอักษร">
+                    </div>
+
+                    <button type="submit" class="btn-register">สมัครสมาชิก</button>
+                </form>
+
+                <div class="login-link">
+                    มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
                 </div>
-                
-                <div class="form-group">
-                    <label>อีเมล *</label>
-                    <input type="email" id="registerEmail" required placeholder="your@email.com">
-                </div>
-                
-                <div class="form-group">
-                    <label>เบอร์โทรศัพท์</label>
-                    <input type="tel" id="registerPhone" placeholder="08x-xxx-xxxx">
-                </div>
-                
-                <div class="form-group">
-                    <label>รหัสผ่าน *</label>
-                    <input type="password" id="registerPassword" required minlength="6" placeholder="อย่างน้อย 6 ตัวอักษร">
-                </div>
-                
-                <button type="submit" class="btn-register">สมัครสมาชิก</button>
-            </form>
-            
-            <div class="divider">หรือ</div>
-            
-            <div class="toggle-form">
-                มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
             </div>
         </div>
     </div>
@@ -446,37 +526,37 @@
         // Handle Register
         async function handleRegister(event) {
             event.preventDefault();
-            
+
             const username = document.getElementById('registerUsername').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             const full_name = document.getElementById('registerFullName').value;
             const phone = document.getElementById('registerPhone').value;
-            
+
             try {
                 const response = await fetch(`${API_URL}/auth/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
-                        username, 
-                        email, 
-                        password, 
-                        full_name, 
-                        phone 
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                        full_name,
+                        phone
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok) {
                     showMessage('registerSuccess', 'สมัครสมาชิกสำเร็จ! กำลังนำคุณไปหน้าเข้าสู่ระบบ...');
                     hideMessage('registerError');
-                    
+
                     // Clear form
                     event.target.reset();
-                    
+
                     // Redirect to login after 2 seconds
                     setTimeout(() => {
                         window.location.href = 'login.html';
@@ -487,7 +567,7 @@
                 }
             } catch (error) {
                 console.error('Register error:', error);
-                showMessage('registerError', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่า server กำลังทำงาน');
+                showMessage('registerError', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
                 hideMessage('registerSuccess');
             }
         }
@@ -496,7 +576,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
             const user = localStorage.getItem('user');
-            
+
             if (token && user) {
                 const userData = JSON.parse(user);
                 if (userData.role === 'admin') {
@@ -506,6 +586,41 @@
                 }
             }
         });
+
+        // Carousel slideshow
+        const dots = document.querySelectorAll('.dot');
+        const slides = document.querySelectorAll('.slide-image');
+        let currentSlide = 0;
+        let slideInterval;
+
+        function changeSlide(index) {
+            // Remove active class from current slide and dot
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+
+            // Set new current slide
+            currentSlide = index;
+
+            // Add active class to new slide and dot
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+
+            // Reset interval
+            clearInterval(slideInterval);
+            startSlideshow();
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % slides.length;
+            changeSlide(next);
+        }
+
+        function startSlideshow() {
+            slideInterval = setInterval(nextSlide, 6000);
+        }
+
+        // Start the slideshow
+        startSlideshow();
     </script>
 </body>
 </html>
