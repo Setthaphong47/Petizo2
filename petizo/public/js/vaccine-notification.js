@@ -213,9 +213,9 @@
                         if (recommendedResp.ok) {
                             const recommendedData = await recommendedResp.json();
                             const recommendedVaccines = recommendedData.vaccines || [];
-                            
+                            // Debug: log all vaccine objects to check age_weeks_min/max
+                            console.log('DEBUG: recommendedVaccines for pet', pet.id, JSON.stringify(recommendedVaccines, null, 2));
                             logDebug(`Recommended vaccines for pet ${pet.id} (count):`, recommendedVaccines.length, recommendedVaccines);
-                            
                             // เพิ่มเฉพาะวัคซีนที่ status เป็น 'due' หรือ 'overdue' เข้าการแจ้งเตือน
                             recommendedVaccines.forEach(vaccine => {
                                 if (vaccine.status === 'overdue') {
