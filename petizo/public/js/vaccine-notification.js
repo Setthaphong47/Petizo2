@@ -288,6 +288,7 @@
             return;
         }
 
+        // ฟังก์ชันแปลงช่วงอายุเป็นข้อความภาษาไทย
         function formatAgeRange(min, max) {
             if (min == null && max == null) return '-';
             if (min == null) return `${max} สัปดาห์`;
@@ -295,16 +296,18 @@
             if (min === max) return `${min} สัปดาห์`;
             return `${min}-${max} สัปดาห์`;
         }
+        // แสดงกล่องแจ้งเตือน พร้อมเน้นช่วงอายุเป็นตัวหนา
         container.innerHTML = notifications.map((notif, idx) => {
             const urgencyClass = notif.type || 'info';
             const dueHtml = notif.dueDate ? `<div style=\"margin-top:8px;\"><span class=\"notification-date\">กำหนดฉีด: ${formatThaiDate(notif.dueDate)}</span></div>` : '';
             const descHtml = notif.description ? `<div class=\"vaccine-description\">${escapeHtml(notif.description)}</div>` : '';
-            // Format overdue message if needed
+            // ปรับข้อความแจ้งเตือน overdue
             let message = notif.message || '';
             if (notif.type === 'urgent' && typeof notif.daysLeft === 'number' && notif.daysLeft < 0) {
                 message = `เกินกำหนดแล้ว ${formatOverdue(Math.abs(notif.daysLeft))}`;
             }
-            const ageRangeHtml = `<div class=\"vaccine-age-range\">ช่วงอายุ : ${formatAgeRange(notif.age_weeks_min, notif.age_weeks_max)}</div>`;
+            // แสดงช่วงอายุเป็นตัวหนาและชัดเจน
+            const ageRangeHtml = `<div class=\"vaccine-age-range\"><b>ช่วงอายุ :</b> <span style=\"color:#1976d2;font-weight:bold\">${formatAgeRange(notif.age_weeks_min, notif.age_weeks_max)}</span></div>`;
             return `
                 <div class=\"notification-item ${urgencyClass}\" data-petid=\"${notif.petId}\" data-idx=\"${idx}\">
                     <div class=\"notification-top\">
