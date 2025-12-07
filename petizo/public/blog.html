@@ -392,7 +392,21 @@
                 var blogGrid = document.getElementById('blogGrid');
 
                 if (!posts || posts.length === 0) {
-                    blogGrid.innerHTML = '<div class="empty-state"><div class="empty-icon"><img src="/icon/warning.png" alt="Can not Load Blog" style="width:50px;height:50px;"></div><p>ไม่พบบทความ</p></div>';
+                    // Get current filter context
+                    var selectedCat = (document.getElementById('categoryFilter')?.value || '').trim();
+                    var selectedTag = (document.getElementById('tagFilter')?.value || '').trim();
+                    var searchTerm = (document.getElementById('searchInput')?.value || '').trim();
+                    
+                    var message = 'ไม่พบบทความ';
+                    if (selectedCat) {
+                        message = 'ยังไม่มีบทความในหมวดหมู่ "' + selectedCat + '"';
+                    } else if (selectedTag) {
+                        message = 'ยังไม่มีบทความที่มีแท็ก "' + selectedTag + '"';
+                    } else if (searchTerm) {
+                        message = 'ไม่พบบทความที่ค้นหา "' + searchTerm + '"';
+                    }
+                    
+                    blogGrid.innerHTML = '<div class="empty-state"><div class="empty-icon"><img src="/icon/warning.png" alt="No Content" style="width:50px;height:50px;"></div><p>' + message + '</p></div>';
                     return;
                 }
 
@@ -451,15 +465,12 @@
             }
 
             function populateFilters(allPosts) {
-                var catSel = document.getElementById('categoryFilter');
                 var tagSel = document.getElementById('tagFilter');
-                if (!catSel || !tagSel) return;
+                if (!tagSel) return;
 
-                var cats = new Set();
                 var tags = new Set();
 
                 (allPosts||[]).forEach(function(post){
-                    if (post && post.category) cats.add(String(post.category).trim());
                     if (post && post.tags) {
                         if (Array.isArray(post.tags)) {
                             post.tags.forEach(function(t){ if (t) tags.add(String(t).trim()); });
@@ -475,12 +486,10 @@
                     }
                 });
 
-                while (catSel.options.length > 1) catSel.remove(1);
+                // Keep categories static (don't rebuild from posts)
+                // Only rebuild tags dynamically
                 while (tagSel.options.length > 1) tagSel.remove(1);
 
-                Array.from(cats).sort().forEach(function(c){
-                    var o = document.createElement('option'); o.value = c; o.textContent = c; catSel.appendChild(o);
-                });
                 Array.from(tags).sort().forEach(function(t){
                     var o = document.createElement('option'); o.value = t; o.textContent = t; tagSel.appendChild(o);
                 });
