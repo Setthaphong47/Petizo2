@@ -351,6 +351,21 @@ app.post('/api/auth/login', async (req, res) => {
 
 
 // ============= USER PROFILE =============
+// Upload user profile picture
+app.post('/api/user/profile-picture', authenticateToken, upload.single('profile_picture'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+    const profile_picture = `/uploads/${req.file.filename}`;
+    // Update user table
+    let userTable = getUserTable(req.user.userType);
+    db.run(`UPDATE ${userTable} SET profile_picture = ? WHERE id = ?`, [profile_picture, req.user.id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'ไม่สามารถบันทึกรูปโปรไฟล์ได้' });
+        }
+        res.json({ message: 'อัพโหลดรูปโปรไฟล์สำเร็จ', profile_picture });
+    });
+});
 
 app.get('/api/profile', authenticateToken, (req, res) => {
     const tableName = getUserTable(req.user.userType);
