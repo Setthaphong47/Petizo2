@@ -1072,11 +1072,6 @@
                 </div>
                 
                 <div class="profile-dropdown-menu" id="profileDropdownMenu">
-                    <a href="#" class="profile-dropdown-item" onclick="openProfileModal(event)">
-                        <img src="/icon/profile.png" alt="Profile" style="width:30px;height:30px;">
-                        <span>ข้อมูลผู้ใช้</span>
-                    </a>
-                    
                     <a href="#" class="profile-dropdown-item logout" onclick="handleLogout(event)">
                         <img src="/icon/logout.png" alt="Logout" style="width:30px;height:30px;">
                         <span>ออกจากระบบ</span>
@@ -1139,9 +1134,22 @@
                 </div>
                 
                 <div id="petListView" style="display: none;">
-                    <div style="margin-bottom: 20px;">
-                        <button onclick="backToUserList()" style="padding: 8px 16px; background: #f0f0f0; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer;">
-                            <img src="/icon/left-arrow.png" alt="Show User" style="width:20px;height:20px;"> รายชื่อผู้ใช้
+                    <div style="margin-bottom: 24px;">
+                        <button onclick="backToUserList()" style="
+                            padding: 12px 24px;
+                            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            font-size: 15px;
+                            font-weight: 600;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+                            transition: all 0.3s ease;">
+                            <img src="/icon/left-arrow.png" alt="Show User" style="width:20px;height:20px;filter: brightness(0) invert(1);"> รายชื่อผู้ใช้
                         </button>
                     </div>
 
@@ -1157,9 +1165,22 @@
                 </div>
 
                 <div id="petDetailView" style="display: none;">
-                    <div style="margin-bottom: 20px;">
-                        <button onclick="backToPetList()" style="padding: 8px 16px; background: #f0f0f0; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer;">
-                            <img src="/icon/left-arrow.png" alt="Show Pet" style="width:20px;height:20px;"> รายการสัตว์เลี้ยง
+                    <div style="margin-bottom: 24px;">
+                        <button onclick="backToPetList()" style="
+                            padding: 12px 24px;
+                            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            font-size: 15px;
+                            font-weight: 600;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+                            transition: all 0.3s ease;">
+                            <img src="/icon/left-arrow.png" alt="Show Pet" style="width:20px;height:20px;filter: brightness(0) invert(1);"> รายการสัตว์เลี้ยง
                         </button>
                     </div>
 
@@ -4298,17 +4319,9 @@
                         })}</td>
                         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                         <td>
-                            <button class="action-btn btn-promote" title="เปลี่ยนเป็น Admin" 
-                                    onclick="changeRole(${user.id}, 'admin', '${user.username}', 'member')">
-                                เปลี่ยน
-                            </button>
                             <button class="action-btn btn-edit" 
                                     onclick="toggleUserStatus(${user.id}, '${status}', 'member')">
                                 ${buttonText}
-                            </button>
-                            <button class="action-btn btn-delete" title="ลบผู้ใช้" 
-                                    onclick="deleteUser(${user.id}, '${user.username}', 'member')">
-                                ลบ
                             </button>
                         </td>
                     </tr>
