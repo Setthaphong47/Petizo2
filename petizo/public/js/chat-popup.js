@@ -45,23 +45,19 @@ function sendChatMessage() {
     
     // Send message to backend API
     const token = localStorage.getItem('token');
-    if (!token) {
-        // remove loading and prompt login
-        messages.removeChild(loadingMessage);
-        const warn = document.createElement('div');
-        warn.className = 'message ai-message';
-        warn.textContent = 'กรุณาเข้าสู่ระบบเพื่อใช้งาน Chatbot';
-        messages.appendChild(warn);
-        messages.scrollTop = messages.scrollHeight;
-        return;
+    
+    // Prepare headers - include token only if available
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
     }
 
     fetch('/api/chat', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
+        headers: headers,
         body: JSON.stringify({ message })
     })
     .then(async r => {
