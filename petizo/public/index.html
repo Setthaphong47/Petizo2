@@ -30,6 +30,27 @@
             width: 100%;
             height: 500px;
             overflow: hidden;
+            position: relative;
+        }
+
+        .hero-slider {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .hero-slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
         }
 
         .hero-image {
@@ -387,8 +408,20 @@
 <body>
     <div id="navbar-container"></div>
     <section class="hero">
-        <img src="/images/shutterstock_1842198919.jpg"
-             alt="Happy Cat" class="hero-image">
+        <div class="hero-slider">
+            <div class="hero-slide active">
+                <img src="/images/Banner Petizo.png" alt="Petizo Banner" class="hero-image">
+            </div>
+            <div class="hero-slide">
+                <img src="/images/shutterstock_1842198919.jpg" alt="Happy Cat" class="hero-image">
+            </div>
+            <div class="hero-slide">
+                <img src="/images/login1.jpg" alt="Pet 1" class="hero-image">
+            </div>
+            <div class="hero-slide">
+                <img src="/images/login2.jpg" alt="Pet 2" class="hero-image">
+            </div>
+        </div>
     </section>
 
 
@@ -453,8 +486,28 @@
 
     <script src="/js/navbar.js"></script>
     <script src="/js/chat-popup.js"></script>
-    
 
+    <!-- Hero Slideshow Script -->
+    <script>
+        // Hero slideshow functionality
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        const totalSlides = slides.length;
+
+        function showNextSlide() {
+            // Remove active class from current slide
+            slides[currentSlideIndex].classList.remove('active');
+
+            // Move to next slide (loop back to 0 if at the end)
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+
+            // Add active class to new slide
+            slides[currentSlideIndex].classList.add('active');
+        }
+
+        // Change slide every 5 seconds (5000 milliseconds)
+        setInterval(showNextSlide, 5000);
+    </script>
 
     <script src="/js/config.js"></script>
     <script src="/js/profile-dropdown.js"></script>
