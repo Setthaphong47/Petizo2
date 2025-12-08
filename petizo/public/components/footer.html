@@ -1,10 +1,11 @@
 <!-- Site Footer Component -->
 <style>
     .site-footer {
-        background: #fff;
+        background: #f8f9fa;
         color: #222;
-        padding: 40px 0 20px;
+        padding: 40px 0 0;
         margin-top: 80px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
     .footer-content {
@@ -21,33 +22,36 @@
 
     .footer-social {
         display: flex;
-        gap: 32px;
+        gap: 0;
         justify-content: center;
         align-items: center;
         margin-bottom: 20px;
     }
 
     .social-icon {
-        display: inline-flex;
+        width: 40px;
+        height: 40px;
+        background: rgba(0, 188, 212, 0.08);
+        border-radius: 50%;
+        display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
         cursor: pointer;
-        background: none !important;
+        margin: 0 8px;
     }
 
     .social-icon:hover {
+        background: #00bcd4;
         transform: translateY(-3px);
     }
 
     .social-icon img {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        filter: none;
         transition: opacity 0.3s ease;
-    }
-
-    .social-icon:hover img {
-        opacity: 0.7;
     }
 
     .footer-logo {
@@ -79,52 +83,40 @@
     }
 
     .footer-links a {
-        color: #bfa89e;
+        color: #00bcd4;
         text-decoration: none;
         margin: 0 10px;
         transition: color 0.3s ease;
     }
 
     .footer-links a:hover {
-        color: #a08d84;
-    }
-
-    /* Responsive Footer */
-    @media (max-width: 992px) {
-        .footer-content {
-            padding: 0 30px;
-        }
+        color: #0096c7;
     }
 
     @media (max-width: 576px) {
         .footer-content {
-            padding: 0 20px;
+            padding: 0 16px;
         }
-
         .site-footer {
-            padding: 30px 0 15px;
-            margin-top: 60px;
+            padding: 24px 0 0;
+            margin-top: 40px;
         }
-
-        .footer-social {
-            gap: 24px;
-        }
-
-        .social-icon img {
-            width: 24px;
-            height: 24px;
-        }
-
         .footer-logo img {
-            height: 35px;
+            height: 32px;
         }
-
         .footer-copyright {
-            font-size: 14px;
+            font-size: 13px;
         }
-
         .footer-links {
-            font-size: 12px;
+            font-size: 11px;
+        }
+        .social-icon {
+            width: 32px;
+            height: 32px;
+        }
+        .social-icon img {
+            width: 18px;
+            height: 18px;
         }
     }
 </style>
@@ -132,20 +124,16 @@
 <footer class="site-footer">
     <div class="footer-content">
         <hr class="footer-divider">
-        
         <div class="footer-social">
             <a href="#" class="social-icon" title="YouTube">
                 <img src="/icon/youtube.png" alt="YouTube">
             </a>
         </div>
-
         <div class="footer-logo">
             <img src="/icon/logo.png" alt="Petizo Logo">
         </div>
-
         <hr class="footer-divider" style="margin-top: 16px; margin-bottom: 8px;">
     </div>
-
     <div class="footer-bottom">
         <div class="footer-copyright">
             Copyright © 2025 Petizo
