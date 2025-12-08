@@ -60,8 +60,10 @@
 }
 
 .nav-link.active {
-    background: none;
-    color: inherit;
+    background: #e0f7fa;
+    color: #00bcd4;
+    border: 2px solid #00bcd4;
+    box-shadow: 0 2px 8px rgba(0,188,212,0.08);
 }
 
 .nav-actions {
