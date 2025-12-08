@@ -1186,9 +1186,18 @@
     </style>
 
 
-    <script src="/js/vaccine-notification.js"></script>
-    <script src="/js/profile-dropdown.js"></script>
-    <script src="/js/footer.js"></script>
-    
+        <script src="/js/vaccine-notification.js"></script>
+        <script src="/js/profile-dropdown.js"></script>
+        <script src="/js/footer.js"></script>
+
+        <!-- Shared Footer Component -->
+        <div id="footer-container"></div>
+        <script>
+            fetch('/components/footer.html')
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('footer-container').innerHTML = html;
+                });
+        </script>
 </body>
 </html>
