@@ -100,19 +100,7 @@
             background-image: url('/images/login_register3.png');
         }
 
-        .image-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg,
-                rgba(0, 0, 0, 0.5) 0%,
-                rgba(0, 0, 0, 0.3) 50%,
-                rgba(0, 0, 0, 0.1) 100%);
-            z-index: 1;
-        }
+        /* Removed dark overlay */
 
         .logo-section {
             position: relative;
@@ -281,28 +269,6 @@
             margin-bottom: 24px;
         }
 
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #00d4ff;
-        }
-
-        .remember-me label {
-            font-size: 14px;
-            color: #333;
-            cursor: pointer;
-            user-select: none;
-            font-weight: 400;
-        }
-
         .forgot-password {
             color: #00d4ff;
             text-decoration: none;
@@ -354,6 +320,24 @@
         }
 
         .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .terms-text {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+
+        .terms-text a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms-text a:hover {
             text-decoration: underline;
         }
 
@@ -531,10 +515,6 @@
                     </div>
 
                     <div class="form-options">
-                        <div class="remember-me">
-                            <input type="checkbox" id="rememberMe">
-                            <label for="rememberMe">จดจำฉันไว้</label>
-                        </div>
                         <a href="#" class="forgot-password">ลืมรหัสผ่าน?</a>
                     </div>
 
@@ -543,6 +523,10 @@
 
                 <div class="signup-link">
                     ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+                </div>
+
+                <div class="terms-text">
+                    การดำเนินการต่อแสดงว่าคุณยอมรับ<a href="terms.html">ข้อกำหนดในการให้บริการ</a>ของ <strong>Petizo</strong> และ <a href="privacy.html">นโยบายความเป็นส่วนตัว</a>
                 </div>
             </div>
         </div>
