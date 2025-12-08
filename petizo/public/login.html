@@ -530,14 +530,36 @@
                     </div>
 
                     <div class="form-options">
-                        <div class="remember-me">
-                            <input type="checkbox" id="rememberMe">
-                            <label for="rememberMe">จดจำฉันไว้</label>
-                        </div>
                         <a href="#" class="forgot-password">ลืมรหัสผ่าน?</a>
                     </div>
 
                     <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+
+                    <button type="button" class="btn-google-login" onclick="loginWithGoogle()">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="height:20px;vertical-align:middle;margin-right:8px;"> เข้าสู่ระบบผ่าน Google
+                    </button>
+                        .btn-google-login {
+                            width: 100%;
+                            padding: 13px;
+                            background: #fff;
+                            color: #444;
+                            border: 1.5px solid #e0e0e0;
+                            border-radius: 8px;
+                            font-size: 15px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                            margin-bottom: 16px;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                        }
+                        .btn-google-login:hover {
+                            background: #f5f5f5;
+                            border-color: #00d4ff;
+                        }
                 </form>
 
                 <div class="signup-link">
@@ -548,6 +570,12 @@
     </div>
 
     <script src="/js/config.js"></script>
+        <script>
+            function loginWithGoogle() {
+                // TODO: Implement Google login integration
+                alert('ฟีเจอร์เข้าสู่ระบบด้วย Google ยังไม่พร้อมใช้งาน');
+            }
+        </script>
     <script>
         const API_URL = CONFIG.API_URL;
 
