@@ -3,196 +3,175 @@
     .site-footer {
         background: #fff;
         color: #222;
-        padding: 60px 0 0;
+        padding: 40px 0 20px;
         margin-top: 80px;
-        border-top: 2px solid #e0e0e0;
     }
 
     .footer-content {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 40px 40px;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 40px;
+        padding: 0 40px;
     }
 
-    .footer-column h3 {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: #fff;
-        position: relative;
-        padding-bottom: 10px;
-    }
-
-    .footer-column h3::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 40px;
-        height: 3px;
-        background: linear-gradient(90deg, #00bcd4, #00e5ff);
-        border-radius: 2px;
-    }
-
-    .footer-column ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .footer-column ul li {
-        margin-bottom: 12px;
-    }
-
-    .footer-column ul li a,
-    .footer-column p {
-        color: #bdc3c7;
-        text-decoration: none;
-        font-size: 14px;
-        transition: all 0.3s ease;
-        display: inline-block;
-    }
-
-    .footer-column ul li a:hover {
-        color: #00bcd4;
-        transform: translateX(5px);
+    .footer-divider {
+        border: none;
+        border-top: 1.5px solid #e0e0e0;
+        margin: 0 0 24px 0;
     }
 
     .footer-social {
         display: flex;
-        gap: 12px;
-        margin-top: 20px;
+        gap: 32px;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
     .social-icon {
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
         cursor: pointer;
+        background: none !important;
     }
 
     .social-icon:hover {
-        background: #00bcd4;
         transform: translateY(-3px);
     }
 
-    .social-icon svg {
-        width: 20px;
-        height: 20px;
-        fill: #fff;
+    .social-icon img {
+        width: 28px;
+        height: 28px;
+        transition: opacity 0.3s ease;
     }
 
-    .app-downloads {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+    .social-icon:hover img {
+        opacity: 0.7;
     }
 
-    .app-download-btn {
-        display: inline-block;
-        transition: transform 0.3s ease;
+    .footer-logo {
+        text-align: center;
+        margin-bottom: 16px;
     }
 
-    .app-download-btn:hover {
-        transform: scale(1.05);
-    }
-
-    .app-download-btn img {
-        height: 45px;
+    .footer-logo img {
+        height: 40px;
         width: auto;
     }
 
     .footer-bottom {
         background: transparent;
-        padding: 20px 0;
+        padding: 16px 0 20px 0;
         text-align: center;
         border-top: none;
     }
 
-    .footer-bottom p {
-        color: #888;
-        font-size: 14px;
-        margin: 0;
+    .footer-copyright {
+        color: #bfa89e;
+        font-size: 15px;
+        margin-bottom: 4px;
     }
 
-    .footer-bottom a {
-        color: #00bcd4;
+    .footer-links {
+        color: #bfa89e;
+        font-size: 13px;
+    }
+
+    .footer-links a {
+        color: #bfa89e;
         text-decoration: none;
         margin: 0 10px;
+        transition: color 0.3s ease;
     }
 
-    .footer-bottom a:hover {
-        text-decoration: underline;
+    .footer-links a:hover {
+        color: #a08d84;
     }
 
     /* Responsive Footer */
     @media (max-width: 992px) {
         .footer-content {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
+            padding: 0 30px;
         }
     }
 
     @media (max-width: 576px) {
         .footer-content {
-            grid-template-columns: 1fr;
-            gap: 30px;
+            padding: 0 20px;
         }
 
         .site-footer {
-            padding: 40px 0 0;
+            padding: 30px 0 15px;
             margin-top: 60px;
+        }
+
+        .footer-social {
+            gap: 24px;
+        }
+
+        .social-icon img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .footer-logo img {
+            height: 35px;
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+        }
+
+        .footer-links {
+            font-size: 12px;
         }
     }
 </style>
 
-
 <footer class="site-footer">
-    <div class="footer-content" style="padding: 0 24px;">
-        <hr style="border: none; border-top: 1.5px solid #e0e0e0; margin: 0 0 24px 0;">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 32px; margin-bottom: 16px;">
-            <a href="#" class="social-icon" title="Facebook" style="background: none;">
-                <img src="/icon/facebook.png" alt="Facebook" style="width: 28px; height: 28px;">
+    <div class="footer-content">
+        <hr class="footer-divider">
+        
+        <div class="footer-social">
+            <a href="#" class="social-icon" title="Facebook">
+                <img src="/icon/facebook.png" alt="Facebook">
             </a>
-            <a href="#" class="social-icon" title="Twitter" style="background: none;">
-                <img src="/icon/twitter.png" alt="Twitter" style="width: 28px; height: 28px;">
+            <a href="#" class="social-icon" title="Twitter">
+                <img src="/icon/twitter.png" alt="Twitter">
             </a>
-            <a href="#" class="social-icon" title="Instagram" style="background: none;">
-                <img src="/icon/instagram.png" alt="Instagram" style="width: 28px; height: 28px;">
+            <a href="#" class="social-icon" title="Instagram">
+                <img src="/icon/instagram.png" alt="Instagram">
             </a>
-            <a href="#" class="social-icon" title="LinkedIn" style="background: none;">
-                <img src="/icon/linkedin.png" alt="LinkedIn" style="width: 28px; height: 28px;">
+            <a href="#" class="social-icon" title="LinkedIn">
+                <img src="/icon/linkedin.png" alt="LinkedIn">
             </a>
-            <a href="#" class="social-icon" title="Discord" style="background: none;">
-                <img src="/icon/discord.png" alt="Discord" style="width: 28px; height: 28px;">
+            <a href="#" class="social-icon" title="Discord">
+                <img src="/icon/discord.png" alt="Discord">
             </a>
         </div>
-        <div style="margin-bottom: 8px;">
-            <img src="/icon/logo.png" alt="Petizo Logo" style="height: 40px; width: auto; display: block; margin: 0 auto;">
+
+        <div class="footer-logo">
+            <img src="/icon/logo.png" alt="Petizo Logo">
         </div>
-        <hr style="border: none; border-top: 1.5px solid #e0e0e0; margin: 16px 0 8px 0;">
+
+        <hr class="footer-divider" style="margin-top: 16px; margin-bottom: 8px;">
     </div>
-    <div class="footer-bottom" style="background: transparent; padding: 16px 0 8px 0; text-align: center; border-top: none;">
-        <div style="color: #bfa89e; font-size: 15px; margin-bottom: 4px;">
+
+    <div class="footer-bottom">
+        <div class="footer-copyright">
             Copyright © 2025 Petizo
         </div>
-        <div style="color: #bfa89e; font-size: 13px;">
-            <a href="#" style="color: #bfa89e; text-decoration: none; margin: 0 10px;">Information legal</a> |
-            <a href="#" style="color: #bfa89e; text-decoration: none; margin: 0 10px;">Privacy &amp; Cookie Policy</a>
+        <div class="footer-links">
+            <a href="#">Information legal</a> |
+            <a href="#">Privacy &amp; Cookie Policy</a>
         </div>
     </div>
 </footer>
 
 <script>
-// Load footer component dynamically
+// Footer component loaded
 (function() {
-    // Footer is already loaded, no need for additional JS
+    console.log('Petizo Footer loaded successfully');
 })();
 </script>
