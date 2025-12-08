@@ -337,6 +337,34 @@
         }
 
         .btn-login:active {
+                    .btn-google-login {
+                        width: 100%;
+                        padding: 13px 0;
+                        background: #fff;
+                        color: #444;
+                        border: 1.5px solid #e0e0e0;
+                        border-radius: 8px;
+                        font-size: 15px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
+                        margin-bottom: 16px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                        outline: none;
+                    }
+                    .btn-google-login:hover {
+                        background: #f5f5f5;
+                        border-color: #00d4ff;
+                        box-shadow: 0 4px 16px rgba(0,212,255,0.10);
+                    }
+                    .btn-google-login img {
+                        height: 22px;
+                        margin-right: 8px;
+                    }
             transform: translateY(0);
         }
 
@@ -534,32 +562,10 @@
                     </div>
 
                     <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
-
                     <button type="button" class="btn-google-login" onclick="loginWithGoogle()">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="height:20px;vertical-align:middle;margin-right:8px;"> เข้าสู่ระบบผ่าน Google
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> 
+                        <span style="flex:1;text-align:left;">เข้าสู่ระบบผ่าน Google</span>
                     </button>
-                        .btn-google-login {
-                            width: 100%;
-                            padding: 13px;
-                            background: #fff;
-                            color: #444;
-                            border: 1.5px solid #e0e0e0;
-                            border-radius: 8px;
-                            font-size: 15px;
-                            font-weight: 600;
-                            cursor: pointer;
-                            transition: all 0.3s;
-                            margin-bottom: 16px;
-                            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            gap: 8px;
-                        }
-                        .btn-google-login:hover {
-                            background: #f5f5f5;
-                            border-color: #00d4ff;
-                        }
                 </form>
 
                 <div class="signup-link">
