@@ -9,6 +9,7 @@
     position: sticky;
     top: 0;
     z-index: 100;
+    margin-top: 0 !important;
 }
 
 .navbar-brand {
@@ -541,6 +542,8 @@
         padding: 12px 20px;
         flex-wrap: wrap;
         position: relative;
+        margin-top: 0 !important;
+        top: 0 !important;
     }
 
     .hamburger-btn {
