@@ -408,27 +408,64 @@
         .google-login-button {
             display: flex;
             align-items: center;
-            background-color: #ffffff;
-            border: 1px solid #d9d9d9;
-            border-radius: 5px;
+            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
             padding: 10px 20px;
-            font-size: 16px;
-            font-weight: 500;
-            color: #555555;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
             transition: all 0.3s ease;
         }
 
         .google-login-button:hover {
-            background-color: #f5f5f5;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
         }
 
         .google-icon {
             width: 20px;
             height: 20px;
             margin-right: 10px;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background-color: #ccc;
+            margin: 0 10px;
+        }
+
+        .divider-text {
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .terms-privacy {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        .privacy-policy-link {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .privacy-policy-link:hover {
+            text-decoration: underline;
         }
 
         /* Responsive */
@@ -595,6 +632,11 @@
 
                     <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
                     <div class="google-login-container">
+                        <div class="login-divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">เข้าใช้งานผ่าน</span>
+        <span class="divider-line"></span>
+    </div>
                         <button type="button" class="btn-google-login google-login-button" onclick="loginWithGoogle()">
                             <img src="../icon/google-icon.png" alt="Google Icon" class="google-icon">
                             <span>Login with Google</span>
@@ -605,6 +647,9 @@
                 <div class="signup-link">
                     ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
                 </div>
+                <p class="terms-privacy">
+                    การดำเนินการต่อแสดงว่าคุณยอมรับ <a href="#" class="privacy-policy-link">ข้อกำหนดในการให้บริการของ Petizo</a> และ <a href="#" class="privacy-policy-link">นโยบายความเป็นส่วนตัว</a>
+                </p>
             </div>
         </div>
     </div>
