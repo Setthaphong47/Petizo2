@@ -1,37 +1,39 @@
 <!-- Site Footer Component -->
 <style>
     .site-footer {
-        background: #f8f9fa;
-        color: #222;
-        padding: 40px 0 0;
+        background: #f6ede6;
+        color: #7c6a5c;
+        padding: 0;
         margin-top: 80px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        border-top: none;
     }
 
     .footer-content {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 40px;
+        padding: 0 24px;
     }
 
     .footer-divider {
         border: none;
-        border-top: 1.5px solid #e0e0e0;
+        border-top: 2px solid #e0d6ce;
         margin: 0 0 24px 0;
+        background: none;
     }
 
     .footer-social {
         display: flex;
-        gap: 0;
         justify-content: center;
         align-items: center;
-        margin-bottom: 20px;
+        gap: 0;
+        margin-bottom: 12px;
     }
 
     .social-icon {
         width: 40px;
         height: 40px;
-        background: rgba(0, 188, 212, 0.08);
+        background: none;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -41,14 +43,9 @@
         margin: 0 8px;
     }
 
-    .social-icon:hover {
-        background: #00bcd4;
-        transform: translateY(-3px);
-    }
-
     .social-icon img {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
         object-fit: contain;
         filter: none;
         transition: opacity 0.3s ease;
@@ -56,17 +53,19 @@
 
     .footer-logo {
         text-align: center;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
     }
 
     .footer-logo img {
-        height: 40px;
+        height: 38px;
         width: auto;
+        margin: 0 auto;
+        display: block;
     }
 
     .footer-bottom {
-        background: transparent;
-        padding: 16px 0 20px 0;
+        background: none;
+        padding: 0 0 24px 0;
         text-align: center;
         border-top: none;
     }
@@ -75,34 +74,36 @@
         color: #bfa89e;
         font-size: 15px;
         margin-bottom: 4px;
+        font-family: inherit;
     }
 
     .footer-links {
         color: #bfa89e;
         font-size: 13px;
+        margin-top: 4px;
     }
 
     .footer-links a {
-        color: #00bcd4;
+        color: #bfa89e;
         text-decoration: none;
         margin: 0 10px;
         transition: color 0.3s ease;
     }
 
     .footer-links a:hover {
-        color: #0096c7;
+        color: #a08d84;
     }
 
     @media (max-width: 576px) {
         .footer-content {
-            padding: 0 16px;
+            padding: 0 10px;
         }
         .site-footer {
-            padding: 24px 0 0;
+            padding: 0;
             margin-top: 40px;
         }
         .footer-logo img {
-            height: 32px;
+            height: 28px;
         }
         .footer-copyright {
             font-size: 13px;
