@@ -21,40 +21,74 @@
         }
         .container {
             max-width: 900px;
-            margin: 40px auto 60px auto;
+            margin: 48px auto 60px auto;
             background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-            padding: 40px 32px;
+            border-radius: 22px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 48px 36px 40px 36px;
         }
         h1 {
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             font-weight: 800;
-            color: #222;
-            margin-bottom: 18px;
+            color: #00bcd4;
+            margin-bottom: 28px;
             text-align: center;
+            letter-spacing: 0.5px;
         }
-        h2 {
-            font-size: 1.3rem;
+        .terms-list {
+            counter-reset: term;
+            margin: 0;
+            padding: 0;
+        }
+        .terms-list li {
+            color: #222;
+            font-size: 1.08rem;
+            line-height: 1.8;
+            margin-bottom: 28px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 22px 24px 18px 24px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+            position: relative;
+            list-style: none;
+        }
+        .terms-list li:before {
+            counter-increment: term;
+            content: counter(term) ".";
+            position: absolute;
+            left: 12px;
+            top: 18px;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #00bcd4;
-            margin-top: 32px;
-            margin-bottom: 12px;
         }
-        p, li {
-            color: #333;
-            font-size: 1rem;
-            line-height: 1.7;
+        .terms-list li strong {
+            color: #0096c7;
+            font-weight: 700;
         }
-        ul {
-            margin-left: 24px;
+        .terms-list li a {
+            color: #00bcd4;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        .terms-list li a:hover {
+            color: #0096c7;
         }
         @media (max-width: 768px) {
             .container {
-                padding: 24px 10px;
+                padding: 24px 10px 20px 10px;
             }
             h1 {
                 font-size: 1.5rem;
+            }
+            .terms-list li {
+                font-size: 0.98rem;
+                padding: 16px 10px 12px 18px;
+            }
+            .terms-list li:before {
+                left: 4px;
+                top: 10px;
+                font-size: 1rem;
             }
         }
     </style>
