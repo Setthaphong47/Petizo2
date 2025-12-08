@@ -751,7 +751,7 @@
 
                         // Category (หมวดหมู่)
                         const category = blog.category || 'ทั่วไป';
-                        const categoryHtml = `<span class=\"category-label\">หมวดหมู่</span> <span class=\"category-box\">${category}</span>`;
+                        const categoryHtml = `<span class=\"category-box\">หมวดหมู่ ${category}</span>`;
 
                         const publishDate = new Date(blog.published_at || blog.created_at || Date.now());
                         const formattedDate = publishDate.toLocaleDateString('th-TH', { day:'2-digit', month:'short', year:'numeric' });
