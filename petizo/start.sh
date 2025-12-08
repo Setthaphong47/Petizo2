@@ -3,7 +3,7 @@
 # NumPy, OpenCV, Pillow จาก Nix (ติดตั้งตอน build)
 # PyTorch, EasyOCR จาก pip (ติดตั้งใน Volume ตอน runtime)
 
-echo "🚀 Starting Petizo server with OCR support..."
+echo "Starting Petizo server with OCR support..."
 
 # Set Python packages path in Volume
 export PYTHON_PACKAGES="/app/petizo/data/python_packages"
@@ -12,8 +12,8 @@ export PYTHON_PACKAGES="/app/petizo/data/python_packages"
 export PYTHONPATH="$PYTHON_PACKAGES:$PYTHONPATH"
 
 # Debug: Show Python path to verify packages are accessible
-echo "📍 PYTHON_PACKAGES: $PYTHON_PACKAGES"
-python3 -c "import sys; print('📍 Python sys.path:'); [print('   -', p) for p in sys.path[:5]]" 2>/dev/null || echo "⚠️  Warning: Could not get Python path"
+echo "PYTHON_PACKAGES: $PYTHON_PACKAGES"
+python3 -c "import sys; print('Python sys.path:'); [print('   -', p) for p in sys.path[:5]]" 2>/dev/null || echo "Warning: Could not get Python path"
 
 # Set environment variables for EasyOCR and OpenCV
 export EASYOCR_MODULE_PATH="/app/petizo/data/easyocr_models"
@@ -34,7 +34,7 @@ INSTALL_VERSION="v25"  # v25: Fix LD_LIBRARY_PATH for EasyOCR model download
 if [ -f "$INSTALL_MARKER" ]; then
   CURRENT_VERSION=$(cat "$INSTALL_MARKER" 2>/dev/null || echo "v0")
   if [ "$CURRENT_VERSION" != "$INSTALL_VERSION" ]; then
-    echo "🔄 Detected system library update, forcing reinstall..."
+    echo "Detected system library update, forcing reinstall..."
     rm -rf "$PYTHON_PACKAGES"
     rm -rf /app/petizo/data/tmp
     rm -rf /root/.cache/pip
@@ -42,14 +42,14 @@ if [ -f "$INSTALL_MARKER" ]; then
   fi
 else
   # First time install - also clear everything
-  echo "🧹 Cleaning old Python packages and pip cache..."
+  echo "Cleaning old Python packages and pip cache..."
   rm -rf "$PYTHON_PACKAGES"
   rm -rf /app/petizo/data/tmp
   rm -rf /root/.cache/pip
   rm -f "$INSTALL_MARKER"
 fi
 
-echo "✅ Cleanup complete (packages + pip cache)"
+echo "Cleanup complete (packages + pip cache)"
 
 # Create necessary directories in Volume AFTER cleanup
 mkdir -p /app/petizo/data/easyocr_models
@@ -57,10 +57,10 @@ mkdir -p "$PYTHON_PACKAGES"
 
 # Use Volume temp directory to avoid cross-device link errors
 export TMPDIR="/app/petizo/data/tmp"
-mkdir -p "$TMPDIR" || echo "⚠️  Warning: Could not create tmp directory"
+mkdir -p "$TMPDIR" || echo "Warning: Could not create tmp directory"
 
 if [ ! -f "$INSTALL_MARKER" ]; then
-  echo "📦 Installing Python packages to Volume (first time only, ~2-3 min)..."
+  echo "Installing Python packages to Volume (first time only, ~2-3 min)..."
   echo "   Target: $PYTHON_PACKAGES"
 
   # Bootstrap pip if not available (using get-pip.py because ensurepip is blocked by Nix)
@@ -69,11 +69,11 @@ if [ ! -f "$INSTALL_MARKER" ]; then
     curl -sSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
     python3 /tmp/get-pip.py --break-system-packages --target="$PYTHON_PACKAGES" --no-warn-script-location
     rm -f /tmp/get-pip.py
-    echo "   ✅ pip installed successfully"
+    echo "pip installed successfully"
   fi
 
   # Install PyTorch CPU-only with explicit CPU index URL (no CUDA)
-  echo "   Installing PyTorch CPU-only (from PyTorch CPU index)..."
+  echo "Installing PyTorch CPU-only (from PyTorch CPU index)..."
   python3 -m pip install --break-system-packages --target="$PYTHON_PACKAGES" --no-deps \
     --index-url https://download.pytorch.org/whl/cpu \
     torch torchvision
@@ -85,10 +85,10 @@ if [ ! -f "$INSTALL_MARKER" ]; then
 
   PYTORCH_EXIT=$?
   if [ $PYTORCH_EXIT -ne 0 ]; then
-    echo "❌ Failed to install PyTorch (exit code: $PYTORCH_EXIT)"
+    echo "Failed to install PyTorch (exit code: $PYTORCH_EXIT)"
     exit 1
   fi
-  echo "   ✅ PyTorch CPU installed (using Nix's NumPy)"
+  echo "  PyTorch CPU installed (using Nix's NumPy)"
 
   # Install pytesseract, numpy, pillow, opencv via pip
   echo "   Installing numpy via pip..."
@@ -120,29 +120,29 @@ if [ ! -f "$INSTALL_MARKER" ]; then
 
   if [ $PACKAGES_EXIT -eq 0 ]; then
     # Pre-download EasyOCR models (ครั้งแรก ~30-60 วินาที)
-    echo "📥 Pre-downloading EasyOCR models (English, first time only)..."
+    echo "Pre-downloading EasyOCR models (English, first time only)..."
     python3 -c "
 import os
 os.environ['EASYOCR_MODULE_PATH'] = '/app/petizo/data/easyocr_models'
 try:
     import easyocr
-    print('   Initializing EasyOCR reader...')
+    print('Initializing EasyOCR reader...')
     reader = easyocr.Reader(['en'], gpu=False, verbose=False, download_enabled=True)
-    print('   ✅ EasyOCR models downloaded successfully')
+    print('EasyOCR models downloaded successfully')
 except Exception as e:
-    print(f'   ⚠️  EasyOCR model download warning: {e}')
-" 2>&1 || echo "   ⚠️  Could not pre-download EasyOCR models (will download on first use)"
+    print(f'EasyOCR model download warning: {e}')
+" 2>&1 || echo "Could not pre-download EasyOCR models (will download on first use)"
     
     echo "$INSTALL_VERSION" > "$INSTALL_MARKER"
-    echo "✅ All Python packages installed successfully! (version: $INSTALL_VERSION)"
+    echo "All Python packages installed successfully! (version: $INSTALL_VERSION)"
   else
-    echo "❌ Failed to install OCR packages (exit code: $PACKAGES_EXIT)"
+    echo "Failed to install OCR packages (exit code: $PACKAGES_EXIT)"
     exit 1
   fi
 else
-  echo "✅ Python packages already installed (using Volume cache, version: $(cat $INSTALL_MARKER))"
+  echo "Python packages already installed (using Volume cache, version: $(cat $INSTALL_MARKER))"
 fi
 
 # Start the Node.js server
-echo "🌐 Starting Node.js server..."
+echo "Starting Node.js server..."
 exec node server.js
