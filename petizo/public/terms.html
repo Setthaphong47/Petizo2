@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ข้อกำหนดและเงื่อนไขในการใช้บริการ - Petizo</title>
+    <link rel="preload" href="/css/navbar.css" as="style">
+    <link rel="preload" href="/js/navbar.js" as="script">
+    <link rel="preload" href="/icon/logo.png" as="image">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto 60px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 40px 32px;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #222;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00bcd4;
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        p, li {
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        ul {
+            margin-left: 24px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px 10px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div id="navbar-container"></div>
+    <script src="/js/navbar.js"></script>
+
+    <div class="container">
+        <h1>ข้อกำหนดและเงื่อนไขในการใช้บริการ</h1>
+        <p>โปรดอ่านข้อกำหนดและเงื่อนไขเหล่านี้อย่างละเอียดก่อนใช้บริการเว็บไซต์ Petizo</p>
+        <h2>1. การยอมรับข้อกำหนด</h2>
+        <p>เมื่อคุณเข้าใช้งานเว็บไซต์นี้ ถือว่าคุณยอมรับข้อกำหนดและเงื่อนไขทั้งหมดที่ระบุไว้ในหน้านี้ หากคุณไม่เห็นด้วยกับข้อกำหนดใด ๆ กรุณาหยุดใช้งานเว็บไซต์ทันที</p>
+        <h2>2. การใช้งานเว็บไซต์</h2>
+        <ul>
+            <li>คุณต้องใช้งานเว็บไซต์อย่างสุจริต ไม่ละเมิดกฎหมายหรือสิทธิ์ของผู้อื่น</li>
+            <li>ห้ามใช้เว็บไซต์เพื่อกิจกรรมที่ผิดกฎหมายหรือเป็นอันตรายต่อบุคคลอื่น</li>
+        </ul>
+        <h2>3. การคุ้มครองข้อมูลส่วนบุคคล</h2>
+        <p>เว็บไซต์นี้ให้ความสำคัญกับความเป็นส่วนตัวของผู้ใช้ กรุณาอ่าน <a href="privacy.html" style="color:#00bcd4;">นโยบายความเป็นส่วนตัว</a> เพื่อทราบรายละเอียดการเก็บและใช้ข้อมูล</p>
+        <h2>4. การเปลี่ยนแปลงข้อกำหนด</h2>
+        <p>Petizo ขอสงวนสิทธิ์ในการเปลี่ยนแปลงข้อกำหนดและเงื่อนไขโดยไม่ต้องแจ้งให้ทราบล่วงหน้า กรุณาตรวจสอบหน้านี้เป็นระยะ</p>
+        <h2>5. การติดต่อ</h2>
+        <p>หากมีข้อสงสัยเกี่ยวกับข้อกำหนดและเงื่อนไข กรุณาติดต่อทีมงานผ่านช่องทางที่ระบุในเว็บไซต์</p>
+    </div>
+
+    <!-- Footer -->
+    <style>
+        .site-footer {
+            background: #fff;
+            color: #222;
+            padding: 32px 0 18px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin-top: 60px;
+        }
+        .footer-divider {
+            border: none;
+            border-top: 1.5px solid #e0e0e0;
+            margin: 0 0 24px 0;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 18px;
+        }
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        .social-icon:hover {
+            opacity: 1;
+            transform: translateY(-2px) scale(1.08);
+        }
+        .social-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+        .footer-logo {
+            text-align: center;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .footer-logo img {
+            height: 38px;
+            width: auto;
+        }
+        .footer-logo-text {
+            font-size: 22px;
+            font-weight: 400;
+            color: #222;
+            font-family: 'Georgia', serif;
+        }
+        .footer-bottom {
+            background: transparent;
+            padding: 10px 0 0;
+            text-align: center;
+            border-top: none;
+        }
+        .footer-copyright {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 6px;
+            font-weight: 300;
+        }
+        .footer-links {
+            color: #666;
+            font-size: 13px;
+            font-weight: 300;
+        }
+        .footer-links a {
+            color: #00bcd4;
+            text-decoration: none;
+            margin: 0 8px;
+            transition: color 0.3s ease;
+        }
+        .footer-links a:hover {
+            color: #0096c7;
+        }
+        @media (max-width: 768px) {
+            .site-footer {
+                padding: 24px 0 12px;
+                margin-top: 40px;
+            }
+            .footer-logo img {
+                height: 30px;
+            }
+            .footer-logo-text {
+                font-size: 18px;
+            }
+            .social-icon img {
+                width: 26px;
+                height: 26px;
+            }
+        }
+        @media (max-width: 480px) {
+            .footer-social {
+                gap: 16px;
+            }
+            .footer-logo {
+                gap: 6px;
+            }
+            .footer-logo img {
+                height: 22px;
+            }
+            .footer-logo-text {
+                font-size: 15px;
+            }
+            .footer-copyright {
+                font-size: 12px;
+            }
+            .footer-links {
+                font-size: 11px;
+            }
+        }
+    </style>
+    <footer class="site-footer">
+        <hr class="footer-divider">
+        <div class="footer-social">
+            <a href="#" class="social-icon" title="YouTube">
+                <img src="/icon/youtube.png" alt="YouTube">
+            </a>
+        </div>
+        <div class="footer-logo">
+            <img src="/icon/logo.png" alt="Petizo Logo">
+            <span class="footer-logo-text">Petizo</span>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                Copyright © 2025 Petizo
+            </div>
+            <div class="footer-links">
+                <a href="#">Information legal</a> |
+                <a href="#">Privacy &amp; Cookie Policy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
