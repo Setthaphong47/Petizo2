@@ -1060,4 +1060,144 @@
     <script src="/js/profile-dropdown.js"></script>
     <script src="/js/footer.js"></script>
 </body>
+<!-- Minimal Website Footer Component -->
+<style>
+    .site-footer {
+        background: #fff;
+        color: #222;
+        padding: 32px 0 18px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        margin-top: 60px;
+    }
+    .footer-divider {
+        border: none;
+        border-top: 1.5px solid #e0e0e0;
+        margin: 0 0 24px 0;
+    }
+    .footer-social {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 18px;
+    }
+    .social-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+    .social-icon:hover {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.08);
+    }
+    .social-icon img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+    .footer-logo {
+        text-align: center;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .footer-logo img {
+        height: 38px;
+        width: auto;
+    }
+    .footer-logo-text {
+        font-size: 22px;
+        font-weight: 400;
+        color: #222;
+        font-family: 'Georgia', serif;
+    }
+    .footer-bottom {
+        background: transparent;
+        padding: 10px 0 0;
+        text-align: center;
+        border-top: none;
+    }
+    .footer-copyright {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 6px;
+        font-weight: 300;
+    }
+    .footer-links {
+        color: #666;
+        font-size: 13px;
+        font-weight: 300;
+    }
+    .footer-links a {
+        color: #00bcd4;
+        text-decoration: none;
+        margin: 0 8px;
+        transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+        color: #0096c7;
+    }
+    @media (max-width: 768px) {
+        .site-footer {
+            padding: 24px 0 12px;
+            margin-top: 40px;
+        }
+        .footer-logo img {
+            height: 30px;
+        }
+        .footer-logo-text {
+            font-size: 18px;
+        }
+        .social-icon img {
+            width: 26px;
+            height: 26px;
+        }
+    }
+    @media (max-width: 480px) {
+        .footer-social {
+            gap: 16px;
+        }
+        .footer-logo {
+            gap: 6px;
+        }
+        .footer-logo img {
+            height: 22px;
+        }
+        .footer-logo-text {
+            font-size: 15px;
+        }
+        .footer-copyright {
+            font-size: 12px;
+        }
+        .footer-links {
+            font-size: 11px;
+        }
+    }
+</style>
+<footer class="site-footer">
+    <hr class="footer-divider">
+    <div class="footer-social">
+        <a href="#" class="social-icon" title="YouTube">
+            <img src="/icon/youtube.png" alt="YouTube">
+        </a>
+    </div>
+    <div class="footer-logo">
+        <img src="/icon/logo.png" alt="Petizo Logo">
+        <span class="footer-logo-text">Petizo</span>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-copyright">
+            Copyright © 2025 Petizo
+        </div>
+        <div class="footer-links">
+            <a href="#">Information legal</a> |
+            <a href="#">Privacy &amp; Cookie Policy</a>
+        </div>
+    </div>
+</footer>
 </html>
