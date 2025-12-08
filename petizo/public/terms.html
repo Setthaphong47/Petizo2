@@ -4,234 +4,337 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ข้อกำหนดและเงื่อนไขในการใช้บริการ - Petizo</title>
-    <link rel="preload" href="/css/navbar.css" as="style">
-    <link rel="preload" href="/js/navbar.js" as="script">
-    <link rel="preload" href="/icon/logo.png" as="image">
-    <link rel="stylesheet" href="/css/navbar.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
+            padding: 40px 20px;
         }
+        
         .container {
-            max-width: 900px;
-            margin: 48px auto 60px auto;
+            max-width: 1000px;
+            margin: 0 auto;
             background: #fff;
-            border-radius: 22px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            padding: 48px 36px 40px 36px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 188, 212, 0.15);
+            overflow: hidden;
         }
+        
+        .header {
+            background: #fff;
+            padding: 50px 40px;
+            text-align: center;
+            border-bottom: 2px solid #e8ecef;
+        }
+        
         h1 {
             font-size: 2.4rem;
-            font-weight: 800;
-            color: #00bcd4;
-            margin-bottom: 28px;
-            text-align: center;
-            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
         }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #7f8c8d;
+            font-weight: 400;
+        }
+        
+        .content {
+            padding: 50px 40px;
+        }
+        
         .terms-list {
             counter-reset: term;
-            margin: 0;
-            padding: 0;
-        }
-        .terms-list li {
-            color: #222;
-            font-size: 1.08rem;
-            line-height: 1.8;
-            margin-bottom: 28px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 22px 24px 18px 24px;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-            position: relative;
             list-style: none;
         }
-        .terms-list li:before {
+        
+        .terms-list li {
+            margin-bottom: 32px;
+            position: relative;
+            padding-left: 70px;
+            line-height: 1.8;
+            color: #2c3e50;
+            font-size: 1.05rem;
+        }
+        
+        .terms-list li::before {
             counter-increment: term;
-            content: counter(term) ".";
+            content: counter(term);
             position: absolute;
-            left: 12px;
-            top: 18px;
-            font-size: 1.2rem;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 2px solid #e8ecef;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
             font-weight: 700;
-            color: #00bcd4;
         }
+        
         .terms-list li strong {
-            color: #0096c7;
-            font-weight: 700;
-        }
-        .terms-list li a {
             color: #00bcd4;
-            text-decoration: underline;
-            font-weight: 600;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.15rem;
         }
-        .terms-list li a:hover {
+        
+        .terms-list li a {
             color: #0096c7;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
         }
-        @media (max-width: 768px) {
-            .container {
-                padding: 24px 10px 20px 10px;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
-            .terms-list li {
-                font-size: 0.98rem;
-                padding: 16px 10px 12px 18px;
-            }
-            .terms-list li:before {
-                left: 4px;
-                top: 10px;
-                font-size: 1rem;
-            }
+        
+        .terms-list li a:hover {
+            color: #00bcd4;
+            border-bottom: 2px solid #00bcd4;
         }
-    </style>
-</head>
-<body>
-    <!-- Navbar -->
-    <div id="navbar-container"></div>
-    <script src="/js/navbar.js"></script>
-
-    <div class="container">
-        <h1>ข้อกำหนดและเงื่อนไขในการใช้บริการ (Terms of Service)</h1>
-        <ol class="terms-list">
-            <li><strong>ผู้ใช้บริการต้องลงทะเบียนด้วยข้อมูลที่ถูกต้อง ครบถ้วน และเป็นข้อมูลของตนเองเท่านั้น</strong> ทั้งนี้ผู้ใช้บริการต้องรับผิดชอบต่อการเก็บรักษาบัญชีผู้ใช้และรหัสผ่าน หากเกิดความเสียหายอันเกิดจากการเข้าถึงโดยมิชอบ ผู้ใช้บริการต้องรับผิดชอบด้วยตนเองทั้งหมด และผู้ให้บริการมีสิทธิดำเนินการระงับบัญชีหากพบการให้ข้อมูลอันเป็นเท็จหรือเป็นการปลอมแปลงตัวตน</li>
-            <li><strong>ผู้ใช้บริการต้องกรอกข้อมูลสัตว์เลี้ยงและข้อมูลสุขภาพด้วยความถูกต้องและเป็นปัจจุบัน</strong> การบันทึกข้อมูลใดๆ จะถือเป็นการยืนยันโดยผู้ใช้บริการว่าข้อมูลดังกล่าวเป็นข้อมูลจริง ผู้ให้บริการจะไม่รับผิดชอบต่อความเสียหายที่เกิดจากความคลาดเคลื่อนของข้อมูลที่ผู้ใช้บริการเป็นผู้บันทึกลงในระบบ รวมถึงผลของระบบที่ประมวลผลจากข้อมูลดังกล่าว</li>
-            <li><strong>ระบบแจ้งเตือนวัคซีนจัดทำขึ้นเพื่ออำนวยความสะดวกในการดูแลสัตว์เลี้ยงเท่านั้น</strong> ไม่ถือเป็นคำแนะนำทางการแพทย์หรือการวินิจฉัยโรคใดๆ ผู้ใช้บริการต้องใช้ดุลยพินิจในการตัดสินใจและรับผิดชอบต่อการนำข้อมูลไปใช้ รวมถึงต้องปรึกษาสัตวแพทย์ผู้เชี่ยวชาญในกรณีที่เกี่ยวข้องกับสุขภาพของสัตว์เลี้ยง</li>
-            <li><strong>เนื้อหา บทความ ฟีเจอร์ และข้อมูลทั้งหมดถือเป็นทรัพย์สินทางปัญญาของผู้ให้บริการ</strong> ห้ามผู้ใช้บริการทำซ้ำ ดัดแปลง เผยแพร่ แจกจ่าย หรือใช้เพื่อวัตถุประสงค์ทางการค้าใดๆ โดยไม่ได้รับอนุญาต ผู้ให้บริการมีสิทธิดำเนินการตามกฎหมายหากมีการละเมิดทรัพย์สินทางปัญญาไม่ว่าทางตรงหรือทางอ้อม</li>
-            <li><strong>ผู้ใช้บริการต้องไม่ใช้ระบบในลักษณะที่ผิดกฎหมาย ขัดต่อศีลธรรมอันดี รบกวนการทำงานของระบบ หรือสร้างความเสียหายแก่ผู้ใช้รายอื่น</strong> การเผยแพร่ข้อมูลที่ผิดกฎหมาย หมิ่นประมาท ละเมิดลิขสิทธิ์ หรือมีไวรัสหรือโค้ดอันตราย ถือเป็นการละเมิดข้อตกลงนี้ และผู้ให้บริการมีสิทธิระงับการใช้งานทันทีและดำเนินคดีตามกฎหมายหากจำเป็น</li>
-            <li><strong>ผู้ใช้บริการตกลงยินยอมให้ผู้ให้บริการเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลตามวัตถุประสงค์ของการให้บริการเท่านั้น</strong> โดยผู้ให้บริการจะดำเนินการภายใต้นโยบายคุ้มครองข้อมูลส่วนบุคคล และจะไม่เปิดเผยข้อมูลส่วนบุคคลให้แก่บุคคลภายนอก เว้นแต่เป็นไปตามที่กฎหมายกำหนดหรือมีคำสั่งของหน่วยงานรัฐที่มีอำนาจ</li>
-            <li><strong>ผู้ให้บริการมีสิทธิระงับหรือยกเลิกบัญชีผู้ใช้บริการทันทีหากพบว่ามีการละเมิดข้อกำหนด</strong> การใช้ในทางมิชอบ การเจตนาทุจริต หรือกระทำการที่อาจสร้างความเสียหายต่อระบบหรือผู้ใช้รายอื่น โดยผู้ใช้บริการไม่มีสิทธิเรียกร้องค่าเสียหายใดๆ จากการระงับหรือยกเลิกบัญชีที่เกิดจากการฝ่าฝืนของตนเอง</li>
-            <li><strong>ผู้ให้บริการสงวนสิทธิในการแก้ไข เพิ่มเติม หรือปรับปรุงข้อกำหนดนี้ได้ทุกเมื่อ</strong> โดยการเปลี่ยนแปลงจะมีผลบังคับใช้ทันทีเมื่อมีการเผยแพร่บนเว็บไซต์ ผู้ใช้บริการมีหน้าที่ตรวจสอบข้อกำหนดที่ปรับปรุงใหม่ และการใช้งานต่อไปถือเป็นการยอมรับข้อกำหนดที่แก้ไขแล้วโดยสมบูรณ์</li>
-            <li><strong>การใช้งานเว็บไซต์หรือบริการใดๆ ถือว่าผู้ใช้บริการได้อ่าน ทำความเข้าใจ และยอมรับข้อกำหนดทั้งหมด</strong> หากผู้ใช้บริการไม่ยอมรับข้อกำหนดใดในเอกสารฉบับนี้ ผู้ใช้บริการต้องยุติการใช้งานทันที และงดเว้นจากการเข้าถึงระบบในทุกช่องทาง</li>
-        </ol>
-    </div>
-
-    <!-- Footer -->
-    <style>
+        
+        /* Footer Styles */
         .site-footer {
             background: #fff;
-            color: #222;
-            padding: 32px 0 18px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            margin-top: 60px;
+            padding: 40px 20px 20px;
+            margin-top: 40px;
         }
+        
         .footer-divider {
             border: none;
-            border-top: 1.5px solid #e0e0e0;
-            margin: 0 0 24px 0;
+            border-top: 2px solid #e8ecef;
+            margin: 0 auto 30px;
+            max-width: 900px;
         }
+        
         .footer-social {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 24px;
-            margin-bottom: 18px;
+            margin-bottom: 24px;
         }
+        
         .social-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
             cursor: pointer;
-            opacity: 0.7;
+            opacity: 0.8;
         }
+        
         .social-icon:hover {
             opacity: 1;
-            transform: translateY(-2px) scale(1.08);
+            transform: translateY(-4px) scale(1.1);
         }
+        
         .social-icon img {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
+        
         .footer-logo {
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
         }
+        
         .footer-logo img {
-            height: 38px;
+            height: 42px;
             width: auto;
         }
+        
         .footer-logo-text {
-            font-size: 22px;
-            font-weight: 400;
-            color: #222;
-            font-family: 'Georgia', serif;
+            font-size: 26px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #00bcd4 0%, #0096c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+        
         .footer-bottom {
-            background: transparent;
-            padding: 10px 0 0;
             text-align: center;
-            border-top: none;
+            padding: 20px 0 0;
+            border-top: 1px solid #e8ecef;
+            max-width: 900px;
+            margin: 0 auto;
         }
+        
         .footer-copyright {
-            color: #666;
+            color: #7f8c8d;
             font-size: 14px;
-            margin-bottom: 6px;
-            font-weight: 300;
+            margin-bottom: 8px;
+            font-weight: 400;
         }
+        
         .footer-links {
-            color: #666;
+            color: #7f8c8d;
             font-size: 13px;
-            font-weight: 300;
         }
+        
         .footer-links a {
             color: #00bcd4;
             text-decoration: none;
-            margin: 0 8px;
-            transition: color 0.3s ease;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
+        
         .footer-links a:hover {
             color: #0096c7;
+            text-decoration: underline;
         }
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .site-footer {
-                padding: 24px 0 12px;
-                margin-top: 40px;
+            body {
+                padding: 20px 10px;
             }
+            
+            .header {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .terms-list li {
+                padding-left: 60px;
+                font-size: 0.95rem;
+            }
+            
+            .terms-list li::before {
+                width: 42px;
+                height: 42px;
+                font-size: 1.2rem;
+            }
+            
+            .terms-list li strong {
+                font-size: 1.05rem;
+            }
+            
             .footer-logo img {
+                height: 34px;
+            }
+            
+            .footer-logo-text {
+                font-size: 20px;
+            }
+            
+            .social-icon img {
+                width: 30px;
                 height: 30px;
             }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .terms-list li {
+                padding-left: 50px;
+                font-size: 0.9rem;
+                margin-bottom: 24px;
+            }
+            
+            .terms-list li::before {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+            
+            .footer-logo {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .footer-logo img {
+                height: 28px;
+            }
+            
             .footer-logo-text {
                 font-size: 18px;
             }
-            .social-icon img {
-                width: 26px;
-                height: 26px;
-            }
-        }
-        @media (max-width: 480px) {
-            .footer-social {
-                gap: 16px;
-            }
-            .footer-logo {
-                gap: 6px;
-            }
-            .footer-logo img {
-                height: 22px;
-            }
-            .footer-logo-text {
-                font-size: 15px;
-            }
-            .footer-copyright {
-                font-size: 12px;
-            }
-            .footer-links {
-                font-size: 11px;
-            }
         }
     </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ข้อกำหนดและเงื่อนไขในการใช้บริการ</h1>
+            <p class="subtitle">Terms of Service</p>
+        </div>
+        
+        <div class="content">
+            <ol class="terms-list">
+                <li>
+                    <strong>การลงทะเบียนและความรับผิดชอบ</strong>
+                    ผู้ใช้บริการต้องลงทะเบียนด้วยข้อมูลที่ถูกต้อง ครบถ้วน และเป็นข้อมูลของตนเองเท่านั้น ทั้งนี้ผู้ใช้บริการต้องรับผิดชอบต่อการเก็บรักษาบัญชีผู้ใช้และรหัสผ่าน หากเกิดความเสียหายอันเกิดจากการเข้าถึงโดยมิชอบ ผู้ใช้บริการต้องรับผิดชอบด้วยตนเองทั้งหมด
+                </li>
+                <li>
+                    <strong>ข้อมูลสัตว์เลี้ยงและความถูกต้อง</strong>
+                    ผู้ใช้บริการต้องกรอกข้อมูลสัตว์เลี้ยงและข้อมูลสุขภาพด้วยความถูกต้องและเป็นปัจจุบัน การบันทึกข้อมูลใดๆ จะถือเป็นการยืนยันโดยผู้ใช้บริการว่าข้อมูลดังกล่าวเป็นข้อมูลจริง ผู้ให้บริการจะไม่รับผิดชอบต่อความเสียหายที่เกิดจากความคลาดเคลื่อนของข้อมูล
+                </li>
+                <li>
+                    <strong>ระบบแจ้งเตือนและคำแนะนำ</strong>
+                    ระบบแจ้งเตือนวัคซีนจัดทำขึ้นเพื่ออำนวยความสะดวกในการดูแลสัตว์เลี้ยงเท่านั้น ไม่ถือเป็นคำแนะนำทางการแพทย์หรือการวินิจฉัยโรคใดๆ ผู้ใช้บริการต้องใช้ดุลยพินิจในการตัดสินใจและต้องปรึกษาสัตวแพทย์ผู้เชี่ยวชาญในกรณีที่เกี่ยวข้องกับสุขภาพของสัตว์เลี้ยง
+                </li>
+                <li>
+                    <strong>ทรัพย์สินทางปัญญา</strong>
+                    เนื้อหา บทความ ฟีเจอร์ และข้อมูลทั้งหมดถือเป็นทรัพย์สินทางปัญญาของผู้ให้บริการ ห้ามผู้ใช้บริการทำซ้ำ ดัดแปลง เผยแพร่ แจกจ่าย หรือใช้เพื่อวัตถุประสงค์ทางการค้าใดๆ โดยไม่ได้รับอนุญาต
+                </li>
+                <li>
+                    <strong>การใช้งานที่เหมาะสม</strong>
+                    ผู้ใช้บริการต้องไม่ใช้ระบบในลักษณะที่ผิดกฎหมาย ขัดต่อศีลธรรมอันดี รบกวนการทำงานของระบบ หรือสร้างความเสียหายแก่ผู้ใช้รายอื่น การเผยแพร่ข้อมูลที่ผิดกฎหมาย หมิ่นประมาท ละเมิดลิขสิทธิ์ ถือเป็นการละเมิดข้อตกลงนี้
+                </li>
+                <li>
+                    <strong>ข้อมูลส่วนบุคคล</strong>
+                    ผู้ใช้บริการตกลงยินยอมให้ผู้ให้บริการเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลตามวัตถุประสงค์ของการให้บริการเท่านั้น โดยผู้ให้บริการจะดำเนินการภายใต้นโยบายคุ้มครองข้อมูลส่วนบุคคล และจะไม่เปิดเผยข้อมูลให้แก่บุคคลภายนอก เว้นแต่เป็นไปตามที่กฎหมายกำหนด
+                </li>
+                <li>
+                    <strong>การระงับบัญชี</strong>
+                    ผู้ให้บริการมีสิทธิระงับหรือยกเลิกบัญชีผู้ใช้บริการทันทีหากพบว่ามีการละเมิดข้อกำหนด การใช้ในทางมิชอบ การเจตนาทุจริต หรือกระทำการที่อาจสร้างความเสียหายต่อระบบหรือผู้ใช้รายอื่น
+                </li>
+                <li>
+                    <strong>การแก้ไขข้อกำหนด</strong>
+                    ผู้ให้บริการสงวนสิทธิในการแก้ไข เพิ่มเติม หรือปรับปรุงข้อกำหนดนี้ได้ทุกเมื่อ โดยการเปลี่ยนแปลงจะมีผลบังคับใช้ทันทีเมื่อมีการเผยแพร่บนเว็บไซต์ ผู้ใช้บริการมีหน้าที่ตรวจสอบข้อกำหนดที่ปรับปรุงใหม่
+                </li>
+                <li>
+                    <strong>การยอมรับข้อกำหนด</strong>
+                    การใช้งานเว็บไซต์หรือบริการใดๆ ถือว่าผู้ใช้บริการได้อ่าน ทำความเข้าใจ และยอมรับข้อกำหนดทั้งหมด หากผู้ใช้บริการไม่ยอมรับข้อกำหนดใด ผู้ใช้บริการต้องยุติการใช้งานทันที
+                </li>
+            </ol>
+        </div>
+    </div>
+    
     <footer class="site-footer">
         <hr class="footer-divider">
         <div class="footer-social">
