@@ -1,123 +1,173 @@
 <!-- Site Footer Component -->
 <style>
-    .site-footer {
-        background: #f6ede6;
-        color: #7c6a5c;
+    * {
+        margin: 0;
         padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #f5f0eb;
+    }
+
+    .site-footer {
+        background: #f5f0eb;
+        color: #8b7d71;
+        padding: 40px 0 30px;
         margin-top: 80px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        border-top: none;
     }
 
     .footer-content {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 24px;
+        padding: 0 40px;
     }
 
     .footer-divider {
         border: none;
-        border-top: 2px solid #e0d6ce;
-        margin: 0 0 24px 0;
-        background: none;
+        border-top: 1.5px solid #d4c4b8;
+        margin: 0 0 30px 0;
     }
 
     .footer-social {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 0;
-        margin-bottom: 12px;
+        margin-bottom: 24px;
     }
 
     .social-icon {
-        width: 40px;
-        height: 40px;
-        background: none;
-        border-radius: 50%;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
         cursor: pointer;
-        margin: 0 8px;
+        opacity: 0.7;
+    }
+
+    .social-icon:hover {
+        opacity: 1;
+        transform: translateY(-2px);
     }
 
     .social-icon img {
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         object-fit: contain;
-        filter: none;
-        transition: opacity 0.3s ease;
     }
 
     .footer-logo {
         text-align: center;
-        margin-bottom: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
     }
 
     .footer-logo img {
-        height: 38px;
+        height: 45px;
         width: auto;
-        margin: 0 auto;
-        display: block;
+    }
+
+    .footer-logo-text {
+        font-size: 28px;
+        font-weight: 400;
+        color: #8b7d71;
+        font-family: 'Georgia', serif;
     }
 
     .footer-bottom {
-        background: none;
-        padding: 0 0 24px 0;
+        background: transparent;
+        padding: 20px 0 0;
         text-align: center;
         border-top: none;
     }
 
     .footer-copyright {
-        color: #bfa89e;
-        font-size: 15px;
-        margin-bottom: 4px;
-        font-family: inherit;
+        color: #a89a8e;
+        font-size: 14px;
+        margin-bottom: 8px;
+        font-weight: 300;
     }
 
     .footer-links {
-        color: #bfa89e;
+        color: #a89a8e;
         font-size: 13px;
-        margin-top: 4px;
+        font-weight: 300;
     }
 
     .footer-links a {
-        color: #bfa89e;
+        color: #a89a8e;
         text-decoration: none;
-        margin: 0 10px;
+        margin: 0 8px;
         transition: color 0.3s ease;
     }
 
     .footer-links a:hover {
-        color: #a08d84;
+        color: #7d6f63;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .footer-content {
+            padding: 0 30px;
+        }
+
+        .site-footer {
+            padding: 30px 0 25px;
+            margin-top: 60px;
+        }
+
+        .footer-logo img {
+            height: 38px;
+        }
+
+        .footer-logo-text {
+            font-size: 24px;
+        }
+
+        .social-icon img {
+            width: 28px;
+            height: 28px;
+        }
     }
 
     @media (max-width: 576px) {
         .footer-content {
-            padding: 0 10px;
+            padding: 0 20px;
         }
+
         .site-footer {
-            padding: 0;
-            margin-top: 40px;
+            padding: 25px 0 20px;
+            margin-top: 50px;
         }
+
+        .footer-logo {
+            flex-direction: column;
+            gap: 8px;
+        }
+
         .footer-logo img {
-            height: 28px;
+            height: 35px;
         }
+
+        .footer-logo-text {
+            font-size: 20px;
+        }
+
         .footer-copyright {
             font-size: 13px;
         }
+
         .footer-links {
-            font-size: 11px;
+            font-size: 12px;
         }
-        .social-icon {
-            width: 32px;
-            height: 32px;
-        }
+
         .social-icon img {
-            width: 18px;
-            height: 18px;
+            width: 26px;
+            height: 26px;
         }
     }
 </style>
@@ -125,16 +175,21 @@
 <footer class="site-footer">
     <div class="footer-content">
         <hr class="footer-divider">
+        
         <div class="footer-social">
             <a href="#" class="social-icon" title="YouTube">
                 <img src="/icon/youtube.png" alt="YouTube">
             </a>
         </div>
+
         <div class="footer-logo">
             <img src="/icon/logo.png" alt="Petizo Logo">
+            <span class="footer-logo-text">Petizo</span>
         </div>
-        <hr class="footer-divider" style="margin-top: 16px; margin-bottom: 8px;">
+
+        <hr class="footer-divider" style="margin-top: 20px; margin-bottom: 0;">
     </div>
+
     <div class="footer-bottom">
         <div class="footer-copyright">
             Copyright © 2025 Petizo
