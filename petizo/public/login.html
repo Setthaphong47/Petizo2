@@ -14,186 +14,49 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             min-height: 100vh;
-            background: #2c3e50;
+            background: #f0f4f8;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
-            background: url('/images/login1.jpg') center/cover;
-            filter: blur(20px);
-            opacity: 0.5;
-            z-index: 0;
         }
 
         .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 90vw;
-            max-width: 1100px;
-            max-height: 85vh;
-            margin: 0;
+            max-width: 800px;
             background: white;
-            border-radius: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            position: relative;
-            z-index: 1;
+            padding: 40px;
         }
 
         /* Left Side - Image Section */
         .image-section {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding: 60px 40px;
-            color: white;
-            overflow: hidden;
-            border-radius: 24px 0 0 24px;
-            background: transparent;
-        }
-
-        .background-slider {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 0;
-        }
-
-        .slide-image {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .slide-image.active {
-            opacity: 1;
-        }
-
-        .slide-image:nth-child(1) {
-            background-image: url('/images/login_register1.png');
-        }
-
-        .slide-image:nth-child(2) {
-            background-image: url('/images/login_register2.png');
-        }
-
-        .slide-image:nth-child(3) {
-            background-image: url('/images/login_register3.png');
-        }
-
-        .logo-section {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: auto;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .logo-section:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: white;
-            border-radius: 50%;
-            padding: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .logo-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .logo-text {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            margin-top: auto;
+            max-height: 200px;
             margin-bottom: 20px;
-        }
-
-        .hero-content h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            line-height: 1.2;
-            text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero-content p {
-            font-size: 14px;
-            opacity: 1;
-            line-height: 1.6;
-            max-width: 400px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        .feature-dots {
-            position: relative;
-            z-index: 2;
             display: flex;
-            gap: 10px;
+            justify-content: center;
+            align-items: center;
         }
 
-        .dot {
-            width: 32px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .dot.active {
-            background: white;
-            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
         }
 
         /* Right Side - Form Section */
         .form-section {
-            background: white;
-            padding: 60px 45px;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            border-radius: 0 24px 24px 0;
+            align-items: center;
         }
 
         .form-content {
@@ -201,168 +64,90 @@
         }
 
         .form-content h2 {
-            font-size: 28px;
-            font-weight: 800;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-
-        .form-subtitle {
-            color: #6c757d;
-            margin-bottom: 32px;
-            font-size: 14px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
         }
 
         .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .input-wrapper {
-            position: relative;
+            width: 100%;
+            margin-bottom: 16px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 13px 16px;
-            border: 1.5px solid #e0e0e0;
+            padding: 12px;
+            border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s;
-            font-family: inherit;
         }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: #00d4ff;
-            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #999;
-            font-size: 18px;
-            user-select: none;
-        }
-
-        .password-toggle:hover {
-            color: #00d4ff;
-        }
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .remember-me {
+        .btn-google-login {
+            width: 100%;
+            padding: 12px;
+            background: #e0f7fa;
+            color: #00796b;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             cursor: pointer;
         }
 
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #00d4ff;
+        .btn-google-login:hover {
+            background: #b2ebf2;
         }
 
-        .remember-me label {
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 16px 0;
+            width: 100%;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #ccc;
+        }
+
+        .divider-text {
+            margin: 0 8px;
             font-size: 14px;
-            color: #333;
-            cursor: pointer;
-            user-select: none;
-            font-weight: 400;
-        }
-
-        .forgot-password {
-            color: #00d4ff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .forgot-password:hover {
-            color: #00bdeb;
-            text-decoration: underline;
+            color: #666;
         }
 
         .btn-login {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
+            padding: 12px;
+            background: #aed581;
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
         }
 
         .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
-        }
-
-        .btn-login:active {
-                    .btn-google-login {
-                        width: 100%;
-                        padding: 13px 0;
-                        background: #fff;
-                        color: #444;
-                        border: 1.5px solid #e0e0e0;
-                        border-radius: 8px;
-                        font-size: 15px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
-                        margin-bottom: 16px;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 10px;
-                        outline: none;
-                    }
-                    .btn-google-login:hover {
-                        background: #f5f5f5;
-                        border-color: #00d4ff;
-                        box-shadow: 0 4px 16px rgba(0,212,255,0.10);
-                    }
-                    .btn-google-login img {
-                        height: 22px;
-                        margin-right: 8px;
-                    }
-            transform: translateY(0);
+            background: #9ccc65;
         }
 
         .signup-link {
-            margin-top: 20px;
-            text-align: center;
-            color: #666;
+            margin-top: 16px;
             font-size: 14px;
+            color: #666;
         }
 
         .signup-link a {
-            color: #00d4ff;
+            color: #00796b;
             text-decoration: none;
             font-weight: 600;
         }
@@ -371,83 +156,15 @@
             text-decoration: underline;
         }
 
-        .message {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-            font-size: 14px;
-        }
-
-        .error-message {
-            background: #fff1f0;
-            color: #cf1322;
-            border: 1px solid #ffccc7;
-        }
-
-        .google-login-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .google-login-button {
-            display: flex;
-            align-items: center;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .google-login-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .login-divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-
-        .divider-line {
-            flex: 1;
-            height: 1px;
-            background-color: #ccc;
-            margin: 0 10px;
-        }
-
-        .divider-text {
-            font-size: 14px;
-            color: #666;
-            white-space: nowrap;
-        }
-
         .terms-privacy {
             text-align: center;
             font-size: 12px;
             color: #666;
-            margin-top: 20px;
+            margin-top: 16px;
         }
 
         .privacy-policy-link {
-            color: #00d4ff;
+            color: #00796b;
             text-decoration: none;
             font-weight: 600;
         }
@@ -455,186 +172,45 @@
         .privacy-policy-link:hover {
             text-decoration: underline;
         }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .form-section {
-                padding: 50px 35px;
-            }
-
-            .image-section {
-                padding: 50px 35px;
-            }
-
-            .hero-content h1 {
-                font-size: 38px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                grid-template-columns: 1fr;
-                border-radius: 16px;
-            }
-
-            .image-section {
-                display: none;
-            }
-
-            .form-section {
-                padding: 40px 20px;
-                border-radius: 16px;
-            }
-
-            .mobile-logo {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 12px;
-                margin-bottom: 32px;
-            }
-
-            .mobile-logo-icon {
-                width: 56px;
-                height: 56px;
-                background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
-                border-radius: 50%;
-                padding: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .mobile-logo-icon img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                filter: brightness(0) invert(1);
-            }
-
-            .mobile-logo-text {
-                font-size: 26px;
-                font-weight: 800;
-                background: linear-gradient(135deg, #00bcd4 0%, #0096c7 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .form-content h2 {
-                font-size: 24px;
-                text-align: center;
-            }
-
-            .form-subtitle {
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .form-section {
-                padding: 24px 20px;
-            }
-
-            .form-content h2 {
-                font-size: 22px;
-            }
-
-            .hero-content h1 {
-                font-size: 32px;
-            }
-
-            .form-options {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-        }
-
-        .mobile-logo {
-            display: none;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Left Side - Image Section -->
         <div class="image-section">
-            <div class="background-slider">
-                <div class="slide-image active"></div>
-                <div class="slide-image"></div>
-                <div class="slide-image"></div>
-            </div>
-
-            <a href="index.html" class="logo-section">
-                <div class="logo-icon">
-                    <img src="/icon/logo.png" alt="Petizo">
-                </div>
-                <div class="logo-text">Petizo</div>
-            </a>
-
-            <div class="feature-dots" style="margin-top: 16px; justify-content: center;">
-                <div class="dot active" onclick="changeSlide(0)"></div>
-                <div class="dot" onclick="changeSlide(1)"></div>
-                <div class="dot" onclick="changeSlide(2)"></div>
-            </div>
+            <img src="/images/login_register1.png" alt="Petizo">
         </div>
 
-        <!-- Right Side - Form Section -->
         <div class="form-section">
-            <!-- Mobile Logo -->
-            <div class="mobile-logo">
-                <div class="mobile-logo-icon">
-                    <img src="/icon/logo.png" alt="Petizo">
-                </div>
-                <div class="mobile-logo-text">Petizo</div>
-            </div>
-
             <div class="form-content">
                 <h2>ยินดีต้อนรับกลับสู่ Petizo!</h2>
-                <p class="form-subtitle">เข้าสู่ระบบบัญชีของคุณ</p>
 
-                <div class="message error-message" id="loginError"></div>
+                <button type="button" class="btn-google-login">
+                    <img src="../icon/google-icon.png" alt="Google Icon" class="google-icon">
+                    <span>เข้าสู่ระบบผ่าน Google</span>
+                </button>
+
+                <div class="divider">
+                    <span class="divider-line"></span>
+                    <span class="divider-text">หรือ</span>
+                    <span class="divider-line"></span>
+                </div>
 
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label>อีเมล</label>
-                        <input type="email" id="loginEmail" required placeholder="info.madhu786@gmail.com">
+                        <input type="email" id="loginEmail" required placeholder="อีเมล">
                     </div>
 
                     <div class="form-group">
-                        <label>รหัสผ่าน</label>
-                        <div class="input-wrapper">
-                            <input type="password" id="loginPassword" required placeholder="••••••••">
-                            <span class="password-toggle" onclick="togglePassword()">👁</span>
-                        </div>
-                    </div>
-
-                    <div class="form-options">
-                        <a href="#" class="forgot-password">ลืมรหัสผ่าน?</a>
+                        <input type="password" id="loginPassword" required placeholder="รหัสผ่าน">
                     </div>
 
                     <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
-                    <div class="google-login-container" style="text-align: center; margin-top: 20px;">
-                        <div class="login-divider" style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                            <span class="divider-line" style="flex: 1; height: 1px; background-color: #ccc; margin: 0 10px;"></span>
-                            <span class="divider-text" style="font-size: 14px; color: #666;">เข้าใช้งานผ่าน</span>
-                            <span class="divider-line" style="flex: 1; height: 1px; background-color: #ccc; margin: 0 10px;"></span>
-                        </div>
-                        <button type="button" class="btn-google-login google-login-button" style="display: flex; align-items: center; justify-content: center; padding: 10px 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #fff; cursor: pointer;">
-                            <img src="../icon/google-icon.png" alt="Google Icon" class="google-icon" style="width: 20px; height: 20px; margin-right: 10px;">
-                            <span style="font-size: 14px; color: #333;">เข้าสู่ระบบผ่าน Google</span>
-                        </button>
-                    </div>
                 </form>
 
                 <div class="signup-link">
                     ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
                 </div>
+
                 <p class="terms-privacy">
                     การดำเนินการต่อแสดงว่าคุณยอมรับ
                 </p>
