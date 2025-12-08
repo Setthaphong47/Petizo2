@@ -751,7 +751,7 @@
 
                         // Category (หมวดหมู่)
                         const category = blog.category || 'ทั่วไป';
-                        const categoryHtml = `<span class="category">${category}</span>`;
+                        const categoryHtml = `<span class=\"category-label\">หมวดหมู่</span> <span class=\"category-box\">${category}</span>`;
 
                         const publishDate = new Date(blog.published_at || blog.created_at || Date.now());
                         const formattedDate = publishDate.toLocaleDateString('th-TH', { day:'2-digit', month:'short', year:'numeric' });
@@ -913,18 +913,41 @@
 
         .blog-tags {
             display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 10px;
             flex-wrap: wrap;
-            gap: 6px;
         }
 
-        .blog-tags .tag {
+        .category-label {
+            font-weight: 600;
+            color: #a6a6a6;
+            margin-right: 2px;
+        }
+
+        .category-box {
+            background: #f2f2f2;
+            color: #333;
+            border: 1.5px solid #a6a6a6;
+            border-radius: 12px;
+            padding: 2px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 8px;
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 999px;
-            background: #ebf8ff;
-            color: #0369a1;
-            font-size: 11px;
-            font-weight: 700;
+        }
+
+        .tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-right: 4px;
+            display: inline-block;
         }
 
         .date-badge {
