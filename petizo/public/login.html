@@ -386,44 +386,17 @@
         }
 
         .google-login-container {
+            margin-top: 5px; /* Adjusted vertical space */
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
             flex-direction: column;
             align-items: center;
         }
 
-        .google-login-button {
-            display: flex;
-            align-items: center;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .google-login-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
         .login-divider {
+            margin: 6px 0; /* Adjusted vertical space */
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px;
         }
 
         .divider-line {
@@ -443,17 +416,11 @@
             text-align: center;
             font-size: 12px;
             color: #666;
-            margin-top: 20px;
+            margin-top: 10px; /* Reduced spacing */
         }
 
-        .privacy-policy-link {
-            color: #00d4ff;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .privacy-policy-link:hover {
-            text-decoration: underline;
+        .terms-privacy p {
+            margin: 0; /* Ensure no extra spacing */
         }
 
         /* Responsive */
@@ -619,28 +586,29 @@
                     </div>
 
                     <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
-                    <div class="google-login-container" style="text-align: center; margin-top: 20px;">
-                        <div class="login-divider" style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                            <span class="divider-line" style="flex: 1; height: 1px; background-color: #ccc; margin: 0 10px;"></span>
-                            <span class="divider-text" style="font-size: 14px; color: #666;">เข้าใช้งานผ่าน</span>
-                            <span class="divider-line" style="flex: 1; height: 1px; background-color: #ccc; margin: 0 10px;"></span>
-                        </div>
-                        <button type="button" class="btn-google-login google-login-button" style="display: flex; align-items: center; justify-content: center; padding: 10px 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #fff; cursor: pointer;">
-                            <img src="../icon/google-icon.png" alt="Google Icon" class="google-icon" style="width: 20px; height: 20px; margin-right: 10px;">
-                            <span style="font-size: 14px; color: #333;">เข้าสู่ระบบผ่าน Google</span>
+                    <div class="google-login-container">
+                        <button type="button" class="btn-google-login">
+                            <img src="../icon/google-icon.png" alt="Google Icon" class="google-icon">
+                            <span>เข้าสู่ระบบผ่าน Google</span>
                         </button>
+
+                        <div class="login-divider">
+                            <span class="divider-line"></span>
+                            <span class="divider-text">หรือ</span>
+                            <span class="divider-line"></span>
+                        </div>
                     </div>
                 </form>
 
                 <div class="signup-link">
                     ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
                 </div>
-                <p class="terms-privacy">
-                    การดำเนินการต่อแสดงว่าคุณยอมรับ
-                </p>
-                <p class="terms-privacy">
-                    <a href="#" class="privacy-policy-link">ข้อกำหนดในการให้บริการของ Petizo</a> และ <a href="#" class="privacy-policy-link">นโยบายความเป็นส่วนตัว</a>
-                </p>
+                <div class="terms-privacy">
+                    <p>การดำเนินการต่อแสดงว่าคุณยอมรับ</p>
+                    <p>
+                        <a href="#" class="privacy-policy-link">ข้อกำหนดในการให้บริการของ Petizo</a> และ <a href="#" class="privacy-policy-link">นโยบายความเป็นส่วนตัว</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
