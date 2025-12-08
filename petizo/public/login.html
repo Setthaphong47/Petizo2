@@ -389,6 +389,8 @@
             display: flex;
             justify-content: center;
             margin-top: 20px;
+            flex-direction: column;
+            align-items: center;
         }
 
         .google-login-button {
@@ -618,11 +620,7 @@
 
                     <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
                     <div class="google-login-container">
-                        <div class="login-divider">
-        <span class="divider-line"></span>
-        <span class="divider-text">เข้าใช้งานผ่าน</span>
-        <span class="divider-line"></span>
-    </div>
+                        <p class="google-login-text">เข้าใช้งานผ่าน</p>
                         <button type="button" class="btn-google-login google-login-button" onclick="loginWithGoogle()">
                             <img src="../icon/google-icon.png" alt="Google Icon" class="google-icon">
                             <span>Login with Google</span>
