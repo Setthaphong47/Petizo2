@@ -39,13 +39,12 @@
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            width: 90vw;
-            max-width: 1100px;
-            max-height: 85vh;
-            margin: 0;
+            width: 100%;
+            max-width: 1200px;
             background: white;
             border-radius: 24px;
             overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             position: relative;
             z-index: 1;
         }
@@ -55,11 +54,10 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            padding: 60px 40px;
+            justify-content: space-between;
+            padding: 50px;
             color: white;
             overflow: hidden;
-            border-radius: 24px 0 0 24px;
-            background: transparent;
         }
 
         .background-slider {
@@ -101,14 +99,12 @@
         }
 
         .logo-section {
-            position: relative;
-            z-index: 2;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: auto;
             text-decoration: none;
-            cursor: pointer;
+            position: relative;
+            z-index: 2;
             transition: all 0.3s;
         }
 
@@ -118,11 +114,10 @@
         }
 
         .logo-icon {
-            width: 36px;
-            height: 36px;
+            width: 48px;
+            height: 48px;
             background: white;
-            border-radius: 50%;
-            padding: 6px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -130,39 +125,37 @@
         }
 
         .logo-icon img {
-            width: 100%;
-            height: 100%;
+            width: 32px;
+            height: 32px;
             object-fit: contain;
         }
 
         .logo-text {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 24px;
+            font-weight: 800;
             color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .hero-content {
+            margin-top: 60px;
             position: relative;
             z-index: 2;
-            margin-top: auto;
-            margin-bottom: 20px;
         }
 
         .hero-content h1 {
-            font-size: 32px;
+            font-size: 42px;
             font-weight: 800;
-            margin-bottom: 12px;
+            margin-bottom: 20px;
             line-height: 1.2;
-            text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 3px 20px rgba(0, 0, 0, 0.4);
         }
 
         .hero-content p {
-            font-size: 14px;
-            opacity: 1;
+            font-size: 16px;
             line-height: 1.6;
-            max-width: 400px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+            opacity: 0.95;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .feature-dots {
@@ -170,6 +163,7 @@
             z-index: 2;
             display: flex;
             gap: 10px;
+            margin-top: 20px;
         }
 
         .dot {
@@ -188,20 +182,18 @@
 
         /* Right Side - Form Section */
         .form-section {
-            background: white;
-            padding: 60px 45px;
+            padding: 60px 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            border-radius: 0 24px 24px 0;
         }
 
-        .form-content {
-            max-width: 100%;
+        .form-header {
+            margin-bottom: 40px;
         }
 
-        .form-content h2 {
-            font-size: 28px;
+        .form-header h2 {
+            font-size: 32px;
             font-weight: 800;
             color: #1a1a1a;
             margin-bottom: 8px;
@@ -209,19 +201,18 @@
 
         .form-subtitle {
             color: #6c757d;
-            margin-bottom: 32px;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #333;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 14px;
         }
 
@@ -231,10 +222,10 @@
 
         .form-group input {
             width: 100%;
-            padding: 13px 16px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 15px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
             transition: all 0.3s;
             font-family: inherit;
         }
@@ -242,18 +233,19 @@
         .form-group input:focus {
             outline: none;
             border-color: #00d4ff;
-            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
         }
 
         .password-toggle {
             position: absolute;
-            right: 16px;
+            right: 18px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
             color: #999;
-            font-size: 18px;
+            font-size: 20px;
             user-select: none;
+            transition: color 0.3s;
         }
 
         .password-toggle:hover {
@@ -262,119 +254,130 @@
 
         .form-options {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #00d4ff;
-        }
-
-        .remember-me label {
-            font-size: 14px;
-            color: #333;
-            cursor: pointer;
-            user-select: none;
-            font-weight: 400;
+            justify-content: flex-end;
+            margin-bottom: 28px;
         }
 
         .forgot-password {
             color: #00d4ff;
             text-decoration: none;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             transition: color 0.3s;
         }
 
         .forgot-password:hover {
             color: #00bdeb;
-            text-decoration: underline;
         }
 
         .btn-login {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
         }
 
         .btn-login:active {
-                    .btn-google-login {
-                        width: 100%;
-                        padding: 13px 0;
-                        background: #fff;
-                        color: #444;
-                        border: 1.5px solid #e0e0e0;
-                        border-radius: 8px;
-                        font-size: 15px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
-                        margin-bottom: 16px;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 10px;
-                        outline: none;
-                    }
-                    .btn-google-login:hover {
-                        background: #f5f5f5;
-                        border-color: #00d4ff;
-                        box-shadow: 0 4px 16px rgba(0,212,255,0.10);
-                    }
-                    .btn-google-login img {
-                        height: 22px;
-                        margin-right: 8px;
-                    }
             transform: translateY(0);
         }
 
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 28px 0;
+            gap: 16px;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider-text {
+            color: #999;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: #444;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-google:hover {
+            border-color: #00d4ff;
+            background: #f8f9fa;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
         .signup-link {
-            margin-top: 20px;
+            margin-top: 32px;
             text-align: center;
             color: #666;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .signup-link a {
             color: #00d4ff;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .signup-link a:hover {
             text-decoration: underline;
         }
 
+        .terms-text {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            line-height: 1.6;
+        }
+
+        .terms-text a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
         .message {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 24px;
             display: none;
             font-size: 14px;
         }
@@ -382,181 +385,90 @@
         .error-message {
             background: #fff1f0;
             color: #cf1322;
-            border: 1px solid #ffccc7;
+            border: 2px solid #ffccc7;
         }
 
-        .google-login-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
+        /* Mobile Logo */
+        .mobile-logo {
+            display: none;
             flex-direction: column;
             align-items: center;
+            margin-bottom: 40px;
         }
 
-        .google-login-button {
-            display: flex;
-            align-items: center;
-            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .google-login-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .login-divider {
+        .mobile-logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00d4ff 0%, #0096c7 100%);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3);
         }
 
-        .divider-line {
-            flex: 1;
-            height: 1px;
-            background-color: #ccc;
-            margin: 0 10px;
+        .mobile-logo-icon img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
         }
 
-        .divider-text {
-            font-size: 14px;
-            color: #666;
-            white-space: nowrap;
-        }
-
-        .terms-privacy {
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-            margin-top: 20px;
-        }
-
-        .privacy-policy-link {
-            color: #00d4ff;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .privacy-policy-link:hover {
-            text-decoration: underline;
+        .mobile-logo-text {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff 0%, #0096c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* Responsive */
-        @media (max-width: 1024px) {
-            .form-section {
-                padding: 50px 35px;
-            }
-
-            .image-section {
-                padding: 50px 35px;
-            }
-
-            .hero-content h1 {
-                font-size: 38px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
+        @media (max-width: 968px) {
             .container {
                 grid-template-columns: 1fr;
-                border-radius: 16px;
             }
 
             .image-section {
                 display: none;
             }
 
-            .form-section {
-                padding: 40px 20px;
-                border-radius: 16px;
-            }
-
             .mobile-logo {
                 display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 12px;
-                margin-bottom: 32px;
             }
 
-            .mobile-logo-icon {
-                width: 56px;
-                height: 56px;
-                background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
-                border-radius: 50%;
-                padding: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .mobile-logo-icon img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                filter: brightness(0) invert(1);
-            }
-
-            .mobile-logo-text {
-                font-size: 26px;
-                font-weight: 800;
-                background: linear-gradient(135deg, #00bcd4 0%, #0096c7 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .form-content h2 {
-                font-size: 24px;
-                text-align: center;
-            }
-
-            .form-subtitle {
-                text-align: center;
+            .form-section {
+                padding: 40px 30px;
             }
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
             .form-section {
-                padding: 24px 20px;
+                padding: 30px 20px;
             }
 
-            .form-content h2 {
-                font-size: 22px;
+            .form-header h2 {
+                font-size: 28px;
             }
 
-            .hero-content h1 {
-                font-size: 32px;
+            .mobile-logo-icon {
+                width: 70px;
+                height: 70px;
             }
 
-            .form-options {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
+            .mobile-logo-icon img {
+                width: 40px;
+                height: 40px;
             }
-        }
 
-        .mobile-logo {
-            display: none;
+            .mobile-logo-text {
+                font-size: 28px;
+            }
         }
     </style>
 </head>
@@ -570,14 +482,21 @@
                 <div class="slide-image"></div>
             </div>
 
-            <a href="index.html" class="logo-section">
-                <div class="logo-icon">
-                    <img src="/icon/logo.png" alt="Petizo">
-                </div>
-                <div class="logo-text">Petizo</div>
-            </a>
+            <div>
+                <a href="index.html" class="logo-section">
+                    <div class="logo-icon">
+                        <img src="/icon/logo.png" alt="Petizo">
+                    </div>
+                    <div class="logo-text">Petizo</div>
+                </a>
+            </div>
 
-            <div class="feature-dots" style="margin-top: 16px; justify-content: center;">
+            <div class="hero-content">
+                <h1>บันทึกสุขภาพ<br>สัตว์เลี้ยงของคุณ</h1>
+                <p>ระบบจัดการสุขภาพสัตว์เลี้ยงแบบดิจิทัล ติดตามวัคซีน บันทึกประวัติการรักษา และดูแลสัตว์เลี้ยงของคุณได้อย่างมีประสิทธิภาพ</p>
+            </div>
+
+            <div class="feature-dots">
                 <div class="dot active" onclick="changeSlide(0)"></div>
                 <div class="dot" onclick="changeSlide(1)"></div>
                 <div class="dot" onclick="changeSlide(2)"></div>
@@ -594,87 +513,76 @@
                 <div class="mobile-logo-text">Petizo</div>
             </div>
 
-            <div class="form-content">
+            <div class="form-header">
                 <h2>ยินดีต้อนรับกลับสู่ Petizo!</h2>
-                <p class="form-subtitle">เข้าสู่ระบบบัญชีของคุณ</p>
+                <p class="form-subtitle">เข้าสู่ระบบเพื่อจัดการข้อมูลสัตว์เลี้ยงของคุณ</p>
+            </div>
 
-                <div class="message error-message" id="loginError"></div>
+            <div class="message error-message" id="loginError"></div>
 
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label>อีเมล</label>
-                        <input type="email" id="loginEmail" required placeholder="info.madhu786@gmail.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label>รหัสผ่าน</label>
-                        <div class="input-wrapper">
-                            <input type="password" id="loginPassword" required placeholder="••••••••">
-                            <span class="password-toggle" onclick="togglePassword()">👁</span>
-                        </div>
-                    </div>
-
-                    <div class="form-options">
-                        <a href="#" class="forgot-password">ลืมรหัสผ่าน?</a>
-                    </div>
-
-                    <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
-                    <div class="google-login-container" style="text-align: center; margin-top: 20px;">
-                        <div class="login-divider" style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                            <span class="divider-line" style="flex: 1; height: 1px; background-color: #ccc; margin: 0 10px;"></span>
-                            <span class="divider-text" style="font-size: 14px; color: #666;">เข้าใช้งานผ่าน</span>
-                            <span class="divider-line" style="flex: 1; height: 1px; background-color: #ccc; margin: 0 10px;"></span>
-                        </div>
-                        <button type="button" class="btn-google-login google-login-button" style="display: flex; align-items: center; justify-content: center; padding: 10px 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #fff; cursor: pointer;">
-                            <img src="../icon/google-icon.png" alt="Google Icon" class="google-icon" style="width: 20px; height: 20px; margin-right: 10px;">
-                            <span style="font-size: 14px; color: #333;">เข้าสู่ระบบผ่าน Google</span>
-                        </button>
-                    </div>
-                </form>
-
-                <div class="signup-link">
-                    ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>อีเมล</label>
+                    <input type="email" id="loginEmail" required placeholder="info.madhu786@gmail.com">
                 </div>
-                <p class="terms-privacy">
-                    การดำเนินการต่อแสดงว่าคุณยอมรับ
-                </p>
-                <p class="terms-privacy">
-                    <a href="#" class="privacy-policy-link">ข้อกำหนดในการให้บริการของ Petizo</a> และ <a href="#" class="privacy-policy-link">นโยบายความเป็นส่วนตัว</a>
-                </p>
+
+                <div class="form-group">
+                    <label>รหัสผ่าน</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                        <span class="password-toggle" onclick="togglePassword()">👁</span>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <a href="#" class="forgot-password">ลืมรหัสผ่าน?</a>
+                </div>
+
+                <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+
+                <div class="divider">
+                    <div class="divider-line"></div>
+                    <span class="divider-text">หรือเข้าใช้งานผ่าน</span>
+                    <div class="divider-line"></div>
+                </div>
+
+                <button type="button" class="btn-google" onclick="loginWithGoogle()">
+                    <img src="../icon/google-icon.png" alt="Google" class="google-icon">
+                    เข้าสู่ระบบผ่าน Google
+                </button>
+            </form>
+
+            <div class="signup-link">
+                ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+            </div>
+
+            <div class="terms-text">
+                การดำเนินการต่อแสดงว่าคุณยอมรับ<br>
+                <a href="#">ข้อกำหนดในการให้บริการ</a> และ <a href="#">นโยบายความเป็นส่วนตัว</a>
             </div>
         </div>
     </div>
 
     <script src="/js/config.js"></script>
-        <script>
-            function loginWithGoogle() {
-                // TODO: Implement Google login integration
-                alert('ฟีเจอร์เข้าสู่ระบบด้วย Google ยังไม่พร้อมใช้งาน');
-            }
-        </script>
     <script>
         const API_URL = CONFIG.API_URL;
 
-        // Toggle password visibility
         function togglePassword() {
             const passwordInput = document.getElementById('loginPassword');
             const type = passwordInput.type === 'password' ? 'text' : 'password';
             passwordInput.type = type;
         }
 
-        // Show message
         function showMessage(id, text) {
             const element = document.getElementById(id);
             element.textContent = text;
             element.style.display = 'block';
         }
 
-        // Hide message
         function hideMessage(id) {
             document.getElementById(id).style.display = 'none';
         }
 
-        // Handle Login
         async function handleLogin(event) {
             event.preventDefault();
 
@@ -697,10 +605,8 @@
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
 
-                    // Clear form before redirect
                     document.getElementById('loginForm').reset();
 
-                    // Redirect based on role
                     if (data.user.role === 'admin') {
                         window.location.href = 'admin.html';
                     } else {
@@ -715,8 +621,42 @@
             }
         }
 
-        // Check if already logged in
+        function loginWithGoogle() {
+            alert('ฟีเจอร์เข้าสู่ระบบด้วย Google ยังไม่พร้อมใช้งาน');
+        }
+
+        // Carousel slideshow
+        const dots = document.querySelectorAll('.dot');
+        const slides = document.querySelectorAll('.slide-image');
+        let currentSlide = 0;
+        let slideInterval;
+
+        function changeSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+
+            currentSlide = index;
+
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+
+            clearInterval(slideInterval);
+            startSlideshow();
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % slides.length;
+            changeSlide(next);
+        }
+
+        function startSlideshow() {
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Start slideshow
+            startSlideshow();
+
             const token = localStorage.getItem('token');
             const user = localStorage.getItem('user');
 
@@ -729,11 +669,9 @@
                 }
             }
 
-            // Clear form fields on page load (especially after logout or successful login)
             const form = document.getElementById('loginForm');
             if (form) {
                 form.reset();
-                // Also clear any autofilled values
                 setTimeout(() => {
                     const emailInput = document.getElementById('loginEmail');
                     const passwordInput = document.getElementById('loginPassword');
@@ -742,41 +680,6 @@
                 }, 50);
             }
         });
-
-        // Carousel slideshow
-        const dots = document.querySelectorAll('.dot');
-        const slides = document.querySelectorAll('.slide-image');
-        let currentSlide = 0;
-        let slideInterval;
-
-        function changeSlide(index) {
-            // Remove active class from current slide and dot
-            slides[currentSlide].classList.remove('active');
-            dots[currentSlide].classList.remove('active');
-
-            // Set new current slide
-            currentSlide = index;
-
-            // Add active class to new slide and dot
-            slides[currentSlide].classList.add('active');
-            dots[currentSlide].classList.add('active');
-
-            // Reset interval
-            clearInterval(slideInterval);
-            startSlideshow();
-        }
-
-        function nextSlide() {
-            const next = (currentSlide + 1) % slides.length;
-            changeSlide(next);
-        }
-
-        function startSlideshow() {
-            slideInterval = setInterval(nextSlide, 6000);
-        }
-
-        // Start the slideshow
-        startSlideshow();
     </script>
 </body>
 </html>
