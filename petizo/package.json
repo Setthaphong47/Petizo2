@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "init-db": "node init-database.js",
-    "build": "node init-database.js"
+    "init-db": "node scripts/setup/init-database.js",
+    "build": "node scripts/setup/init-database.js"
   },
   "keywords": ["pet", "management", "vaccine", "tracking"],
   "author": "",
