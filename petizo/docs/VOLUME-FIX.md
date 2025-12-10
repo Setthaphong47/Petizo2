@@ -76,7 +76,7 @@ data/
 ### เช็ค Volume Usage
 ไปที่ Railway Dashboard → Settings → Volumes → ดูใช้ไปเท่าไหร่
 
-## 🚨 ถ้ายังเจอปัญหา
+## ถ้ายังเจอปัญหา
 
 ### กรณีรูปยังหาย
 1. เช็คว่า Mount Path เป็น `/app/petizo/data` (ไม่ใช่ path อื่น)
@@ -91,14 +91,14 @@ data/
 ### ตรวจสอบ Logs
 ```bash
 # ใน Railway Logs ต้องเห็น
-✅ เชื่อมต่อ database สำเร็จ
-✅ สร้าง data/uploads folder เรียบร้อย
+ เชื่อมต่อ database สำเร็จ
+ สร้าง data/uploads folder เรียบร้อย
 
 # ถ้าเห็น error เหล่านี้ = Volume ไม่ work
-❌ SQLITE_CANTOPEN
-❌ ENOENT: no such file or directory
+ SQLITE_CANTOPEN
+ ENOENT: no such file or directory
 ```
 
-## 📚 อ้างอิง
+## อ้างอิง
 - Railway Volumes: https://docs.railway.app/reference/volumes
 - Petizo Deploy Guide: [RAILWAY-DEPLOYMENT.md](./RAILWAY-DEPLOYMENT.md)

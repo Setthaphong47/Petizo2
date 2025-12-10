@@ -101,23 +101,23 @@ MODEL_NAME=openai/gpt-4o-mini
 - ถ้า mount path ผิด รูปภาพจะหายทุกครั้งที่ redeploy
 - Volume จะเก็บทั้ง `petizo.db` และโฟลเดอร์ `uploads/`
 
-### 📝 หมายเหตุ:
+### หมายเหตุ:
 - Free tier มี 1GB Volume ฟรี (ใช้ร่วมกันได้)
 - ถ้าต้องการมากกว่า ราคา $5/month ต่อ 1GB
 
 ---
 
-## 🎬 Deploy และทดสอบ
+## Deploy และทดสอบ
 
 ### 1. รอให้ Build เสร็จ
 
 ดู logs ที่ tab **"Deployments"** จะเห็น:
 ```
-✓ Building...
-✓ Running npm install
-✓ Running npm run build (สร้าง database)
-✓ Starting server with npm start
-✓ Server listening on port XXXX
+Building...
+Running npm install
+Running npm run build (สร้าง database)
+Starting server with npm start
+Server listening on port XXXX
 ```
 
 ### 2. เปิด URL
@@ -158,7 +158,7 @@ npm run build
 npm start
 ```
 
-### ❌ Database Error
+### Database Error
 
 **สาเหตุ:** ไม่มี write permission หรือ Volume ไม่ได้ mount
 
@@ -167,7 +167,7 @@ npm start
 2. Mount path ต้องเป็น `/app` หรือ `/app/petizo.db`
 3. Redeploy
 
-### ❌ รูปภาพหาย
+### รูปภาพหาย
 
 **สาเหตุ:** ไม่ได้เพิ่ม Volume สำหรับ uploads
 
@@ -175,7 +175,7 @@ npm start
 1. เพิ่ม Volume mount ที่ `/app/uploads`
 2. Redeploy (รูปเก่าจะหาย ต้องอัปโหลดใหม่)
 
-### ❌ OCR ไม่ทำงาน
+### OCR ไม่ทำงาน
 
 **สาเหตุ:** Railway ไม่มี Python หรือ Tesseract OCR
 
@@ -192,7 +192,7 @@ nixPkgs = ['python39', 'tesseract']
 cmds = ['pip install -r ocr_system/requirements.txt']
 ```
 
-### ❌ JWT Token Error
+### JWT Token Error
 
 **สาเหตุ:** JWT_SECRET ไม่ตรงกัน
 
@@ -202,7 +202,7 @@ cmds = ['pip install -r ocr_system/requirements.txt']
 
 ---
 
-## 📊 ตรวจสอบสถานะ
+## ตรวจสอบสถานะ
 
 ### ดู Logs แบบ Real-time
 
@@ -226,20 +226,20 @@ cmds = ['pip install -r ocr_system/requirements.txt']
 
 ---
 
-## 💰 ค่าใช้จ่าย
+## ค่าใช้จ่าย
 
 ### Free Tier ($0/month)
-- ✅ 500 hours/month
-- ✅ 1GB Volume (ฟรี)
-- ✅ Unlimited bandwidth
-- ✅ Custom domains
-- ⚠️ Sleep หลัง inactivity
+- 500 hours/month
+- 1GB Volume (ฟรี)
+- Unlimited bandwidth
+- Custom domains
+- Sleep หลัง inactivity
 
 ### Hobby Plan ($5/month)
-- ✅ Unlimited hours
-- ✅ 5GB Volume รวม
-- ✅ ไม่ sleep
-- ✅ Priority support
+- Unlimited hours
+- 5GB Volume รวม
+- ไม่ sleep
+- Priority support
 
 ### ประมาณการสำหรับ Petizo:
 ```
@@ -250,7 +250,7 @@ cmds = ['pip install -r ocr_system/requirements.txt']
 
 ---
 
-## 🔄 การอัปเดทโค้ด
+## การอัปเดทโค้ด
 
 ### วิธีที่ 1: Auto Deploy (แนะนำ)
 
@@ -273,7 +273,7 @@ git push origin main
 
 ---
 
-## 🛡️ Security Best Practices
+## Security Best Practices
 
 ### 1. เปลี่ยน JWT_SECRET
 ```bash
@@ -303,7 +303,7 @@ app.use(cors({
 
 ---
 
-## 📚 Resources
+## Resources
 
 - [Railway Documentation](https://docs.railway.app)
 - [Railway Discord](https://discord.gg/railway)
@@ -311,7 +311,7 @@ app.use(cors({
 
 ---
 
-## ✅ Checklist หลัง Deploy
+## Checklist หลัง Deploy
 
 - [ ] ตรวจสอบ URL เปิดได้
 - [ ] Login ด้วย admin ได้
@@ -327,7 +327,7 @@ app.use(cors({
 
 ---
 
-## 🎉 เสร็จสิ้น!
+## เสร็จสิ้น!
 
 ยินดีด้วย! Petizo ของคุณพร้อมใช้งานแล้วบน Railway.app
 
@@ -337,4 +337,4 @@ app.use(cors({
 3. ลองรันในเครื่องก่อน (`npm start`)
 4. ติดต่อผ่าน GitHub Issues
 
-**Happy Deploying! 🚀**
+**Happy Deploying!**
