@@ -23,6 +23,53 @@
     <title>Admin Panel - Petizo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        :root {
+            /* Color System */
+            --primary-color: #00bcd4;
+            --primary-light: #4dd0e1;
+            --primary-dark: #0097a7;
+
+            --success-color: #52c41a;
+            --warning-color: #fa8c16;
+            --danger-color: #ff4d4f;
+            --info-color: #1890ff;
+            --purple-color: #722ed1;
+
+            /* Neutral Colors */
+            --gray-50: #fafafa;
+            --gray-100: #f5f5f5;
+            --gray-200: #e8e8e8;
+            --gray-300: #d9d9d9;
+            --gray-400: #bfbfbf;
+            --gray-500: #8c8c8c;
+            --gray-600: #595959;
+            --gray-700: #434343;
+            --gray-800: #262626;
+            --gray-900: #1f1f1f;
+
+            /* Spacing */
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
+
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -31,7 +78,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
+            background: var(--gray-50);
             display: flex;
             min-height: 100vh;
         }
@@ -4087,144 +4134,516 @@
                 }
             </style>
 
+            <style>
+                /* Dashboard Styles */
+                .dashboard-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: var(--spacing-xl);
+                    flex-wrap: wrap;
+                    gap: var(--spacing-lg);
+                }
+
+                .dashboard-title-section h2 {
+                    margin: 0;
+                    font-size: 1.75rem;
+                    font-weight: 600;
+                    color: var(--gray-800);
+                }
+
+                .dashboard-title-section p {
+                    margin: var(--spacing-xs) 0 0 0;
+                    color: var(--gray-500);
+                    font-size: 0.9rem;
+                }
+
+                .date-filter {
+                    display: flex;
+                    gap: var(--spacing-sm);
+                    align-items: center;
+                    background: white;
+                    padding: var(--spacing-sm) var(--spacing-md);
+                    border-radius: var(--radius-md);
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .date-filter label {
+                    font-size: 0.9rem;
+                    color: var(--gray-600);
+                    font-weight: 500;
+                }
+
+                .date-filter input[type="date"] {
+                    padding: var(--spacing-xs) var(--spacing-sm);
+                    border: 1px solid var(--gray-300);
+                    border-radius: var(--radius-sm);
+                    font-size: 0.9rem;
+                    transition: border-color var(--transition-fast);
+                }
+
+                .date-filter input[type="date"]:focus {
+                    outline: none;
+                    border-color: var(--primary-color);
+                }
+
+                .btn-filter {
+                    padding: var(--spacing-xs) var(--spacing-lg);
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    border-radius: var(--radius-sm);
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    transition: all var(--transition-fast);
+                }
+
+                .btn-filter:hover {
+                    background: var(--primary-dark);
+                    transform: translateY(-1px);
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .stats-section {
+                    margin-bottom: var(--spacing-xl);
+                }
+
+                .stats-section-title {
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: var(--gray-700);
+                    margin-bottom: var(--spacing-md);
+                    display: flex;
+                    align-items: center;
+                    gap: var(--spacing-xs);
+                }
+
+                .stats-grid-dashboard {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                    gap: var(--spacing-lg);
+                }
+
+                .stat-card-new {
+                    background: white;
+                    padding: var(--spacing-lg);
+                    border-radius: var(--radius-md);
+                    box-shadow: var(--shadow-sm);
+                    transition: all var(--transition-normal);
+                    border: 1px solid var(--gray-200);
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .stat-card-new::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 4px;
+                    background: var(--primary-color);
+                    transition: height var(--transition-fast);
+                }
+
+                .stat-card-new:hover {
+                    box-shadow: var(--shadow-hover);
+                    transform: translateY(-4px);
+                }
+
+                .stat-card-new:hover::before {
+                    height: 6px;
+                }
+
+                .stat-card-new.success::before { background: var(--success-color); }
+                .stat-card-new.danger::before { background: var(--danger-color); }
+                .stat-card-new.info::before { background: var(--info-color); }
+                .stat-card-new.warning::before { background: var(--warning-color); }
+                .stat-card-new.purple::before { background: var(--purple-color); }
+
+                .stat-card-content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--spacing-xs);
+                }
+
+                .stat-label-new {
+                    color: var(--gray-600);
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+
+                .stat-value-new {
+                    font-size: 2.25rem;
+                    font-weight: 700;
+                    color: var(--gray-800);
+                    line-height: 1.2;
+                }
+
+                .stat-trend {
+                    display: flex;
+                    align-items: center;
+                    gap: var(--spacing-xs);
+                    font-size: 0.85rem;
+                    color: var(--success-color);
+                    margin-top: var(--spacing-xs);
+                }
+
+                .stat-trend.negative {
+                    color: var(--danger-color);
+                }
+
+                /* Loading State Animations */
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                @keyframes shimmer {
+                    0% {
+                        background-position: -1000px 0;
+                    }
+                    100% {
+                        background-position: 1000px 0;
+                    }
+                }
+
+                @keyframes pulse {
+                    0%, 100% {
+                        opacity: 1;
+                    }
+                    50% {
+                        opacity: 0.5;
+                    }
+                }
+
+                .fade-in {
+                    animation: fadeInUp 0.6s ease-out forwards;
+                }
+
+                .stat-card-new {
+                    animation: fadeInUp 0.6s ease-out;
+                }
+
+                .stat-card-new:nth-child(1) { animation-delay: 0.1s; }
+                .stat-card-new:nth-child(2) { animation-delay: 0.2s; }
+                .stat-card-new:nth-child(3) { animation-delay: 0.3s; }
+                .stat-card-new:nth-child(4) { animation-delay: 0.4s; }
+
+                .chart-card {
+                    animation: fadeInUp 0.6s ease-out;
+                }
+
+                /* Skeleton Loading */
+                .skeleton {
+                    background: linear-gradient(
+                        90deg,
+                        var(--gray-200) 0px,
+                        var(--gray-100) 40px,
+                        var(--gray-200) 80px
+                    );
+                    background-size: 1000px 100%;
+                    animation: shimmer 1.5s infinite;
+                }
+
+                .skeleton-card {
+                    height: 140px;
+                    border-radius: var(--radius-md);
+                }
+
+                .skeleton-chart {
+                    height: 300px;
+                    border-radius: var(--radius-md);
+                }
+
+                /* Smooth Number Counter */
+                .stat-value-new {
+                    transition: transform 0.3s ease;
+                }
+
+                .stat-card-new:hover .stat-value-new {
+                    transform: scale(1.05);
+                }
+
+                /* Responsive Adjustments */
+                @media (max-width: 768px) {
+                    .dashboard-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
+
+                    .date-filter {
+                        width: 100%;
+                        flex-wrap: wrap;
+                    }
+
+                    .stats-grid-dashboard {
+                        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                        gap: var(--spacing-md);
+                    }
+
+                    .stat-label-new {
+                        font-size: 0.8rem;
+                    }
+
+                    .stat-value-new {
+                        font-size: 1.75rem;
+                    }
+
+                    .chart-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            </style>
+
             <!-- Header with date filter -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;">
-                <div>
-                    <h2 style="margin: 0; font-size: 1.8rem; color: #333;">รายงานและวิเคราะห์ข้อมูล</h2>
-                    <p style="margin: 8px 0 0 0; color: #999; font-size: 0.95rem;">ข้อมูล ณ วันที่ <span id="reportDate"></span></p>
+            <div class="dashboard-header">
+                <div class="dashboard-title-section">
+                    <h2>รายงานและวิเคราะห์ข้อมูล</h2>
+                    <p>ข้อมูล ณ วันที่ <span id="reportDate"></span></p>
                 </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <label style="font-size: 0.9rem; color: #666;">ช่วงเวลา:</label>
-                    <input type="date" id="startDate" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem;">
-                    <span style="color: #999;">ถึง</span>
-                    <input type="date" id="endDate" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem;">
-                    <button onclick="applyDateFilter()" style="padding: 8px 20px; background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500;">ใช้ตัวกรอง</button>
+                <div class="date-filter">
+                    <label>ช่วงเวลา:</label>
+                    <input type="date" id="startDate">
+                    <span style="color: var(--gray-400);">ถึง</span>
+                    <input type="date" id="endDate">
+                    <button onclick="applyDateFilter()" class="btn-filter">ใช้ตัวกรอง</button>
                 </div>
             </div>
 
             <!-- User Stats Cards -->
-            <div style="margin-bottom: 30px;">
-                <h3 style="font-size: 1.2rem; color: #333; margin-bottom: 15px;">ผู้ใช้งาน</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <div class="stat-card users">
-                        <div class="stat-label">ทั้งหมด</div>
-                        <div class="stat-value" id="statTotalUsers">0</div>
+            <div class="stats-section">
+                <h3 class="stats-section-title">
+                    <img src="/icon/love.png" alt="" style="width: 24px; height: 24px;">
+                    ผู้ใช้งาน
+                </h3>
+                <div class="stats-grid-dashboard">
+                    <div class="stat-card-new">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">ทั้งหมด</div>
+                            <div class="stat-value-new" id="statTotalUsers">0</div>
+                        </div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);">
-                        <div class="stat-label">ใช้งานปกติ</div>
-                        <div class="stat-value" id="statActiveUsers">0</div>
+                    <div class="stat-card-new success">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">ใช้งานปกติ</div>
+                            <div class="stat-value-new" id="statActiveUsers">0</div>
+                        </div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);">
-                        <div class="stat-label">ถูกระงับ</div>
-                        <div class="stat-value" id="statSuspendedUsers">0</div>
+                    <div class="stat-card-new danger">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">ถูกระงับ</div>
+                            <div class="stat-value-new" id="statSuspendedUsers">0</div>
+                        </div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);">
-                        <div class="stat-label">ใหม่ (เดือนนี้)</div>
-                        <div class="stat-value" id="statNewUsers">0</div>
+                    <div class="stat-card-new info">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">ใหม่ (เดือนนี้)</div>
+                            <div class="stat-value-new" id="statNewUsers">0</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Pet Stats Cards -->
-            <div style="margin-bottom: 30px;">
-                <h3 style="font-size: 1.2rem; color: #333; margin-bottom: 15px;">สัตว์เลี้ยง (แมว)</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <div class="stat-card pets">
-                        <div class="stat-label">ทั้งหมด</div>
-                        <div class="stat-value" id="statTotalPets">0</div>
+            <div class="stats-section">
+                <h3 class="stats-section-title">
+                    <img src="/icon/logo.png" alt="" style="width: 24px; height: 24px;">
+                    สัตว์เลี้ยง (แมว)
+                </h3>
+                <div class="stats-grid-dashboard">
+                    <div class="stat-card-new">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">ทั้งหมด</div>
+                            <div class="stat-value-new" id="statTotalPets">0</div>
+                        </div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #722ed1 0%, #9254de 100%);">
-                        <div class="stat-label">ใหม่ (เดือนนี้)</div>
-                        <div class="stat-value" id="statNewPets">0</div>
+                    <div class="stat-card-new purple">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">ใหม่ (เดือนนี้)</div>
+                            <div class="stat-value-new" id="statNewPets">0</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Blog Stats Cards -->
-            <div style="margin-bottom: 30px;">
-                <h3 style="font-size: 1.2rem; color: #333; margin-bottom: 15px;">บทความ</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <div class="stat-card blogs">
-                        <div class="stat-label">ทั้งหมด</div>
-                        <div class="stat-value" id="statTotalBlogs">0</div>
+            <div class="stats-section">
+                <h3 class="stats-section-title">
+                    <img src="/icon/like.png" alt="" style="width: 24px; height: 24px;">
+                    บทความ
+                </h3>
+                <div class="stats-grid-dashboard">
+                    <div class="stat-card-new">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">ทั้งหมด</div>
+                            <div class="stat-value-new" id="statTotalBlogs">0</div>
+                        </div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);">
-                        <div class="stat-label">เผยแพร่แล้ว</div>
-                        <div class="stat-value" id="statPublishedBlogs">0</div>
+                    <div class="stat-card-new success">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">เผยแพร่แล้ว</div>
+                            <div class="stat-value-new" id="statPublishedBlogs">0</div>
+                        </div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #fa8c16 0%, #ffa940 100%);">
-                        <div class="stat-label">ใหม่ (เดือนนี้)</div>
-                        <div class="stat-value" id="statNewBlogs">0</div>
+                    <div class="stat-card-new warning">
+                        <div class="stat-card-content">
+                            <div class="stat-label-new">ใหม่ (เดือนนี้)</div>
+                            <div class="stat-value-new" id="statNewBlogs">0</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <style>
+                /* Chart Card Styles */
+                .chart-card {
+                    background: white;
+                    border-radius: var(--radius-md);
+                    box-shadow: var(--shadow-md);
+                    overflow: hidden;
+                    transition: all var(--transition-normal);
+                    border: 1px solid var(--gray-200);
+                }
+
+                .chart-card:hover {
+                    box-shadow: var(--shadow-lg);
+                }
+
+                .chart-header {
+                    padding: var(--spacing-lg);
+                    border-bottom: 2px solid var(--gray-100);
+                    display: flex;
+                    align-items: center;
+                    gap: var(--spacing-sm);
+                }
+
+                .chart-header h3 {
+                    margin: 0;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: var(--gray-800);
+                }
+
+                .chart-body {
+                    padding: var(--spacing-xl);
+                }
+
+                .chart-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+                    gap: var(--spacing-xl);
+                    margin-bottom: var(--spacing-xl);
+                }
+
+                @media (max-width: 1200px) {
+                    .chart-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            </style>
+
             <!-- Analytics Sections -->
-            <div id="analyticsContainer" style="margin-top: 40px;">
+            <div id="analyticsContainer" style="margin-top: var(--spacing-xl);">
 
                 <!-- Growth Charts -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; margin-bottom: 30px;">
-                    <div class="card">
-                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                            <h3 style="margin: 0; font-size: 1.3rem;">การเติบโตของผู้ใช้</h3>
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                            <h3>การเติบโตของผู้ใช้</h3>
                         </div>
-                        <div class="card-body" style="padding: 30px;">
+                        <div class="chart-body">
                             <canvas id="userGrowthChart"></canvas>
                         </div>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                            <h3 style="margin: 0; font-size: 1.3rem;">การเติบโตของสัตว์เลี้ยง</h3>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                            <h3>การเติบโตของแมว</h3>
                         </div>
-                        <div class="card-body" style="padding: 30px;">
+                        <div class="chart-body">
                             <canvas id="petGrowthChart"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <!-- Pet Analytics with Charts -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; margin-bottom: 30px;">
-                    <div class="card">
-                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                            <h3 style="margin: 0; font-size: 1.3rem;">แมวแยกตามเพศ</h3>
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <h3>แมวแยกตามเพศ</h3>
                         </div>
-                        <div class="card-body" style="padding: 30px;">
+                        <div class="chart-body">
                             <canvas id="genderChart"></canvas>
                         </div>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                            <h3 style="margin: 0; font-size: 1.3rem;">แมวแยกตามช่วงอายุ</h3>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="9" y1="21" x2="9" y2="9"></line>
+                            </svg>
+                            <h3>แมวแยกตามช่วงอายุ</h3>
                         </div>
-                        <div class="card-body" style="padding: 30px;">
+                        <div class="chart-body">
                             <canvas id="ageChart"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <!-- Breed and Popular Blogs -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; margin-bottom: 30px;">
-                    <div class="card">
-                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                            <h3 style="margin: 0; font-size: 1.3rem;">สายพันธุ์แมวยอดนิยม</h3>
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="20" x2="12" y2="10"></line>
+                                <line x1="18" y1="20" x2="18" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="16"></line>
+                            </svg>
+                            <h3>สายพันธุ์แมวยอดนิยม</h3>
                         </div>
-                        <div class="card-body" style="padding: 30px;">
-                            <div id="topBreeds">
-                                <p style="color: #999; text-align: center;">กำลังโหลดข้อมูล...</p>
-                            </div>
+                        <div class="chart-body">
+                            <canvas id="breedChart"></canvas>
                         </div>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                            <h3 style="margin: 0; font-size: 1.3rem;">บทความยอดนิยม</h3>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <h3>บทความยอดนิยม</h3>
                         </div>
-                        <div class="card-body" style="padding: 30px;">
-                            <div id="popularBlogs">
-                                <p style="color: #999; text-align: center;">กำลังโหลดข้อมูล...</p>
-                            </div>
+                        <div class="chart-body">
+                            <canvas id="blogChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -4330,50 +4749,47 @@
                 document.getElementById('statPublishedBlogs').textContent = safeNumber(data.publishedBlogs).toLocaleString();
                 document.getElementById('statNewBlogs').textContent = safeNumber(data.newBlogsThisMonth).toLocaleString();
 
-                // Create Growth Charts
+                // Create Growth Charts (Line Charts)
                 createLineChart('userGrowthChart', data.userGrowth || [], 'ผู้ใช้', '#1890ff');
-                createLineChart('petGrowthChart', data.petGrowth || [], 'สัตว์เลี้ยง', '#fa8c16');
+                createLineChart('petGrowthChart', data.petGrowth || [], 'แมว', '#fa8c16');
 
-                // Create Gender Pie Chart
+                // Create Gender Doughnut Chart
                 const genderData = data.petsByGender || { male: 0, female: 0, unknown: 0 };
-                createPieChart('genderChart',
+                createDoughnutChart('genderChart',
                     ['ผู้', 'เมีย', 'ไม่ระบุ'],
                     [genderData.male, genderData.female, genderData.unknown],
                     ['#1890ff', '#ff85c0', '#d9d9d9']
                 );
 
-                // Create Age Pie Chart
+                // Create Age Bar Chart
                 const ageData = data.petsByAge || { kitten: 0, young: 0, adult: 0, senior: 0, geriatric: 0 };
-                createPieChart('ageChart',
-                    ['ลูกแมว (0-1 ปี)', 'วัยเยาว์ (1-3 ปี)', 'วัยผู้ใหญ่ (3-7 ปี)', 'วัยสูงอายุ (7-11 ปี)', 'วัยชรา (11+ ปี)'],
+                createBarChart('ageChart',
+                    ['ลูกแมว\n(0-1 ปี)', 'วัยเยาว์\n(1-3 ปี)', 'วัยผู้ใหญ่\n(3-7 ปี)', 'วัยสูงอายุ\n(7-11 ปี)', 'วัยชรา\n(11+ ปี)'],
                     [ageData.kitten, ageData.young, ageData.adult, ageData.senior, ageData.geriatric],
                     ['#52c41a', '#1890ff', '#fa8c16', '#722ed1', '#eb2f96']
                 );
 
-                // Top Breeds
-                const topBreedsEl = document.getElementById('topBreeds');
-                if (data.topBreeds && data.topBreeds.length > 0) {
-                    topBreedsEl.innerHTML = data.topBreeds.map((breed, idx) => `
-                        <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e0e0e0;">
-                            <span style="color: #666;">${idx + 1}. ${breed.breed || 'ไม่ระบุ'}</span>
-                            <span style="font-weight: 600; color: #333;">${safeNumber(breed.count)} ตัว</span>
-                        </div>
-                    `).join('');
+                // Breed Horizontal Bar Chart
+                const topBreeds = (data.topBreeds || []).slice(0, 10);
+                if (topBreeds.length > 0) {
+                    const breedLabels = topBreeds.map(b => b.breed || 'ไม่ระบุ');
+                    const breedValues = topBreeds.map(b => safeNumber(b.count));
+                    createHorizontalBarChart('breedChart', breedLabels, breedValues, 'แมว', '#00bcd4');
                 } else {
-                    topBreedsEl.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">ยังไม่มีข้อมูล</p>';
+                    createEmptyChart('breedChart', 'ยังไม่มีข้อมูล');
                 }
 
-                // Popular Blogs
-                const popularBlogsEl = document.getElementById('popularBlogs');
-                if (data.popularBlogs && data.popularBlogs.length > 0) {
-                    popularBlogsEl.innerHTML = data.popularBlogs.map((blog, idx) => `
-                        <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e0e0e0;">
-                            <span style="color: #666; flex: 1;">${idx + 1}. ${blog.title || 'ไม่ระบุ'}</span>
-                            <span style="font-weight: 600; color: #333;">${safeNumber(blog.views)} views</span>
-                        </div>
-                    `).join('');
+                // Popular Blogs Horizontal Bar Chart
+                const popularBlogs = (data.popularBlogs || []).slice(0, 5);
+                if (popularBlogs.length > 0) {
+                    const blogLabels = popularBlogs.map(b => {
+                        const title = b.title || 'ไม่ระบุ';
+                        return title.length > 40 ? title.substring(0, 40) + '...' : title;
+                    });
+                    const blogValues = popularBlogs.map(b => safeNumber(b.views));
+                    createHorizontalBarChart('blogChart', blogLabels, blogValues, 'Views', '#52c41a');
                 } else {
-                    popularBlogsEl.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">ยังไม่มีข้อมูล</p>';
+                    createEmptyChart('blogChart', 'ยังไม่มีข้อมูล');
                 }
 
             } catch (err) {
@@ -4389,13 +4805,9 @@
             const ctx = document.getElementById(canvasId);
             if (!ctx) return;
 
-            // Destroy existing chart
             const chartInstance = Chart.getChart(canvasId);
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
+            if (chartInstance) chartInstance.destroy();
 
-            // Prepare data
             const labels = growthData.map(item => {
                 const [year, month] = item.month.split('-');
                 return `${month}/${year}`;
@@ -4412,22 +4824,87 @@
                         borderColor: color,
                         backgroundColor: color + '20',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: color,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: {
-                            display: false
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 13 },
+                            cornerRadius: 8
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
+                            ticks: { stepSize: 1 },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create Doughnut Chart
+        function createDoughnutChart(canvasId, labels, data, colors) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            const chartInstance = Chart.getChart(canvasId);
+            if (chartInstance) chartInstance.destroy();
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 4,
+                        borderColor: '#fff',
+                        hoverBorderWidth: 6,
+                        hoverBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: { size: 13 },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return ` ${context.label}: ${context.parsed} (${percentage}%)`;
+                                }
                             }
                         }
                     }
@@ -4435,38 +4912,120 @@
             });
         }
 
-        // Create Pie Chart
-        function createPieChart(canvasId, labels, data, colors) {
+        // Create Bar Chart (Vertical)
+        function createBarChart(canvasId, labels, data, colors) {
             const ctx = document.getElementById(canvasId);
             if (!ctx) return;
 
-            // Destroy existing chart
             const chartInstance = Chart.getChart(canvasId);
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
+            if (chartInstance) chartInstance.destroy();
 
             new Chart(ctx, {
-                type: 'pie',
+                type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
                         data: data,
                         backgroundColor: colors,
-                        borderWidth: 2,
-                        borderColor: '#fff'
+                        borderWidth: 0,
+                        borderRadius: 8,
+                        borderSkipped: false
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: {
-                            position: 'bottom'
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 11 }
+                            }
                         }
                     }
                 }
             });
+        }
+
+        // Create Horizontal Bar Chart
+        function createHorizontalBarChart(canvasId, labels, data, dataLabel, color) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            const chartInstance = Chart.getChart(canvasId);
+            if (chartInstance) chartInstance.destroy();
+
+            // Create gradient
+            const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 400, 0);
+            gradient.addColorStop(0, color + 'CC');
+            gradient.addColorStop(1, color);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: dataLabel,
+                        data: data,
+                        backgroundColor: gradient,
+                        borderWidth: 0,
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 12 },
+                                autoSkip: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create Empty Chart Placeholder
+        function createEmptyChart(canvasId, message) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            const chartInstance = Chart.getChart(canvasId);
+            if (chartInstance) chartInstance.destroy();
+
+            const canvas = ctx;
+            const parent = canvas.parentElement;
+            parent.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 300px; color: #999; font-size: 1rem;">${message}</div>`;
         }
         </script>
 
