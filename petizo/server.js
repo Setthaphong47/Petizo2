@@ -502,12 +502,12 @@ app.get('/api/pets/:id', authenticateToken, (req, res) => {
 
 app.post('/api/pets', authenticateToken, upload.single('photo'), (req, res) => {
     const petColumn = getPetUserColumn();
-    const { name, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
+    const { name, species, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
     const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
-    
+
     db.run(
-        `INSERT INTO pets (${petColumn}, name, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [req.user.id, name, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes],
+        `INSERT INTO pets (${petColumn}, name, species, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [req.user.id, name, species || 'cat', breed, gender, birth_date, color, weight, microchip_id, photo_url, notes],
         function(err) {
             if (err) return res.status(500).json({ error: 'ไม่สามารถสร้างข้อมูลได้' });
             res.json({ message: 'สร้างข้อมูลสำเร็จ', petId: this.lastID });
@@ -517,10 +517,10 @@ app.post('/api/pets', authenticateToken, upload.single('photo'), (req, res) => {
 
 app.put('/api/pets/:id', authenticateToken, upload.single('photo'), (req, res) => {
     const petColumn = getPetUserColumn();
-    const { name, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
-    
-    let query = `UPDATE pets SET name = ?, breed = ?, gender = ?, birth_date = ?, color = ?, weight = ?, microchip_id = ?, notes = ?, updated_at = CURRENT_TIMESTAMP`;
-    let params = [name, breed || null, gender || null, birth_date || null, color || null, weight || null, microchip_id || null, notes || null];
+    const { name, species, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
+
+    let query = `UPDATE pets SET name = ?, species = ?, breed = ?, gender = ?, birth_date = ?, color = ?, weight = ?, microchip_id = ?, notes = ?, updated_at = CURRENT_TIMESTAMP`;
+    let params = [name, species || 'cat', breed || null, gender || null, birth_date || null, color || null, weight || null, microchip_id || null, notes || null];
     
     if (req.file) {
         query += ', photo_url = ?';
@@ -1584,6 +1584,11 @@ app.get('/api/admin/all-pets', authenticateToken, isAdmin, (req, res) => {
 app.get('/api/admin/dashboard/stats', authenticateToken, isAdmin, async (req, res) => {
     try {
         const userTable = DB_STRUCTURE === 'new' ? 'members' : 'users';
+        const userColumn = DB_STRUCTURE === 'new' ? 'member_id' : 'user_id';
+
+        // Get date range from query params (default to last 6 months)
+        const endDate = req.query.endDate || new Date().toISOString();
+        const startDate = req.query.startDate || new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString();
         const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
 
         // Helper to promisify db queries
@@ -1608,104 +1613,124 @@ app.get('/api/admin/dashboard/stats', authenticateToken, isAdmin, async (req, re
         // Get all stats in parallel
         const [
             totalUsers,
-            totalPets,
-            totalBlogs,
-            totalVaccinations,
+            activeUsers,
+            suspendedUsers,
             newUsersMonth,
+            totalPets,
+            petsByGender,
+            petsByBreed,
             newPetsMonth,
-            newBlogsMonth,
-            newVaccMonth,
-            petsByType,
-            topBreeds,
+            totalBlogs,
             publishedBlogs,
-            topTags,
-            petsVaccinated,
-            topVaccines
+            popularBlogs,
+            newBlogsMonth,
+            userGrowth,
+            petGrowth
         ] = await Promise.all([
             // Total users
+            dbGet(`SELECT COUNT(*) as total FROM ${userTable}`),
+            // Active users (not hidden)
             dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE is_hidden = 0 OR is_hidden IS NULL`),
-            // Total pets
-            dbGet('SELECT COUNT(*) as total FROM pets'),
-            // Total blogs
-            dbGet('SELECT COUNT(*) as total FROM blogs'),
-            // Total vaccinations
-            dbGet('SELECT COUNT(*) as total FROM vaccinations'),
+            // Suspended users (hidden)
+            dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE is_hidden = 1`),
             // New users this month
             dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE created_at >= ?`, [startOfMonth]),
-            // New pets this month
-            dbGet('SELECT COUNT(*) as total FROM pets WHERE created_at >= ?', [startOfMonth]),
-            // New blogs this month
-            dbGet('SELECT COUNT(*) as total FROM blogs WHERE created_at >= ?', [startOfMonth]),
-            // New vaccinations this month
-            dbGet('SELECT COUNT(*) as total FROM vaccinations WHERE vaccination_date >= ?', [startOfMonth]),
-            // Pets by type
+            // Total pets (cats only)
+            dbGet('SELECT COUNT(*) as total FROM pets'),
+            // Pets by gender
             dbGet(`SELECT
-                SUM(CASE WHEN LOWER(species) LIKE '%dog%' OR LOWER(species) LIKE '%สุนัข%' THEN 1 ELSE 0 END) as dog,
-                SUM(CASE WHEN LOWER(species) LIKE '%cat%' OR LOWER(species) LIKE '%แมว%' THEN 1 ELSE 0 END) as cat,
-                SUM(CASE WHEN (LOWER(species) NOT LIKE '%dog%' AND LOWER(species) NOT LIKE '%สุนัข%'
-                              AND LOWER(species) NOT LIKE '%cat%' AND LOWER(species) NOT LIKE '%แมว%')
-                              OR species IS NULL OR species = '' THEN 1 ELSE 0 END) as other
-                FROM pets`),
+                SUM(CASE WHEN LOWER(gender) = 'male' OR LOWER(gender) = 'ผู้' OR LOWER(gender) = 'ชาย' THEN 1 ELSE 0 END) as male,
+                SUM(CASE WHEN LOWER(gender) = 'female' OR LOWER(gender) = 'เมีย' OR LOWER(gender) = 'หญิง' THEN 1 ELSE 0 END) as female,
+                SUM(CASE WHEN gender IS NULL OR gender = '' OR (LOWER(gender) NOT IN ('male', 'female', 'ผู้', 'เมีย', 'ชาย', 'หญิง')) THEN 1 ELSE 0 END) as unknown
+            FROM pets`),
             // Top breeds
             dbAll(`SELECT breed, COUNT(*) as count FROM pets
                    WHERE breed IS NOT NULL AND breed != ''
-                   GROUP BY breed ORDER BY count DESC LIMIT 5`),
+                   GROUP BY breed ORDER BY count DESC LIMIT 10`),
+            // New pets this month
+            dbGet('SELECT COUNT(*) as total FROM pets WHERE created_at >= ?', [startOfMonth]),
+            // Total blogs
+            dbGet('SELECT COUNT(*) as total FROM blogs'),
             // Published blogs
             dbGet('SELECT COUNT(*) as total FROM blogs WHERE status = "published" OR status = "เผยแพร่"'),
-            // Top tags
-            dbAll(`SELECT tags FROM blogs WHERE tags IS NOT NULL AND tags != ''`),
-            // Pets vaccinated (distinct pets with at least one vaccination)
-            dbGet('SELECT COUNT(DISTINCT pet_id) as total FROM vaccinations WHERE pet_id IS NOT NULL'),
-            // Top vaccines
-            dbAll(`SELECT vaccine_name, COUNT(*) as count FROM vaccinations
-                   WHERE vaccine_name IS NOT NULL AND vaccine_name != ''
-                   GROUP BY vaccine_name ORDER BY count DESC LIMIT 5`)
+            // Popular blogs (top 5 by views)
+            dbAll(`SELECT id, title, views FROM blogs
+                   WHERE status = 'published' OR status = 'เผยแพร่'
+                   ORDER BY views DESC LIMIT 5`),
+            // New blogs this month
+            dbGet('SELECT COUNT(*) as total FROM blogs WHERE created_at >= ?', [startOfMonth]),
+            // User growth by month (last 6 months)
+            dbAll(`SELECT
+                strftime('%Y-%m', created_at) as month,
+                COUNT(*) as count
+                FROM ${userTable}
+                WHERE created_at >= ? AND created_at <= ?
+                GROUP BY month
+                ORDER BY month ASC`, [startDate, endDate]),
+            // Pet growth by month (last 6 months)
+            dbAll(`SELECT
+                strftime('%Y-%m', created_at) as month,
+                COUNT(*) as count
+                FROM pets
+                WHERE created_at >= ? AND created_at <= ?
+                GROUP BY month
+                ORDER BY month ASC`, [startDate, endDate])
         ]);
 
-        // Process tags (count frequency)
-        const tagCounts = {};
-        topTags.forEach(row => {
-            if (row.tags) {
-                try {
-                    const tags = JSON.parse(row.tags);
-                    tags.forEach(tag => {
-                        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                    });
-                } catch (e) {
-                    // If not JSON, try comma-separated
-                    const tags = row.tags.split(',').map(t => t.trim());
-                    tags.forEach(tag => {
-                        if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                    });
-                }
+        // Calculate age groups from birth_date
+        const petsWithAge = await dbAll('SELECT birth_date FROM pets WHERE birth_date IS NOT NULL AND birth_date != ""');
+        const ageGroups = {
+            kitten: 0,      // 0-1 year
+            young: 0,       // 1-3 years
+            adult: 0,       // 3-7 years
+            senior: 0,      // 7-11 years
+            geriatric: 0    // 11+ years
+        };
+
+        const now = new Date();
+        petsWithAge.forEach(pet => {
+            try {
+                const birthDate = new Date(pet.birth_date);
+                const ageInYears = (now - birthDate) / (1000 * 60 * 60 * 24 * 365.25);
+
+                if (ageInYears < 1) ageGroups.kitten++;
+                else if (ageInYears < 3) ageGroups.young++;
+                else if (ageInYears < 7) ageGroups.adult++;
+                else if (ageInYears < 11) ageGroups.senior++;
+                else ageGroups.geriatric++;
+            } catch (e) {
+                // Skip invalid dates
             }
         });
 
-        const topTagsArray = Object.entries(tagCounts)
-            .map(([tag, count]) => ({ tag, count }))
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 5);
-
         // Send response
         res.json({
+            // User stats
             totalUsers: totalUsers.total || 0,
-            totalPets: totalPets.total || 0,
-            totalBlogs: totalBlogs.total || 0,
-            totalVaccinations: totalVaccinations.total || 0,
+            activeUsers: activeUsers.total || 0,
+            suspendedUsers: suspendedUsers.total || 0,
             newUsersThisMonth: newUsersMonth.total || 0,
+
+            // Pet stats
+            totalPets: totalPets.total || 0,
             newPetsThisMonth: newPetsMonth.total || 0,
-            newBlogsThisMonth: newBlogsMonth.total || 0,
-            newVaccinationsThisMonth: newVaccMonth.total || 0,
-            petsByType: {
-                dog: petsByType.dog || 0,
-                cat: petsByType.cat || 0,
-                other: petsByType.other || 0
+            petsByGender: {
+                male: petsByGender.male || 0,
+                female: petsByGender.female || 0,
+                unknown: petsByGender.unknown || 0
             },
-            topBreeds: topBreeds,
+            petsByAge: ageGroups,
+            topBreeds: petsByBreed,
+
+            // Blog stats
+            totalBlogs: totalBlogs.total || 0,
             publishedBlogs: publishedBlogs.total || 0,
-            topTags: topTagsArray,
-            petsVaccinated: petsVaccinated.total || 0,
-            topVaccines: topVaccines
+            popularBlogs: popularBlogs,
+            newBlogsThisMonth: newBlogsMonth.total || 0,
+
+            // Growth data for charts
+            userGrowth: userGrowth,
+            petGrowth: petGrowth
         });
 
     } catch (error) {

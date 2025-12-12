@@ -21,6 +21,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Admin Panel - Petizo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -4087,136 +4088,141 @@
             </style>
 
             <!-- Header with date filter -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;">
                 <div>
                     <h2 style="margin: 0; font-size: 1.8rem; color: #333;">รายงานและวิเคราะห์ข้อมูล</h2>
                     <p style="margin: 8px 0 0 0; color: #999; font-size: 0.95rem;">ข้อมูล ณ วันที่ <span id="reportDate"></span></p>
                 </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="font-size: 0.9rem; color: #666;">ช่วงเวลา:</label>
+                    <input type="date" id="startDate" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem;">
+                    <span style="color: #999;">ถึง</span>
+                    <input type="date" id="endDate" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem;">
+                    <button onclick="applyDateFilter()" style="padding: 8px 20px; background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500;">ใช้ตัวกรอง</button>
+                </div>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card users">
-                    <div class="stat-icon-container">
-                        <img src="/icon/love.png" alt="Total Users" style="width:50px;height:50px;">
+            <!-- User Stats Cards -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="font-size: 1.2rem; color: #333; margin-bottom: 15px;">ผู้ใช้งาน</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div class="stat-card users">
+                        <div class="stat-label">ทั้งหมด</div>
+                        <div class="stat-value" id="statTotalUsers">0</div>
                     </div>
-                    <div class="stat-label">ผู้ใช้ทั้งหมด</div>
-                    <div class="stat-value" id="statTotalUsers">0</div>
-                    <div style="margin-top: 8px; font-size: 0.85rem; color: #52c41a;">+<span id="newUsersMonth">0</span> เดือนนี้</div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);">
+                        <div class="stat-label">ใช้งานปกติ</div>
+                        <div class="stat-value" id="statActiveUsers">0</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);">
+                        <div class="stat-label">ถูกระงับ</div>
+                        <div class="stat-value" id="statSuspendedUsers">0</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);">
+                        <div class="stat-label">ใหม่ (เดือนนี้)</div>
+                        <div class="stat-value" id="statNewUsers">0</div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="stat-card pets">
-                    <div class="stat-icon-container">
-                        <img src="/icon/logo.png" alt="Total Pets" style="width:50px;height:50px;">
+            <!-- Pet Stats Cards -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="font-size: 1.2rem; color: #333; margin-bottom: 15px;">สัตว์เลี้ยง (แมว)</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div class="stat-card pets">
+                        <div class="stat-label">ทั้งหมด</div>
+                        <div class="stat-value" id="statTotalPets">0</div>
                     </div>
-                    <div class="stat-label">สัตว์เลี้ยงทั้งหมด</div>
-                    <div class="stat-value" id="statTotalPets">0</div>
-                    <div style="margin-top: 8px; font-size: 0.85rem; color: #52c41a;">+<span id="newPetsMonth">0</span> เดือนนี้</div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #722ed1 0%, #9254de 100%);">
+                        <div class="stat-label">ใหม่ (เดือนนี้)</div>
+                        <div class="stat-value" id="statNewPets">0</div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="stat-card blogs">
-                    <div class="stat-icon-container">
-                        <img src="/icon/like.png" alt="Total Blogs" style="width:50px;height:50px;">
+            <!-- Blog Stats Cards -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="font-size: 1.2rem; color: #333; margin-bottom: 15px;">บทความ</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div class="stat-card blogs">
+                        <div class="stat-label">ทั้งหมด</div>
+                        <div class="stat-value" id="statTotalBlogs">0</div>
                     </div>
-                    <div class="stat-label">บทความทั้งหมด</div>
-                    <div class="stat-value" id="statTotalBlogs">0</div>
-                    <div style="margin-top: 8px; font-size: 0.85rem; color: #52c41a;">+<span id="newBlogsMonth">0</span> เดือนนี้</div>
-                </div>
-
-                <div class="stat-card vaccines">
-                    <div class="stat-icon-container">
-                        <img src="/icon/syringe.png" alt="Total Vaccine" style="width:50px;height:50px;">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);">
+                        <div class="stat-label">เผยแพร่แล้ว</div>
+                        <div class="stat-value" id="statPublishedBlogs">0</div>
                     </div>
-                    <div class="stat-label">บันทึกวัคซีน</div>
-                    <div class="stat-value" id="statCompletedVacc">0</div>
-                    <div style="margin-top: 8px; font-size: 0.85rem; color: #52c41a;">+<span id="newVaccMonth">0</span> เดือนนี้</div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #fa8c16 0%, #ffa940 100%);">
+                        <div class="stat-label">ใหม่ (เดือนนี้)</div>
+                        <div class="stat-value" id="statNewBlogs">0</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Analytics Sections -->
             <div id="analyticsContainer" style="margin-top: 40px;">
 
-                <!-- Pet Analytics -->
-                <div class="card" style="margin-bottom: 30px;">
-                    <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                        <h3 style="margin: 0; font-size: 1.3rem;">🐾 วิเคราะห์ข้อมูลสัตว์เลี้ยง</h3>
-                    </div>
-                    <div class="card-body" style="padding: 30px;">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">สุนัข 🐕</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #333;"><span id="statDogs">0</span> ตัว</div>
-                            </div>
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">แมว 🐈</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #333;"><span id="statCats">0</span> ตัว</div>
-                            </div>
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">อื่นๆ 🐾</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #333;"><span id="statOthers">0</span> ตัว</div>
-                            </div>
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">เฉลี่ย/ผู้ใช้</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #00bcd4;"><span id="statAvgPets">0</span></div>
-                            </div>
+                <!-- Growth Charts -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                    <div class="card">
+                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                            <h3 style="margin: 0; font-size: 1.3rem;">การเติบโตของผู้ใช้</h3>
                         </div>
-                        <div style="margin-top: 30px;">
-                            <h4 style="font-size: 1.1rem; margin-bottom: 15px; color: #333;">สายพันธุ์ยอดนิยม (Top 5)</h4>
-                            <div id="topBreeds" style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
-                                <p style="color: #999; text-align: center;">กำลังโหลดข้อมูล...</p>
-                            </div>
+                        <div class="card-body" style="padding: 30px;">
+                            <canvas id="userGrowthChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                            <h3 style="margin: 0; font-size: 1.3rem;">การเติบโตของสัตว์เลี้ยง</h3>
+                        </div>
+                        <div class="card-body" style="padding: 30px;">
+                            <canvas id="petGrowthChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <!-- Blog Analytics -->
-                <div class="card" style="margin-bottom: 30px;">
-                    <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                        <h3 style="margin: 0; font-size: 1.3rem;">📝 วิเคราะห์บทความ</h3>
-                    </div>
-                    <div class="card-body" style="padding: 30px;">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">บทความทั้งหมด</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #333;"><span id="statBlogsTotal">0</span></div>
-                            </div>
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">เผยแพร่แล้ว</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #52c41a;"><span id="statBlogsPublished">0</span></div>
-                            </div>
+                <!-- Pet Analytics with Charts -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                    <div class="card">
+                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                            <h3 style="margin: 0; font-size: 1.3rem;">แมวแยกตามเพศ</h3>
                         </div>
-                        <div style="margin-top: 30px;">
-                            <h4 style="font-size: 1.1rem; margin-bottom: 15px; color: #333;">Tags ยอดนิยม (Top 5)</h4>
-                            <div id="topTags" style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
-                                <p style="color: #999; text-align: center;">กำลังโหลดข้อมูล...</p>
-                            </div>
+                        <div class="card-body" style="padding: 30px;">
+                            <canvas id="genderChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                            <h3 style="margin: 0; font-size: 1.3rem;">แมวแยกตามช่วงอายุ</h3>
+                        </div>
+                        <div class="card-body" style="padding: 30px;">
+                            <canvas id="ageChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <!-- Vaccine Analytics -->
-                <div class="card" style="margin-bottom: 30px;">
-                    <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                        <h3 style="margin: 0; font-size: 1.3rem;">💉 วิเคราะห์วัคซีน</h3>
-                    </div>
-                    <div class="card-body" style="padding: 30px;">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">บันทึกทั้งหมด</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #333;"><span id="statVaccTotal">0</span></div>
-                            </div>
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">สัตว์ที่ได้รับวัคซีน</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #52c41a;"><span id="statPetsVaccinated">0</span></div>
-                            </div>
-                            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 8px;">% ครอบคลุม</div>
-                                <div style="font-size: 2rem; font-weight: 700; color: #00bcd4;"><span id="statVaccCoverage">0</span>%</div>
+                <!-- Breed and Popular Blogs -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                    <div class="card">
+                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                            <h3 style="margin: 0; font-size: 1.3rem;">สายพันธุ์แมวยอดนิยม</h3>
+                        </div>
+                        <div class="card-body" style="padding: 30px;">
+                            <div id="topBreeds">
+                                <p style="color: #999; text-align: center;">กำลังโหลดข้อมูล...</p>
                             </div>
                         </div>
-                        <div>
-                            <h4 style="font-size: 1.1rem; margin-bottom: 15px; color: #333;">วัคซีนที่ใช้บ่อย (Top 5)</h4>
-                            <div id="topVaccines" style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header" style="background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                            <h3 style="margin: 0; font-size: 1.3rem;">บทความยอดนิยม</h3>
+                        </div>
+                        <div class="card-body" style="padding: 30px;">
+                            <div id="popularBlogs">
                                 <p style="color: #999; text-align: center;">กำลังโหลดข้อมูล...</p>
                             </div>
                         </div>
@@ -4240,21 +4246,44 @@
         </div>
 
         <script>
+        // Chart instances
+        let userGrowthChart, petGrowthChart, genderChart, ageChart;
+
+        // Initialize date filter (default last 6 months)
+        function initializeDateFilter() {
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setMonth(startDate.getMonth() - 6);
+
+            document.getElementById('endDate').valueAsDate = endDate;
+            document.getElementById('startDate').valueAsDate = startDate;
+        }
+
+        // Apply date filter
+        function applyDateFilter() {
+            loadDashboardData();
+        }
+
         // Load Dashboard Data
         async function loadDashboardData() {
-            const statsCards = document.querySelector('#statsSection .stats-grid');
             const analyticsContainer = document.getElementById('analyticsContainer');
             const loading = document.getElementById('dashboardLoading');
             const error = document.getElementById('dashboardError');
 
+            // Get date range
+            const startDate = document.getElementById('startDate')?.value;
+            const endDate = document.getElementById('endDate')?.value;
+            const queryParams = new URLSearchParams();
+            if (startDate) queryParams.append('startDate', startDate);
+            if (endDate) queryParams.append('endDate', endDate);
+
             // Show loading
-            statsCards.style.display = 'none';
             if (analyticsContainer) analyticsContainer.style.display = 'none';
             loading.style.display = 'block';
             error.style.display = 'none';
 
             try {
-                const response = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                const response = await fetch(`${API_URL}/admin/dashboard/stats?${queryParams}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -4268,7 +4297,6 @@
 
                 // Hide loading
                 loading.style.display = 'none';
-                statsCards.style.display = 'grid';
                 if (analyticsContainer) analyticsContainer.style.display = 'block';
 
                 // Set report date
@@ -4287,24 +4315,40 @@
                     return isNaN(num) ? 0 : num;
                 };
 
-                // Update Summary Cards
+                // Update User Stats
                 document.getElementById('statTotalUsers').textContent = safeNumber(data.totalUsers).toLocaleString();
+                document.getElementById('statActiveUsers').textContent = safeNumber(data.activeUsers).toLocaleString();
+                document.getElementById('statSuspendedUsers').textContent = safeNumber(data.suspendedUsers).toLocaleString();
+                document.getElementById('statNewUsers').textContent = safeNumber(data.newUsersThisMonth).toLocaleString();
+
+                // Update Pet Stats
                 document.getElementById('statTotalPets').textContent = safeNumber(data.totalPets).toLocaleString();
+                document.getElementById('statNewPets').textContent = safeNumber(data.newPetsThisMonth).toLocaleString();
+
+                // Update Blog Stats
                 document.getElementById('statTotalBlogs').textContent = safeNumber(data.totalBlogs).toLocaleString();
-                document.getElementById('statCompletedVacc').textContent = safeNumber(data.totalVaccinations).toLocaleString();
+                document.getElementById('statPublishedBlogs').textContent = safeNumber(data.publishedBlogs).toLocaleString();
+                document.getElementById('statNewBlogs').textContent = safeNumber(data.newBlogsThisMonth).toLocaleString();
 
-                // Monthly growth
-                document.getElementById('newUsersMonth').textContent = safeNumber(data.newUsersThisMonth);
-                document.getElementById('newPetsMonth').textContent = safeNumber(data.newPetsThisMonth);
-                document.getElementById('newBlogsMonth').textContent = safeNumber(data.newBlogsThisMonth);
-                document.getElementById('newVaccMonth').textContent = safeNumber(data.newVaccinationsThisMonth);
+                // Create Growth Charts
+                createLineChart('userGrowthChart', data.userGrowth || [], 'ผู้ใช้', '#1890ff');
+                createLineChart('petGrowthChart', data.petGrowth || [], 'สัตว์เลี้ยง', '#fa8c16');
 
-                // Pet Analytics
-                document.getElementById('statDogs').textContent = safeNumber(data.petsByType?.dog || 0).toLocaleString();
-                document.getElementById('statCats').textContent = safeNumber(data.petsByType?.cat || 0).toLocaleString();
-                document.getElementById('statOthers').textContent = safeNumber(data.petsByType?.other || 0).toLocaleString();
-                const avgPets = data.totalUsers > 0 ? (data.totalPets / data.totalUsers).toFixed(1) : 0;
-                document.getElementById('statAvgPets').textContent = avgPets;
+                // Create Gender Pie Chart
+                const genderData = data.petsByGender || { male: 0, female: 0, unknown: 0 };
+                createPieChart('genderChart',
+                    ['ผู้', 'เมีย', 'ไม่ระบุ'],
+                    [genderData.male, genderData.female, genderData.unknown],
+                    ['#1890ff', '#ff85c0', '#d9d9d9']
+                );
+
+                // Create Age Pie Chart
+                const ageData = data.petsByAge || { kitten: 0, young: 0, adult: 0, senior: 0, geriatric: 0 };
+                createPieChart('ageChart',
+                    ['ลูกแมว (0-1 ปี)', 'วัยเยาว์ (1-3 ปี)', 'วัยผู้ใหญ่ (3-7 ปี)', 'วัยสูงอายุ (7-11 ปี)', 'วัยชรา (11+ ปี)'],
+                    [ageData.kitten, ageData.young, ageData.adult, ageData.senior, ageData.geriatric],
+                    ['#52c41a', '#1890ff', '#fa8c16', '#722ed1', '#eb2f96']
+                );
 
                 // Top Breeds
                 const topBreedsEl = document.getElementById('topBreeds');
@@ -4319,40 +4363,17 @@
                     topBreedsEl.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">ยังไม่มีข้อมูล</p>';
                 }
 
-                // Blog Analytics
-                document.getElementById('statBlogsTotal').textContent = safeNumber(data.totalBlogs).toLocaleString();
-                document.getElementById('statBlogsPublished').textContent = safeNumber(data.publishedBlogs).toLocaleString();
-
-                // Top Tags
-                const topTagsEl = document.getElementById('topTags');
-                if (data.topTags && data.topTags.length > 0) {
-                    topTagsEl.innerHTML = data.topTags.map((tag, idx) => `
+                // Popular Blogs
+                const popularBlogsEl = document.getElementById('popularBlogs');
+                if (data.popularBlogs && data.popularBlogs.length > 0) {
+                    popularBlogsEl.innerHTML = data.popularBlogs.map((blog, idx) => `
                         <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e0e0e0;">
-                            <span style="color: #666;">${idx + 1}. ${tag.tag || 'ไม่ระบุ'}</span>
-                            <span style="font-weight: 600; color: #333;">${safeNumber(tag.count)} บทความ</span>
+                            <span style="color: #666; flex: 1;">${idx + 1}. ${blog.title || 'ไม่ระบุ'}</span>
+                            <span style="font-weight: 600; color: #333;">${safeNumber(blog.views)} views</span>
                         </div>
                     `).join('');
                 } else {
-                    topTagsEl.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">ยังไม่มีข้อมูล</p>';
-                }
-
-                // Vaccine Analytics
-                document.getElementById('statVaccTotal').textContent = safeNumber(data.totalVaccinations).toLocaleString();
-                document.getElementById('statPetsVaccinated').textContent = safeNumber(data.petsVaccinated).toLocaleString();
-                const vaccCoverage = data.totalPets > 0 ? ((data.petsVaccinated / data.totalPets) * 100).toFixed(1) : 0;
-                document.getElementById('statVaccCoverage').textContent = vaccCoverage;
-
-                // Top Vaccines
-                const topVaccinesEl = document.getElementById('topVaccines');
-                if (data.topVaccines && data.topVaccines.length > 0) {
-                    topVaccinesEl.innerHTML = data.topVaccines.map((vaccine, idx) => `
-                        <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e0e0e0;">
-                            <span style="color: #666;">${idx + 1}. ${vaccine.vaccine_name || 'ไม่ระบุ'}</span>
-                            <span style="font-weight: 600; color: #333;">${safeNumber(vaccine.count)} ครั้ง</span>
-                        </div>
-                    `).join('');
-                } else {
-                    topVaccinesEl.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">ยังไม่มีข้อมูล</p>';
+                    popularBlogsEl.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">ยังไม่มีข้อมูล</p>';
                 }
 
             } catch (err) {
@@ -4361,6 +4382,91 @@
                 error.style.display = 'block';
                 document.getElementById('errorMessage').textContent = err.message;
             }
+        }
+
+        // Create Line Chart
+        function createLineChart(canvasId, growthData, label, color) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            // Destroy existing chart
+            const chartInstance = Chart.getChart(canvasId);
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Prepare data
+            const labels = growthData.map(item => {
+                const [year, month] = item.month.split('-');
+                return `${month}/${year}`;
+            });
+            const values = growthData.map(item => item.count);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: values,
+                        borderColor: color,
+                        backgroundColor: color + '20',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create Pie Chart
+        function createPieChart(canvasId, labels, data, colors) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            // Destroy existing chart
+            const chartInstance = Chart.getChart(canvasId);
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
         }
         </script>
 
@@ -4807,6 +4913,9 @@
                     loadVaccineSchedules();
                 }
             } else if (section === 'stats') {
+                if (typeof initializeDateFilter === 'function') {
+                    initializeDateFilter();
+                }
                 if (typeof loadDashboardData === 'function') {
                     loadDashboardData();
                 }
