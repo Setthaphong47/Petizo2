@@ -5127,12 +5127,17 @@
 
         // Initialize date filter (default last 6 months)
         function initializeDateFilter() {
-            const endDate = new Date();
-            const startDate = new Date();
-            startDate.setMonth(startDate.getMonth() - 6);
+            const endDateEl = document.getElementById('endDate');
+            const startDateEl = document.getElementById('startDate');
 
-            document.getElementById('endDate').valueAsDate = endDate;
-            document.getElementById('startDate').valueAsDate = startDate;
+            if (endDateEl && startDateEl) {
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setMonth(startDate.getMonth() - 6);
+
+                endDateEl.valueAsDate = endDate;
+                startDateEl.valueAsDate = startDate;
+            }
         }
 
         // Apply date filter
@@ -5529,9 +5534,13 @@
                     selector.appendChild(option);
                 });
 
-                selector.addEventListener('change', (e) => {
+                // Remove existing listener if any
+                selector.removeEventListener('change', handleMonthChange);
+                selector.addEventListener('change', handleMonthChange);
+
+                function handleMonthChange(e) {
                     loadAnalyticsDashboard(e.target.value);
-                });
+                }
             } catch (error) {
                 console.error('Error loading months:', error);
             }
