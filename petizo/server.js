@@ -1581,52 +1581,136 @@ app.get('/api/admin/all-pets', authenticateToken, isAdmin, (req, res) => {
 
 // ============= DASHBOARD STATS =============
 
-app.get('/api/admin/dashboard/stats', authenticateToken, isAdmin, (req, res) => {
-    const petColumn = getPetUserColumn();
-    
-    if (DB_STRUCTURE === 'new') {
-        db.get('SELECT COUNT(*) as total FROM admins', (err, admins) => {
-            db.get('SELECT COUNT(*) as total FROM members WHERE is_hidden = 0 OR is_hidden IS NULL', (err, active) => {
-                db.get('SELECT COUNT(*) as total FROM members WHERE is_hidden = 1', (err, hidden) => {
-                    db.get('SELECT COUNT(*) as total FROM pets', (err, pets) => {
-                        db.get('SELECT COUNT(*) as total FROM vaccinations WHERE status = "completed" OR status = "ฉีดแล้ว"', (err, completed) => {
-                            db.get('SELECT COUNT(*) as total FROM vaccinations WHERE status != "completed" AND status != "ฉีดแล้ว" OR status IS NULL', (err, pending) => {
-                                res.json({
-                                    totalAdmins: admins?.total || 0,
-                                    totalUsers: active?.total || 0,
-                                    totalMembers: active?.total || 0,
-                                    hiddenUsers: hidden?.total || 0,
-                                    totalPets: pets?.total || 0,
-                                    completedVaccinations: completed?.total || 0,
-                                    pendingVaccinations: pending?.total || 0
-                                });
-                            });
-                        });
-                    });
+app.get('/api/admin/dashboard/stats', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const userTable = DB_STRUCTURE === 'new' ? 'members' : 'users';
+        const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+
+        // Helper to promisify db queries
+        const dbGet = (query, params = []) => {
+            return new Promise((resolve, reject) => {
+                db.get(query, params, (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row || {});
                 });
             });
-        });
-    } else {
-        db.get("SELECT COUNT(*) as total FROM users WHERE role = 'admin'", (err, admins) => {
-            db.get('SELECT COUNT(*) as total FROM users WHERE (is_hidden = 0 OR is_hidden IS NULL)', (err, active) => {
-                db.get('SELECT COUNT(*) as total FROM users WHERE is_hidden = 1', (err, hidden) => {
-                    db.get('SELECT COUNT(*) as total FROM pets', (err, pets) => {
-                        db.get('SELECT COUNT(*) as total FROM vaccinations WHERE status = "completed" OR status = "ฉีดแล้ว"', (err, completed) => {
-                            db.get('SELECT COUNT(*) as total FROM vaccinations WHERE status != "completed" AND status != "ฉีดแล้ว" OR status IS NULL', (err, pending) => {
-                                res.json({
-                                    totalAdmins: admins?.total || 0,
-                                    totalUsers: active?.total || 0,
-                                    hiddenUsers: hidden?.total || 0,
-                                    totalPets: pets?.total || 0,
-                                    completedVaccinations: completed?.total || 0,
-                                    pendingVaccinations: pending?.total || 0
-                                });
-                            });
-                        });
-                    });
+        };
+
+        const dbAll = (query, params = []) => {
+            return new Promise((resolve, reject) => {
+                db.all(query, params, (err, rows) => {
+                    if (err) reject(err);
+                    else resolve(rows || []);
                 });
             });
+        };
+
+        // Get all stats in parallel
+        const [
+            totalUsers,
+            totalPets,
+            totalBlogs,
+            totalVaccinations,
+            newUsersMonth,
+            newPetsMonth,
+            newBlogsMonth,
+            newVaccMonth,
+            petsByType,
+            topBreeds,
+            publishedBlogs,
+            topTags,
+            petsVaccinated,
+            topVaccines
+        ] = await Promise.all([
+            // Total users
+            dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE is_hidden = 0 OR is_hidden IS NULL`),
+            // Total pets
+            dbGet('SELECT COUNT(*) as total FROM pets'),
+            // Total blogs
+            dbGet('SELECT COUNT(*) as total FROM blogs'),
+            // Total vaccinations
+            dbGet('SELECT COUNT(*) as total FROM vaccinations'),
+            // New users this month
+            dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE created_at >= ?`, [startOfMonth]),
+            // New pets this month
+            dbGet('SELECT COUNT(*) as total FROM pets WHERE created_at >= ?', [startOfMonth]),
+            // New blogs this month
+            dbGet('SELECT COUNT(*) as total FROM blogs WHERE created_at >= ?', [startOfMonth]),
+            // New vaccinations this month
+            dbGet('SELECT COUNT(*) as total FROM vaccinations WHERE vaccination_date >= ?', [startOfMonth]),
+            // Pets by type
+            dbGet(`SELECT
+                SUM(CASE WHEN LOWER(species) LIKE '%dog%' OR LOWER(species) LIKE '%สุนัข%' THEN 1 ELSE 0 END) as dog,
+                SUM(CASE WHEN LOWER(species) LIKE '%cat%' OR LOWER(species) LIKE '%แมว%' THEN 1 ELSE 0 END) as cat,
+                SUM(CASE WHEN (LOWER(species) NOT LIKE '%dog%' AND LOWER(species) NOT LIKE '%สุนัข%'
+                              AND LOWER(species) NOT LIKE '%cat%' AND LOWER(species) NOT LIKE '%แมว%')
+                              OR species IS NULL OR species = '' THEN 1 ELSE 0 END) as other
+                FROM pets`),
+            // Top breeds
+            dbAll(`SELECT breed, COUNT(*) as count FROM pets
+                   WHERE breed IS NOT NULL AND breed != ''
+                   GROUP BY breed ORDER BY count DESC LIMIT 5`),
+            // Published blogs
+            dbGet('SELECT COUNT(*) as total FROM blogs WHERE status = "published" OR status = "เผยแพร่"'),
+            // Top tags
+            dbAll(`SELECT tags FROM blogs WHERE tags IS NOT NULL AND tags != ''`),
+            // Pets vaccinated (distinct pets with at least one vaccination)
+            dbGet('SELECT COUNT(DISTINCT pet_id) as total FROM vaccinations WHERE pet_id IS NOT NULL'),
+            // Top vaccines
+            dbAll(`SELECT vaccine_name, COUNT(*) as count FROM vaccinations
+                   WHERE vaccine_name IS NOT NULL AND vaccine_name != ''
+                   GROUP BY vaccine_name ORDER BY count DESC LIMIT 5`)
+        ]);
+
+        // Process tags (count frequency)
+        const tagCounts = {};
+        topTags.forEach(row => {
+            if (row.tags) {
+                try {
+                    const tags = JSON.parse(row.tags);
+                    tags.forEach(tag => {
+                        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                    });
+                } catch (e) {
+                    // If not JSON, try comma-separated
+                    const tags = row.tags.split(',').map(t => t.trim());
+                    tags.forEach(tag => {
+                        if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                    });
+                }
+            }
         });
+
+        const topTagsArray = Object.entries(tagCounts)
+            .map(([tag, count]) => ({ tag, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5);
+
+        // Send response
+        res.json({
+            totalUsers: totalUsers.total || 0,
+            totalPets: totalPets.total || 0,
+            totalBlogs: totalBlogs.total || 0,
+            totalVaccinations: totalVaccinations.total || 0,
+            newUsersThisMonth: newUsersMonth.total || 0,
+            newPetsThisMonth: newPetsMonth.total || 0,
+            newBlogsThisMonth: newBlogsMonth.total || 0,
+            newVaccinationsThisMonth: newVaccMonth.total || 0,
+            petsByType: {
+                dog: petsByType.dog || 0,
+                cat: petsByType.cat || 0,
+                other: petsByType.other || 0
+            },
+            topBreeds: topBreeds,
+            publishedBlogs: publishedBlogs.total || 0,
+            topTags: topTagsArray,
+            petsVaccinated: petsVaccinated.total || 0,
+            topVaccines: topVaccines
+        });
+
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        res.status(500).json({ error: 'ไม่สามารถโหลดข้อมูลได้' });
     }
 });
 
