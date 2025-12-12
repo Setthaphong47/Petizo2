@@ -1107,7 +1107,7 @@
                         <div class="stat-value" id="totalUsers">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">ผู้ใช้งานที่ซ่อน</div>
+                        <div class="stat-label">ผู้ใช้งานที่ถูกระงับ</div>
                         <div class="stat-value" id="hiddenUsers">0</div>
                     </div>
                 </div>
@@ -4297,7 +4297,7 @@
                             month: 'short',
                             day: 'numeric'
                         })}</td>
-                        <td><span class="status-badge status-admin">Admin</span></td>
+                        <td><span class="status-badge status-admin">แอดมิน</span></td>
                         <td>
                             ${!isCurrentUser ? `
                                 <button class="action-btn btn-demote" title="ลดเป็น Member" 
@@ -4346,8 +4346,8 @@
             users.forEach((user, index) => {
                 const status = user.status || (user.is_hidden === 1 ? 'hidden' : 'active');
                 const statusClass = status === 'active' ? 'status-active' : 'status-hide';
-                const statusText = status === 'active' ? 'active' : 'hidden';
-                const buttonText = status === 'active' ? 'ซ่อน' : 'แสดง';
+                const statusText = status === 'active' ? 'ใช้งานปกติ' : 'ถูกระงับ';
+                const buttonText = status === 'active' ? 'ระงับ' : 'เปิดใช้งาน';
                 
                 html += `
                     <tr>
@@ -4476,7 +4476,7 @@
         }
 
         async function hideUser(userId) {
-            const confirmed = confirm('ต้องการเปลี่ยนสถานะผู้ใช้นี้เป็นซ่อนหรือไม่?');
+            const confirmed = confirm('ต้องการระงับผู้ใช้นี้หรือไม่?');
             
             if (confirmed) {
                 try {
@@ -4504,14 +4504,14 @@
         async function toggleUserStatus(userId, currentStatus, userType) {
             // Admin ไม่สามารถถูก hide ได้
             if (userType === 'admin') {
-                alert('ไม่สามารถซ่อน Admin ได้');
+                alert('ไม่สามารถระงับแอดมินได้');
                 return;
             }
-            
-            const action = currentStatus === 'active' ? 'ซ่อน' : 'แสดง';
+
+            const action = currentStatus === 'active' ? 'ระงับ' : 'เปิดใช้งาน';
             const newStatus = currentStatus === 'active' ? 'hidden' : 'active';
-            
-            const confirmed = confirm(`ต้องการเปลี่ยนสถานะผู้ใช้นี้เป็น${action}หรือไม่?`);
+
+            const confirmed = confirm(`ต้องการ${action}ผู้ใช้นี้หรือไม่?`);
             
             if (confirmed) {
                 try {
