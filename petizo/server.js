@@ -1871,6 +1871,186 @@ app.get('/api/admin/dashboard/trends', authenticateToken, isAdmin, (req, res) =>
     });
 });
 
+// ============= NEW ANALYTICS DASHBOARD APIs =============
+
+// 1. User Growth by Month with Percentage Change
+app.get('/api/admin/dashboard/user-growth-detailed', authenticateToken, isAdmin, (req, res) => {
+    const userTable = DB_STRUCTURE === 'new' ? 'members' : 'users';
+    const monthsBack = parseInt(req.query.months) || 12; // Default 12 months
+
+    db.all(`SELECT
+        strftime('%Y-%m', created_at) as month,
+        COUNT(*) as count
+    FROM ${userTable}
+    WHERE created_at >= date('now', '-${monthsBack} months')
+    GROUP BY month
+    ORDER BY month`, (err, rows) => {
+        if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
+
+        const data = rows.map((row, index) => {
+            let percentageChange = 0;
+            if (index > 0) {
+                const prevCount = rows[index - 1].count;
+                percentageChange = prevCount > 0
+                    ? ((row.count - prevCount) / prevCount * 100).toFixed(2)
+                    : 100;
+            }
+            return {
+                month: row.month,
+                count: row.count,
+                percentageChange: parseFloat(percentageChange)
+            };
+        });
+
+        res.json(data);
+    });
+});
+
+// 2. Top Breeds by Month
+app.get('/api/admin/dashboard/breeds-by-month', authenticateToken, isAdmin, (req, res) => {
+    const targetMonth = req.query.month; // Format: YYYY-MM
+    const monthsBack = parseInt(req.query.months) || 12;
+
+    let query;
+    let params = [];
+
+    if (targetMonth) {
+        // Specific month
+        query = `SELECT
+            breed,
+            COUNT(*) as count,
+            strftime('%Y-%m', created_at) as month
+        FROM pets
+        WHERE breed IS NOT NULL
+            AND breed != ''
+            AND strftime('%Y-%m', created_at) = ?
+        GROUP BY breed
+        ORDER BY count DESC
+        LIMIT 10`;
+        params = [targetMonth];
+    } else {
+        // All months in range
+        query = `SELECT
+            breed,
+            COUNT(*) as count,
+            strftime('%Y-%m', created_at) as month
+        FROM pets
+        WHERE breed IS NOT NULL
+            AND breed != ''
+            AND created_at >= date('now', '-${monthsBack} months')
+        GROUP BY month, breed
+        ORDER BY month DESC, count DESC`;
+    }
+
+    db.all(query, params, (err, rows) => {
+        if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
+        res.json(rows);
+    });
+});
+
+// 3. Blog Views Ranking
+app.get('/api/admin/dashboard/blog-ranking', authenticateToken, isAdmin, (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+
+    db.all(`SELECT
+        id,
+        title,
+        slug,
+        views,
+        category,
+        published_at,
+        strftime('%Y-%m', published_at) as month
+    FROM blogs
+    WHERE status = 'published'
+    ORDER BY views DESC
+    LIMIT ?`, [limit], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
+        res.json(rows);
+    });
+});
+
+// 4. Average Cat Age
+app.get('/api/admin/dashboard/average-cat-age', authenticateToken, isAdmin, (req, res) => {
+    db.get(`SELECT
+        AVG(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as average_age,
+        COUNT(*) as total_with_birthdate,
+        MIN(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as youngest,
+        MAX(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as oldest
+    FROM pets
+    WHERE birth_date IS NOT NULL AND birth_date != ''`, (err, result) => {
+        if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
+        res.json({
+            averageAge: result.average_age ? parseFloat(result.average_age.toFixed(2)) : 0,
+            totalWithBirthdate: result.total_with_birthdate || 0,
+            youngest: result.youngest ? parseFloat(result.youngest.toFixed(2)) : 0,
+            oldest: result.oldest ? parseFloat(result.oldest.toFixed(2)) : 0
+        });
+    });
+});
+
+// 5. Monthly Summary (All stats by month)
+app.get('/api/admin/dashboard/monthly-summary', authenticateToken, isAdmin, (req, res) => {
+    const targetMonth = req.query.month || new Date().toISOString().slice(0, 7); // Default: current month
+    const userTable = DB_STRUCTURE === 'new' ? 'members' : 'users';
+
+    // Get all stats for the specified month
+    const stats = {};
+
+    // Users registered this month
+    db.get(`SELECT COUNT(*) as count FROM ${userTable}
+            WHERE strftime('%Y-%m', created_at) = ?`, [targetMonth], (err, userCount) => {
+        stats.newUsers = userCount?.count || 0;
+
+        // Pets registered this month
+        db.get(`SELECT COUNT(*) as count FROM pets
+                WHERE strftime('%Y-%m', created_at) = ?`, [targetMonth], (err, petCount) => {
+            stats.newPets = petCount?.count || 0;
+
+            // Top breed this month
+            db.get(`SELECT breed, COUNT(*) as count FROM pets
+                    WHERE breed IS NOT NULL AND breed != ''
+                    AND strftime('%Y-%m', created_at) = ?
+                    GROUP BY breed ORDER BY count DESC LIMIT 1`, [targetMonth], (err, topBreed) => {
+                stats.topBreed = topBreed || { breed: 'ไม่มีข้อมูล', count: 0 };
+
+                // Blogs published this month
+                db.get(`SELECT COUNT(*) as count FROM blogs
+                        WHERE strftime('%Y-%m', published_at) = ?`, [targetMonth], (err, blogCount) => {
+                    stats.blogsPublished = blogCount?.count || 0;
+
+                    // Total views this month (approximation)
+                    db.get(`SELECT SUM(views) as total FROM blogs
+                            WHERE strftime('%Y-%m', published_at) <= ?`, [targetMonth], (err, viewsTotal) => {
+                        stats.totalBlogViews = viewsTotal?.total || 0;
+
+                        res.json({
+                            month: targetMonth,
+                            ...stats
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+// 6. Available months (for dropdown selector)
+app.get('/api/admin/dashboard/available-months', authenticateToken, isAdmin, (req, res) => {
+    const userTable = DB_STRUCTURE === 'new' ? 'members' : 'users';
+
+    db.all(`SELECT DISTINCT strftime('%Y-%m', created_at) as month
+            FROM ${userTable}
+            WHERE created_at IS NOT NULL
+            UNION
+            SELECT DISTINCT strftime('%Y-%m', created_at) as month
+            FROM pets
+            WHERE created_at IS NOT NULL
+            ORDER BY month DESC`, (err, rows) => {
+        if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
+        res.json(rows.map(r => r.month));
+    });
+});
+
 
 // ============= AI CHAT ENDPOINT =============
 

@@ -3960,9 +3960,338 @@
             </script>
 
 
-            <!-- Dashboard Section -->
+            <!-- Analytics Dashboard Section -->
             <div id="statsSection" style="display: none;">
             <style>
+                /* Analytics Dashboard Styles - Modern & Clean Design */
+                .analytics-dashboard {
+                    padding: 24px;
+                    background: #f5f7fa;
+                    min-height: 100vh;
+                }
+
+                .analytics-header {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 24px;
+                    margin-bottom: 24px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                }
+
+                .analytics-header-top {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 16px;
+                }
+
+                .analytics-title h2 {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #2d3748;
+                    margin: 0 0 4px 0;
+                }
+
+                .analytics-subtitle {
+                    font-size: 14px;
+                    color: #718096;
+                }
+
+                .analytics-controls {
+                    display: flex;
+                    gap: 12px;
+                    align-items: center;
+                }
+
+                .month-selector {
+                    padding: 10px 16px;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    background: white;
+                    color: #2d3748;
+                    transition: all 0.2s;
+                }
+
+                .month-selector:hover {
+                    border-color: #00bcd4;
+                }
+
+                .month-selector:focus {
+                    outline: none;
+                    border-color: #00bcd4;
+                    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+                }
+
+                .refresh-btn {
+                    padding: 10px 20px;
+                    background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                .refresh-btn:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4);
+                }
+
+                /* Stats Grid */
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                    gap: 20px;
+                    margin-bottom: 24px;
+                }
+
+                .stat-card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 24px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                    transition: all 0.3s;
+                    position: relative;
+                    overflow: hidden;
+                    border-left: 4px solid #00bcd4;
+                }
+
+                .stat-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+                }
+
+                .stat-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 16px;
+                }
+
+                .stat-title {
+                    font-size: 13px;
+                    color: #718096;
+                    font-weight: 500;
+                }
+
+                .stat-icon {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                }
+
+                .stat-value {
+                    font-size: 32px;
+                    font-weight: 700;
+                    color: #2d3748;
+                    margin-bottom: 8px;
+                }
+
+                .stat-change {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    font-size: 13px;
+                }
+
+                .stat-change.positive {
+                    color: #48bb78;
+                }
+
+                .stat-change.negative {
+                    color: #f56565;
+                }
+
+                .stat-change.neutral {
+                    color: #718096;
+                }
+
+                /* Charts Grid */
+                .charts-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 24px;
+                    margin-bottom: 24px;
+                }
+
+                .chart-card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 24px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                }
+
+                .chart-card.full-width {
+                    grid-column: 1 / -1;
+                }
+
+                .chart-header {
+                    margin-bottom: 20px;
+                }
+
+                .chart-title {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #2d3748;
+                    margin: 0 0 4px 0;
+                }
+
+                .chart-subtitle {
+                    font-size: 13px;
+                    color: #718096;
+                    margin: 0;
+                }
+
+                .chart-container {
+                    position: relative;
+                    height: 300px;
+                }
+
+                .chart-container.small {
+                    height: 250px;
+                }
+
+                /* Table Card */
+                .table-card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 24px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                }
+
+                .data-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                .data-table thead {
+                    background: #f7fafc;
+                }
+
+                .data-table th {
+                    padding: 12px 16px;
+                    text-align: left;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #4a5568;
+                    border-bottom: 2px solid #e2e8f0;
+                }
+
+                .data-table td {
+                    padding: 12px 16px;
+                    font-size: 14px;
+                    color: #2d3748;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+
+                .data-table tbody tr:hover {
+                    background: #f7fafc;
+                }
+
+                .rank-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-size: 13px;
+                }
+
+                .rank-1 {
+                    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+                    color: #744210;
+                }
+
+                .rank-2 {
+                    background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+                    color: #4a5568;
+                }
+
+                .rank-3 {
+                    background: linear-gradient(135deg, #cd7f32 0%, #e8a87c 100%);
+                    color: #744210;
+                }
+
+                .rank-other {
+                    background: #f7fafc;
+                    color: #718096;
+                }
+
+                .views-badge {
+                    display: inline-block;
+                    padding: 4px 12px;
+                    background: #edf2f7;
+                    color: #4a5568;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 500;
+                }
+
+                /* Loading */
+                .analytics-loading {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 60px 20px;
+                    background: white;
+                    border-radius: 12px;
+                }
+
+                .loading-spinner {
+                    width: 40px;
+                    height: 40px;
+                    border: 4px solid #e2e8f0;
+                    border-top-color: #00bcd4;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                }
+
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+
+                .loading-text {
+                    margin-top: 16px;
+                    color: #718096;
+                    font-size: 14px;
+                }
+
+                /* Responsive */
+                @media (max-width: 1024px) {
+                    .charts-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .analytics-dashboard {
+                        padding: 16px;
+                    }
+
+                    .stats-grid {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .analytics-header-top {
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
+                }
 
                 .dashboard-container {
                     padding: 30px;
@@ -3981,14 +4310,7 @@
                     margin: 0;
                 }
 
-                .stats-grid {
-                    display: grid;
-                    grid-template-columns: repeat(4, 250px);
-                    gap: 20px;
-                    width: 100%;
-                }
-
-                .stat-card {
+                .stat-card-old {
                     background: white;
                     padding: 30px;
                     border-radius: 12px;
@@ -4405,23 +4727,158 @@
                 }
             </style>
 
-            <!-- Header with date filter -->
-            <div class="dashboard-header">
-                <div class="dashboard-title-section">
-                    <h2>รายงานและวิเคราะห์ข้อมูล</h2>
-                    <p>ข้อมูล ณ วันที่ <span id="reportDate"></span></p>
+            <!-- Analytics Dashboard Container -->
+            <div class="analytics-dashboard">
+                <!-- Header -->
+                <div class="analytics-header">
+                    <div class="analytics-header-top">
+                        <div class="analytics-title">
+                            <h2>📊 รายงานและวิเคราะห์ข้อมูล</h2>
+                            <p class="analytics-subtitle" id="analyticsCurrentDate">กำลังโหลด...</p>
+                        </div>
+                        <div class="analytics-controls">
+                            <select class="month-selector" id="analyticsMonthSelector">
+                                <option value="">ทุกเดือน (12 เดือนล่าสุด)</option>
+                            </select>
+                            <button class="refresh-btn" onclick="loadAnalyticsDashboard()">
+                                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                รีเฟรช
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="date-filter">
-                    <label>ช่วงเวลา:</label>
-                    <input type="date" id="startDate">
-                    <span style="color: var(--gray-400);">ถึง</span>
-                    <input type="date" id="endDate">
-                    <button onclick="applyDateFilter()" class="btn-filter">ใช้ตัวกรอง</button>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">ผู้ใช้งานทั้งหมด</div>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, rgba(0,188,212,0.1) 0%, rgba(0,188,212,0.2) 100%);">
+                                👥
+                            </div>
+                        </div>
+                        <div class="stat-value" id="analyticsTotalUsers">-</div>
+                        <div class="stat-change neutral" id="analyticsUserChange">
+                            <span>📈</span>
+                            <span>กำลังโหลด...</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">สัตว์เลี้ยงทั้งหมด</div>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, rgba(237,137,54,0.1) 0%, rgba(237,137,54,0.2) 100%);">
+                                🐱
+                            </div>
+                        </div>
+                        <div class="stat-value" id="analyticsTotalPets">-</div>
+                        <div class="stat-change neutral" id="analyticsPetChange">
+                            <span>📈</span>
+                            <span>กำลังโหลด...</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">อายุเฉลี่ยของแมว</div>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, rgba(72,187,120,0.1) 0%, rgba(72,187,120,0.2) 100%);">
+                                ⏱️
+                            </div>
+                        </div>
+                        <div class="stat-value" id="analyticsAverageAge">-</div>
+                        <div class="stat-change neutral">
+                            <span>ปี</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">ยอดเข้าชมบทความ</div>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, rgba(245,101,118,0.1) 0%, rgba(245,101,118,0.2) 100%);">
+                                📝
+                            </div>
+                        </div>
+                        <div class="stat-value" id="analyticsTotalBlogViews">-</div>
+                        <div class="stat-change neutral">
+                            <span>👁️</span>
+                            <span>การเข้าชม</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <!-- User Growth Chart -->
+                    <div class="chart-card full-width">
+                        <div class="chart-header">
+                            <h3 class="chart-title">📈 การเติบโตของผู้ใช้งาน</h3>
+                            <p class="chart-subtitle">จำนวนผู้ใช้ใหม่และเปอร์เซ็นต์การเปลี่ยนแปลงในแต่ละเดือน</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="analyticsUserGrowthChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top Breeds Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">🐾 สายพันธุ์ยอดนิยม</h3>
+                            <p class="chart-subtitle">สายพันธุ์แมวที่มีการลงทะเบียนมากที่สุด</p>
+                        </div>
+                        <div class="chart-container small">
+                            <canvas id="analyticsBreedsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Blog Performance Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">📊 ประสิทธิภาพบทความ</h3>
+                            <p class="chart-subtitle">บทความที่ได้รับความนิยมมากที่สุด</p>
+                        </div>
+                        <div class="chart-container small">
+                            <canvas id="analyticsBlogChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog Table -->
+                <div class="table-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">🏆 อันดับบทความยอดนิยม</h3>
+                        <p class="chart-subtitle">บทความที่มีจำนวนการเข้าชมสูงสุด</p>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">อันดับ</th>
+                                <th>ชื่อบทความ</th>
+                                <th>หมวดหมู่</th>
+                                <th style="text-align: right;">การเข้าชม</th>
+                                <th>วันที่เผยแพร่</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analyticsBlogTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px;">
+                                    <div class="loading-spinner"></div>
+                                    <p class="loading-text">กำลังโหลดข้อมูล...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Loading State -->
+                <div id="analyticsLoading" class="analytics-loading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">กำลังโหลดข้อมูล...</p>
                 </div>
             </div>
 
-            <!-- User Stats Cards -->
-            <div class="stats-section">
+            <div class="stats-section" style="display:none;">
                 <h3 class="stats-section-title">
                     <img src="/icon/love.png" alt="" style="width: 24px; height: 24px;">
                     ผู้ใช้งาน
@@ -5027,6 +5484,420 @@
             const parent = canvas.parentElement;
             parent.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 300px; color: #999; font-size: 1rem;">${message}</div>`;
         }
+
+        // ============= NEW ANALYTICS DASHBOARD FUNCTIONS =============
+        let analyticsUserGrowthChart = null;
+        let analyticsBreedsChart = null;
+        let analyticsBlogChart = null;
+
+        // Update current date
+        function updateAnalyticsDate() {
+            const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                               'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            const now = new Date();
+            const thaiYear = now.getFullYear() + 543;
+            const dateStr = `วันที่ ${now.getDate()} ${thaiMonths[now.getMonth()]} ${thaiYear}`;
+            const dateEl = document.getElementById('analyticsCurrentDate');
+            if (dateEl) {
+                dateEl.textContent = dateStr;
+            }
+        }
+
+        // Load available months for selector
+        async function loadAnalyticsAvailableMonths() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/available-months`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const months = await response.json();
+
+                const selector = document.getElementById('analyticsMonthSelector');
+                if (!selector) return;
+
+                // Clear existing options except first one
+                while (selector.options.length > 1) {
+                    selector.remove(1);
+                }
+
+                months.forEach(month => {
+                    const option = document.createElement('option');
+                    option.value = month;
+                    const [year, monthNum] = month.split('-');
+                    const thaiShortMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                                            'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                    option.textContent = `${thaiShortMonths[parseInt(monthNum) - 1]} ${parseInt(year) + 543}`;
+                    selector.appendChild(option);
+                });
+
+                selector.addEventListener('change', (e) => {
+                    loadAnalyticsDashboard(e.target.value);
+                });
+            } catch (error) {
+                console.error('Error loading months:', error);
+            }
+        }
+
+        // Load User Growth Data
+        async function loadAnalyticsUserGrowth() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/user-growth-detailed?months=12`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+
+                // Update stats card
+                if (data.length > 0) {
+                    const latest = data[data.length - 1];
+                    const statsResponse = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    });
+                    const stats = await statsResponse.json();
+
+                    const userCountEl = document.getElementById('analyticsTotalUsers');
+                    if (userCountEl) {
+                        userCountEl.textContent = (stats.totalUsers || 0).toLocaleString();
+                    }
+
+                    const changeElement = document.getElementById('analyticsUserChange');
+                    if (changeElement) {
+                        if (latest.percentageChange > 0) {
+                            changeElement.className = 'stat-change positive';
+                            changeElement.innerHTML = `<span>📈</span><span>+${latest.percentageChange}% จากเดือนที่แล้ว</span>`;
+                        } else if (latest.percentageChange < 0) {
+                            changeElement.className = 'stat-change negative';
+                            changeElement.innerHTML = `<span>📉</span><span>${latest.percentageChange}% จากเดือนที่แล้ว</span>`;
+                        } else {
+                            changeElement.className = 'stat-change neutral';
+                            changeElement.innerHTML = `<span>➖</span><span>ไม่เปลี่ยนแปลง</span>`;
+                        }
+                    }
+                }
+
+                // Create chart
+                const ctx = document.getElementById('analyticsUserGrowthChart');
+                if (!ctx) return;
+
+                if (analyticsUserGrowthChart) {
+                    analyticsUserGrowthChart.destroy();
+                }
+
+                const thaiShortMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+                                        'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                const labels = data.map(d => {
+                    const [year, month] = d.month.split('-');
+                    return `${thaiShortMonths[parseInt(month) - 1]} ${parseInt(year) + 543}`;
+                });
+
+                analyticsUserGrowthChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'ผู้ใช้ใหม่',
+                            data: data.map(d => d.count),
+                            borderColor: '#00bcd4',
+                            backgroundColor: 'rgba(0, 188, 212, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: '#00bcd4'
+                        }, {
+                            label: '% การเปลี่ยนแปลง',
+                            data: data.map(d => d.percentageChange),
+                            borderColor: '#48bb78',
+                            backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                            tension: 0.4,
+                            yAxisID: 'y1',
+                            borderDash: [5, 5],
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: { size: 12 },
+                                    usePointStyle: true,
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                titleFont: { size: 14 },
+                                bodyFont: { size: 13 }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'จำนวนผู้ใช้',
+                                    font: { size: 12 }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: '% การเปลี่ยนแปลง',
+                                    font: { size: 12 }
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading user growth:', error);
+            }
+        }
+
+        // Load Top Breeds
+        async function loadAnalyticsTopBreeds(month = null) {
+            try {
+                let url = `${API_URL}/admin/dashboard/breeds-by-month?months=12`;
+                if (month) {
+                    url = `${API_URL}/admin/dashboard/breeds-by-month?month=${month}`;
+                }
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                let data = await response.json();
+
+                // If no month specified, get top 10 overall
+                if (!month && data.length > 0) {
+                    const breedCounts = {};
+                    data.forEach(item => {
+                        breedCounts[item.breed] = (breedCounts[item.breed] || 0) + item.count;
+                    });
+                    data = Object.entries(breedCounts)
+                        .map(([breed, count]) => ({ breed, count }))
+                        .sort((a, b) => b.count - a.count)
+                        .slice(0, 10);
+                }
+
+                // Update pet stats
+                const statsResponse = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const stats = await statsResponse.json();
+                const petCountEl = document.getElementById('analyticsTotalPets');
+                if (petCountEl) {
+                    petCountEl.textContent = (stats.totalPets || 0).toLocaleString();
+                }
+
+                const ctx = document.getElementById('analyticsBreedsChart');
+                if (!ctx) return;
+
+                if (analyticsBreedsChart) {
+                    analyticsBreedsChart.destroy();
+                }
+
+                const colors = [
+                    '#00bcd4', '#00e5ff', '#4dd0e1', '#00acc1',
+                    '#0097a7', '#00838f', '#006064', '#48bb78',
+                    '#4facfe', '#00f260'
+                ];
+
+                analyticsBreedsChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.map(d => d.breed),
+                        datasets: [{
+                            data: data.map(d => d.count),
+                            backgroundColor: colors.slice(0, data.length),
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    font: { size: 11 },
+                                    padding: 10,
+                                    boxWidth: 12
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading breeds:', error);
+            }
+        }
+
+        // Load Blog Rankings
+        async function loadAnalyticsBlogRankings() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/blog-ranking?limit=10`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+
+                // Update total views
+                const totalViews = data.reduce((sum, blog) => sum + (blog.views || 0), 0);
+                const viewsEl = document.getElementById('analyticsTotalBlogViews');
+                if (viewsEl) {
+                    viewsEl.textContent = totalViews.toLocaleString();
+                }
+
+                // Update table
+                const tbody = document.getElementById('analyticsBlogTableBody');
+                if (tbody) {
+                    tbody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #999;">ยังไม่มีข้อมูลบทความ</td></tr>';
+                    } else {
+                        data.forEach((blog, index) => {
+                            const row = document.createElement('tr');
+                            const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
+
+                            const date = blog.published_at ? new Date(blog.published_at).toLocaleDateString('th-TH', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            }) : '-';
+
+                            row.innerHTML = `
+                                <td><span class="rank-badge ${rankClass}">${index + 1}</span></td>
+                                <td><strong>${blog.title}</strong></td>
+                                <td>${blog.category || '-'}</td>
+                                <td style="text-align: right;"><span class="views-badge">${(blog.views || 0).toLocaleString()} views</span></td>
+                                <td>${date}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    }
+                }
+
+                // Create chart (top 5 for visualization)
+                const ctx = document.getElementById('analyticsBlogChart');
+                if (!ctx) return;
+
+                if (analyticsBlogChart) {
+                    analyticsBlogChart.destroy();
+                }
+
+                const top5 = data.slice(0, 5);
+                analyticsBlogChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: top5.map(b => b.title.length > 30 ? b.title.substring(0, 30) + '...' : b.title),
+                        datasets: [{
+                            label: 'การเข้าชม',
+                            data: top5.map(b => b.views || 0),
+                            backgroundColor: [
+                                'rgba(0, 188, 212, 0.8)',
+                                'rgba(0, 229, 255, 0.8)',
+                                'rgba(77, 208, 225, 0.8)',
+                                'rgba(0, 172, 193, 0.8)',
+                                'rgba(0, 151, 167, 0.8)'
+                            ],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading blog rankings:', error);
+            }
+        }
+
+        // Load Average Cat Age
+        async function loadAnalyticsAverageCatAge() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/average-cat-age`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+
+                const ageEl = document.getElementById('analyticsAverageAge');
+                if (ageEl) {
+                    ageEl.textContent = data.averageAge.toFixed(1);
+                }
+            } catch (error) {
+                console.error('Error loading average age:', error);
+            }
+        }
+
+        // Load all analytics data
+        async function loadAnalyticsDashboard(month = null) {
+            try {
+                updateAnalyticsDate();
+                await Promise.all([
+                    loadAnalyticsUserGrowth(),
+                    loadAnalyticsTopBreeds(month),
+                    loadAnalyticsBlogRankings(),
+                    loadAnalyticsAverageCatAge()
+                ]);
+            } catch (error) {
+                console.error('Error loading analytics dashboard:', error);
+            }
+        }
+
+        // Initialize when stats section is shown
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listener to stats menu item
+            const statsMenuItem = document.querySelector('[onclick*="showSection(\'stats\')"]');
+            if (statsMenuItem) {
+                const originalOnclick = statsMenuItem.getAttribute('onclick');
+                statsMenuItem.setAttribute('onclick', originalOnclick + '; setTimeout(() => { loadAnalyticsAvailableMonths(); loadAnalyticsDashboard(); }, 100);');
+            }
+        });
         </script>
 
     </div>
