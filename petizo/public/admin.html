@@ -4842,6 +4842,46 @@
                             <canvas id="analyticsBlogChart"></canvas>
                         </div>
                     </div>
+
+                    <!-- Age Distribution Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">🎂 การกระจายช่วงอายุแมว</h3>
+                            <p class="chart-subtitle">จำนวนแมวแยกตามช่วงอายุ</p>
+                        </div>
+                        <div class="chart-container small">
+                            <canvas id="analyticsAgeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breed & Age Summary Table -->
+                <div class="table-card" style="margin-bottom: 24px;">
+                    <div class="chart-header">
+                        <h3 class="chart-title">📋 สรุปสายพันธุ์และอายุแมว</h3>
+                        <p class="chart-subtitle">ข้อมูลสายพันธุ์ พร้อมอายุเฉลี่ยและจำนวน</p>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">อันดับ</th>
+                                <th>สายพันธุ์</th>
+                                <th style="text-align: center;">จำนวนแมว</th>
+                                <th style="text-align: center;">อายุเฉลี่ย (ปี)</th>
+                                <th style="text-align: center;">อายุน้อยสุด (ปี)</th>
+                                <th style="text-align: center;">อายุมากสุด (ปี)</th>
+                                <th style="text-align: center;">% ของทั้งหมด</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analyticsBreedAgeTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                    <div class="loading-spinner"></div>
+                                    <p class="loading-text">กำลังโหลดข้อมูล...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Blog Table -->
@@ -5883,6 +5923,113 @@
             }
         }
 
+        // Load Age Distribution
+        let analyticsAgeChart = null;
+        async function loadAnalyticsAgeDistribution() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/age-distribution`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+
+                const ctx = document.getElementById('analyticsAgeChart');
+                if (!ctx) return;
+
+                if (analyticsAgeChart) {
+                    analyticsAgeChart.destroy();
+                }
+
+                const colors = [
+                    'rgba(52, 211, 153, 0.8)',   // เขียว - ลูกแมว
+                    'rgba(59, 130, 246, 0.8)',   // ฟ้า - วัยเยาว์
+                    'rgba(251, 146, 60, 0.8)',   // ส้ม - วัยผู้ใหญ่
+                    'rgba(167, 139, 250, 0.8)',  // ม่วง - วัยสูงอายุ
+                    'rgba(244, 114, 182, 0.8)'   // ชมพู - วัยชรา
+                ];
+
+                analyticsAgeChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.map(d => d.age_group),
+                        datasets: [{
+                            data: data.map(d => d.count),
+                            backgroundColor: colors.slice(0, data.length),
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    font: { size: 11 },
+                                    padding: 10,
+                                    boxWidth: 12
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${label}: ${value} ตัว (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading age distribution:', error);
+            }
+        }
+
+        // Load Breed & Age Summary
+        async function loadAnalyticsBreedAgeSummary() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/breed-age-summary?limit=10`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await response.json();
+
+                const tbody = document.getElementById('analyticsBreedAgeTableBody');
+                if (tbody) {
+                    tbody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #999;">ยังไม่มีข้อมูล</td></tr>';
+                    } else {
+                        data.forEach((item, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td style="text-align: center;"><strong>${index + 1}</strong></td>
+                                <td><strong>${item.breed}</strong></td>
+                                <td style="text-align: center;">${item.count} ตัว</td>
+                                <td style="text-align: center;">${item.avg_age ? item.avg_age.toFixed(1) : '-'} ปี</td>
+                                <td style="text-align: center;">${item.min_age ? item.min_age.toFixed(1) : '-'} ปี</td>
+                                <td style="text-align: center;">${item.max_age ? item.max_age.toFixed(1) : '-'} ปี</td>
+                                <td style="text-align: center;">
+                                    <span style="background: #edf2f7; padding: 4px 12px; border-radius: 12px; font-weight: 500;">
+                                        ${item.percentage}%
+                                    </span>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading breed age summary:', error);
+            }
+        }
+
         // Load all analytics data
         async function loadAnalyticsDashboard(month = null) {
             try {
@@ -5891,7 +6038,9 @@
                     loadAnalyticsUserGrowth(),
                     loadAnalyticsTopBreeds(month),
                     loadAnalyticsBlogRankings(),
-                    loadAnalyticsAverageCatAge()
+                    loadAnalyticsAverageCatAge(),
+                    loadAnalyticsAgeDistribution(),
+                    loadAnalyticsBreedAgeSummary()
                 ]);
             } catch (error) {
                 console.error('Error loading analytics dashboard:', error);

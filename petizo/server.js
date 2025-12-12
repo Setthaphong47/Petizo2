@@ -2051,6 +2051,61 @@ app.get('/api/admin/dashboard/available-months', authenticateToken, isAdmin, (re
     });
 });
 
+// 7. Age Distribution
+app.get('/api/admin/dashboard/age-distribution', authenticateToken, isAdmin, (req, res) => {
+    db.all(`SELECT
+        CASE
+            WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) < 1 THEN '0-1 ปี (ลูกแมว)'
+            WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 1 AND 3 THEN '1-3 ปี (วัยเยาว์)'
+            WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 3 AND 7 THEN '3-7 ปี (วัยผู้ใหญ่)'
+            WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 7 AND 11 THEN '7-11 ปี (วัยสูงอายุ)'
+            ELSE '11+ ปี (วัยชรา)'
+        END as age_group,
+        COUNT(*) as count
+    FROM pets
+    WHERE birth_date IS NOT NULL AND birth_date != ''
+    GROUP BY age_group
+    ORDER BY
+        CASE age_group
+            WHEN '0-1 ปี (ลูกแมว)' THEN 1
+            WHEN '1-3 ปี (วัยเยาว์)' THEN 2
+            WHEN '3-7 ปี (วัยผู้ใหญ่)' THEN 3
+            WHEN '7-11 ปี (วัยสูงอายุ)' THEN 4
+            ELSE 5
+        END`, (err, rows) => {
+        if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
+        res.json(rows || []);
+    });
+});
+
+// 8. Breed & Age Summary
+app.get('/api/admin/dashboard/breed-age-summary', authenticateToken, isAdmin, (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+
+    db.all(`SELECT
+        breed,
+        COUNT(*) as count,
+        ROUND(AVG(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)), 2) as avg_age,
+        MIN(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as min_age,
+        MAX(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as max_age
+    FROM pets
+    WHERE breed IS NOT NULL AND breed != '' AND birth_date IS NOT NULL AND birth_date != ''
+    GROUP BY breed
+    ORDER BY count DESC
+    LIMIT ?`, [limit], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
+
+        // Calculate percentage change (mock for now, can be enhanced)
+        const total = rows.reduce((sum, r) => sum + r.count, 0);
+        const result = rows.map(row => ({
+            ...row,
+            percentage: total > 0 ? ((row.count / total) * 100).toFixed(1) : 0
+        }));
+
+        res.json(result);
+    });
+});
+
 
 // ============= AI CHAT ENDPOINT =============
 
