@@ -681,6 +681,15 @@
             background: #d48806;
         }
 
+        .btn-view {
+            background: #1890ff;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #096dd9;
+        }
+
         .loading {
             text-align: center;
             padding: 40px;
@@ -1296,12 +1305,7 @@
             }
 
             .user-pet-row {
-                cursor: pointer;
                 transition: background 0.2s;
-            }
-
-            .user-pet-row:hover {
-                background: #f5f5f5;
             }
 
             .pet-count-badge {
@@ -1733,28 +1737,34 @@
                                 <th>อีเมล</th>
                                 <th>จำนวนสัตว์เลี้ยง</th>
                                 <th>เพิ่มล่าสุด</th>
+                                <th>จัดการ</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
-                
+
                 // Show Date (Add Pet)
                 users.forEach((user, index) => {
-                    const latestPetDate = user.latest_pet_date 
+                    const latestPetDate = user.latest_pet_date
                         ? new Date(user.latest_pet_date).toLocaleDateString('th-TH', {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric'
                           })
                         : '-';
-                    
+
                     html += `
-                        <tr class="user-pet-row" onclick="selectUser(${user.id}, '${user.full_name || user.username}')">
+                        <tr class="user-pet-row">
                             <td>${index + 1}</td>
                             <td><strong>${user.full_name || user.username}</strong></td>
                             <td>${user.email}</td>
                             <td><span class="pet-count-badge">${user.pet_count} ตัว</span></td>
                             <td>${latestPetDate}</td>
+                            <td>
+                                <button class="action-btn btn-view" onclick="selectUser(${user.id}, '${user.full_name || user.username}')">
+                                    รายละเอียด
+                                </button>
+                            </td>
                         </tr>
                     `;
                 });
