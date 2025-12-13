@@ -1,0 +1,15 @@
+[phases.setup]
+nixPkgs = [
+  'nodejs_20',
+  'python39',
+  'gcc',
+  'gnumake',
+  'libgcc',
+  'stdenv.cc.cc'
+]
+
+[phases.install]
+cmds = ['npm install']
+
+[start]
+cmd = 'chmod +x start.sh && ./start.sh'
