@@ -1413,7 +1413,8 @@
 
             .vaccination-item {
                 padding: 20px;
-                background: #f9f9f9;
+                background: white;
+                border: 2px solid #e8e8e8;
                 border-radius: 12px;
                 margin-bottom: 15px;
                 position: relative;
@@ -1422,8 +1423,14 @@
             }
 
             .vaccination-item:hover {
-                background: #f0f0f0;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                border-color: #1890ff;
+                box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+            }
+
+            .vaccination-item.expanded {
+                background: linear-gradient(to bottom, #f0f7ff 0%, #ffffff 100%);
+                border-color: #1890ff;
+                box-shadow: 0 6px 20px rgba(24, 144, 255, 0.2);
             }
 
             .vaccination-header {
@@ -1433,19 +1440,26 @@
             }
 
             .vaccination-date {
-                min-width: 120px;
+                min-width: 80px;
                 text-align: center;
+                background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+                padding: 12px;
+                border-radius: 10px;
+                color: white;
+                box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
             }
 
             .vaccination-date-day {
                 font-size: 2rem;
                 font-weight: bold;
-                color: #1890ff;
+                color: white;
+                line-height: 1;
             }
 
             .vaccination-date-month {
-                font-size: 0.9rem;
-                color: #666;
+                font-size: 0.75rem;
+                color: rgba(255, 255, 255, 0.9);
+                margin-top: 4px;
             }
 
             .vaccination-content {
@@ -1455,48 +1469,89 @@
             .vaccination-vaccine-name {
                 font-size: 1.1rem;
                 font-weight: 600;
-                color: #333;
-                margin-bottom: 8px;
+                color: #1890ff;
+                margin-bottom: 4px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
             }
 
             .vaccination-details {
                 display: none;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 10px;
-                margin-top: 15px;
-                padding-top: 15px;
-                border-top: 1px solid #e0e0e0;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 12px;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 2px dashed #e0e0e0;
+                animation: slideDown 0.3s ease;
             }
 
             .vaccination-item.expanded .vaccination-details {
                 display: grid;
             }
 
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
             .vaccination-expand-icon {
                 margin-left: auto;
                 transition: transform 0.3s ease;
-                width: 20px;
-                height: 20px;
+                width: 24px;
+                height: 24px;
+                opacity: 0.6;
+            }
+
+            .vaccination-item:hover .vaccination-expand-icon {
+                opacity: 1;
             }
 
             .vaccination-item.expanded .vaccination-expand-icon {
                 transform: rotate(180deg);
+                opacity: 1;
             }
 
             .vaccination-detail-item {
                 font-size: 0.9rem;
-                color: #666;
+                color: #555;
                 display: flex;
-                align-items: center;
-                gap: 8px;
-                padding: 8px;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 12px;
                 background: white;
-                border-radius: 6px;
+                border-radius: 8px;
+                border: 1px solid #f0f0f0;
+                transition: all 0.2s ease;
+            }
+
+            .vaccination-detail-item:hover {
+                border-color: #1890ff;
+                box-shadow: 0 2px 8px rgba(24, 144, 255, 0.1);
+            }
+
+            .vaccination-detail-item img {
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+
+            .vaccination-detail-item strong {
+                color: #333;
+                margin-right: 4px;
             }
 
             .vaccination-proof {
                 display: none;
-                margin-top: 15px;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 2px dashed #e0e0e0;
+                animation: slideDown 0.3s ease;
             }
 
             .vaccination-item.expanded .vaccination-proof {
@@ -1504,38 +1559,55 @@
             }
 
             .view-proof-btn {
-                padding: 10px 20px;
-                background: #1890ff;
+                padding: 12px 28px;
+                background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
                 color: white;
                 border: none;
                 border-radius: 8px;
                 cursor: pointer;
-                font-size: 0.9rem;
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
+                font-size: 0.95rem;
+                font-weight: 500;
                 transition: all 0.3s;
+                box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
             }
 
             .view-proof-btn:hover {
-                background: #096dd9;
+                background: linear-gradient(135deg, #73d13d 0%, #52c41a 100%);
                 transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+                box-shadow: 0 4px 16px rgba(82, 196, 26, 0.4);
+            }
+
+            .view-proof-btn:active {
+                transform: translateY(0);
             }
 
             .vaccination-notes {
                 display: none;
-                margin-top: 15px;
-                padding: 15px;
-                background: white;
+                margin-top: 20px;
+                padding: 16px;
+                background: #fffbe6;
                 border-radius: 8px;
                 font-size: 0.9rem;
-                color: #666;
-                border-left: 3px solid #1890ff;
+                color: #595959;
+                border-left: 4px solid #faad14;
+                box-shadow: 0 2px 8px rgba(250, 173, 20, 0.1);
+                animation: slideDown 0.3s ease;
             }
 
             .vaccination-item.expanded .vaccination-notes {
-                display: block;
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .vaccination-notes img {
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+
+            .vaccination-notes strong {
+                color: #d48806;
+                margin-right: 6px;
             }
 
             .image-modal {
@@ -2089,7 +2161,7 @@
                                     </div>
                                     ${vac.vaccine_type ? `<div style="color: #666; font-size: 0.9rem;">${vac.vaccine_type}</div>` : ''}
                                 </div>
-                                <img src="/icon/midnight.png" alt="Expand" class="vaccination-expand-icon">
+                                <img src="/icon/down-chevron.png" alt="Expand" class="vaccination-expand-icon">
                             </div>
 
                             <div class="vaccination-details">
@@ -2114,7 +2186,6 @@
                             ${vac.proof_image ? `
                             <div class="vaccination-proof">
                                 <button class="view-proof-btn" onclick="openImageModal('${vac.proof_image}'); event.stopPropagation();">
-                                    <img src="/icon/image.png" alt="Image" style="width:18px;height:18px;filter: brightness(0) invert(1);">
                                     ดูหลักฐาน
                                 </button>
                             </div>
