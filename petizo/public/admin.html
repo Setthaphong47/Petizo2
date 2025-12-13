@@ -4874,6 +4874,31 @@
                     </table>
                 </div>
 
+                <!-- Top 5 Blog Articles Table -->
+                <div class="table-card" style="margin-bottom: 24px;">
+                    <div class="chart-header">
+                        <h3 class="chart-title">🏆 บทความยอดนิยม TOP 5</h3>
+                        <p class="chart-subtitle">บทความที่มีจำนวนการเข้าชมสูงสุด</p>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">อันดับ</th>
+                                <th>ชื่อบทความ</th>
+                                <th style="text-align: right; width: 120px;">การเข้าชม</th>
+                                <th style="text-align: center; width: 120px;">วันที่เผยแพร่</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analyticsTopBlogsTableBody">
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 40px;">
+                                    <div class="loading-spinner"></div>
+                                    <p class="loading-text">กำลังโหลดข้อมูล...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- Loading State -->
                 <div id="analyticsLoading" class="analytics-loading" style="display: none;">
@@ -5331,6 +5356,51 @@
             }
         }
 
+        // Load Top 5 Blog Articles
+        async function loadAnalyticsTopBlogs() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const stats = await response.json();
+                const blogs = stats.popularBlogs || [];
+
+                const tbody = document.getElementById('analyticsTopBlogsTableBody');
+                if (tbody) {
+                    tbody.innerHTML = '';
+
+                    if (blogs.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">ยังไม่มีบทความ</td></tr>';
+                    } else {
+                        // Show top 5
+                        const top5 = blogs.slice(0, 5);
+                        top5.forEach((blog, index) => {
+                            const row = document.createElement('tr');
+                            const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
+
+                            const date = blog.published_at ? new Date(blog.published_at).toLocaleDateString('th-TH', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            }) : '-';
+
+                            const rankBadge = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+
+                            row.innerHTML = `
+                                <td style="text-align: center;"><span class="rank-badge ${rankClass}">${rankBadge}</span></td>
+                                <td><strong>${blog.title || 'ไม่มีชื่อ'}</strong></td>
+                                <td style="text-align: right;"><span class="views-badge">${(blog.views || 0).toLocaleString()}</span></td>
+                                <td style="text-align: center;">${date}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading top blogs:', error);
+            }
+        }
+
         // Load all analytics data
         async function loadAnalyticsDashboard(month = null) {
             try {
@@ -5341,22 +5411,15 @@
                     loadAnalyticsTopBreeds(month),
                     loadAnalyticsAverageCatAge(),
                     loadAnalyticsAgeDistribution(),
-                    loadAnalyticsBreedAgeSummary()
+                    loadAnalyticsBreedAgeSummary(),
+                    loadAnalyticsTopBlogs()
                 ]);
             } catch (error) {
                 console.error('Error loading analytics dashboard:', error);
             }
         }
 
-        // Initialize when stats section is shown
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add event listener to stats menu item
-            const statsMenuItem = document.querySelector('[onclick*="showSection(\'stats\')"]');
-            if (statsMenuItem) {
-                const originalOnclick = statsMenuItem.getAttribute('onclick');
-                statsMenuItem.setAttribute('onclick', originalOnclick + '; setTimeout(() => { loadAnalyticsAvailableMonths(); loadAnalyticsDashboard(); }, 100);');
-            }
-        });
+        // Note: Analytics data is now auto-loaded in showSection() function when 'stats' section is shown
         </script>
 
     </div>
@@ -5802,11 +5865,14 @@
                     loadVaccineSchedules();
                 }
             } else if (section === 'stats') {
-                if (typeof initializeDateFilter === 'function') {
-                    initializeDateFilter();
+                // Auto-load analytics data when opening stats section
+                if (typeof loadAnalyticsAvailableMonths === 'function') {
+                    loadAnalyticsAvailableMonths();
                 }
-                if (typeof loadDashboardData === 'function') {
-                    loadDashboardData();
+                if (typeof loadAnalyticsDashboard === 'function') {
+                    setTimeout(() => {
+                        loadAnalyticsDashboard();
+                    }, 100);
                 }
             }
         }
