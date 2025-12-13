@@ -228,7 +228,11 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero {
-                height: 450px;
+                height: 400px;
+            }
+
+            .hero-image {
+                object-fit: contain;
             }
 
             .features {
@@ -313,7 +317,11 @@
 
         @media (max-width: 480px) {
             .hero {
-                height: 350px;
+                height: 280px;
+            }
+
+            .hero-image {
+                object-fit: contain;
             }
 
             .features {
@@ -412,10 +420,7 @@
     <section class="hero">
         <div class="hero-slider">
             <div class="hero-slide active">
-                <img src="/images/hero1.png" alt="Hero 1" class="hero-image">
-            </div>
-            <div class="hero-slide">
-                <img src="/images/hero2.png" alt="Hero 2" class="hero-image">
+                <img src="/images/Banner Petizo1.png" alt="Petizo Banner" class="hero-image">
             </div>
         </div>
     </section>
@@ -482,28 +487,6 @@
     <script src="/js/navbar.js"></script>
     <script src="/js/chat-popup.js"></script>
 
-    <!-- Hero Slideshow Script -->
-    <script>
-        // Hero slideshow functionality
-        let currentSlideIndex = 0;
-        const slides = document.querySelectorAll('.hero-slide');
-        const totalSlides = slides.length;
-
-        function showNextSlide() {
-            // Remove active class from current slide
-            slides[currentSlideIndex].classList.remove('active');
-
-            // Move to next slide (loop back to 0 if at the end)
-            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-
-            // Add active class to new slide
-            slides[currentSlideIndex].classList.add('active');
-        }
-
-        // Change slide every 5 seconds (5000 milliseconds)
-        // Change slide every 8 seconds (8000 milliseconds)
-        setInterval(showNextSlide, 8000);
-    </script>
 
     <script src="/js/config.js"></script>
     <script src="/js/profile-dropdown.js"></script>
