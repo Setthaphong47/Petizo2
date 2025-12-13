@@ -4931,7 +4931,7 @@
                         <div class="stat-header">
                             <div class="stat-title">อายุเฉลี่ยของแมว</div>
                             <div class="stat-icon" style="background: linear-gradient(135deg, rgba(72,187,120,0.1) 0%, rgba(72,187,120,0.2) 100%);">
-                                <img src="/icon/average age.png" alt="Average Age" style="height:1.2em;vertical-align:middle;">
+                                <img src="/icon/average_age.png" alt="Average Age" style="height:1.2em;vertical-align:middle;">
                             </div>
                         </div>
                         <div class="stat-value" id="analyticsAverageAge">-</div>
@@ -5551,10 +5551,10 @@
                             }) : '-';
 
                             let rankBadge = '';
-                            if(index === 0) rankBadge = '<span style="display:inline-block;padding:2px 10px;border:2px solid gold;border-radius:12px;color:#bfa100;font-weight:bold;background:#fffbe6;">1</span>';
-                            else if(index === 1) rankBadge = '<span style="display:inline-block;padding:2px 10px;border:2px solid silver;border-radius:12px;color:#7d7d7d;font-weight:bold;background:#f8f8f8;">2</span>';
-                            else if(index === 2) rankBadge = '<span style="display:inline-block;padding:2px 10px;border:2px solid #cd7f32;border-radius:12px;color:#a97142;font-weight:bold;background:#f9f6f2;">3</span>';
-                            else rankBadge = `<span style=\"display:inline-block;padding:2px 10px;border:2px solid #eee;border-radius:12px;\">${index+1}</span>`;
+                            if(index === 0) rankBadge = `<span style=\"display:inline-block;padding:2px 10px;border:2px solid gold;border-radius:12px;color:#bfa100;font-weight:bold;background:#fffbe6;\">1</span>`;
+                            else if(index === 1) rankBadge = `<span style=\"display:inline-block;padding:2px 10px;border:2px solid silver;border-radius:12px;color:#7d7d7d;font-weight:bold;background:#f8f8f8;\">2</span>`;
+                            else if(index === 2) rankBadge = `<span style=\"display:inline-block;padding:2px 10px;border:2px solid #cd7f32;border-radius:12px;color:#a97142;font-weight:bold;background:#f9f6f2;\">3</span>`;
+                            else rankBadge = `<span style=\"display:inline-block;padding:2px 10px;border:2px solid #eee;border-radius:12px;color:#888;font-weight:bold;background:#fff;\">${index+1}</span>`;
 
                             row.innerHTML = `
                                 <td style="text-align: center;"><span class="rank-badge ${rankClass}">${rankBadge}</span></td>
