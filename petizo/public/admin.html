@@ -5378,7 +5378,8 @@
                             const row = document.createElement('tr');
                             const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
 
-                            const date = blog.published_at ? new Date(blog.published_at).toLocaleDateString('th-TH', {
+                            const dateField = blog.created_at || blog.updated_at || blog.published_at;
+                            const date = dateField ? new Date(dateField).toLocaleDateString('th-TH', {
                                 year: 'numeric',
                                 month: 'short',
                                 day: 'numeric'

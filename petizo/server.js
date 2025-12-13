@@ -1654,7 +1654,7 @@ app.get('/api/admin/dashboard/stats', authenticateToken, isAdmin, async (req, re
             // Published blogs
             dbGet('SELECT COUNT(*) as total FROM blogs WHERE status = "published" OR status = "เผยแพร่"'),
             // Popular blogs (top 5 by views)
-            dbAll(`SELECT id, title, views FROM blogs
+            dbAll(`SELECT id, title, views, created_at, updated_at FROM blogs
                    WHERE status = 'published' OR status = 'เผยแพร่'
                    ORDER BY views DESC LIMIT 5`),
             // New blogs this month
