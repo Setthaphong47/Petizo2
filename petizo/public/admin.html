@@ -1412,13 +1412,24 @@
             }
 
             .vaccination-item {
-                display: flex;
-                gap: 20px;
                 padding: 20px;
                 background: #f9f9f9;
                 border-radius: 12px;
                 margin-bottom: 15px;
                 position: relative;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .vaccination-item:hover {
+                background: #f0f0f0;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .vaccination-header {
+                display: flex;
+                gap: 20px;
+                align-items: center;
             }
 
             .vaccination-date {
@@ -1449,52 +1460,82 @@
             }
 
             .vaccination-details {
-                display: grid;
+                display: none;
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 10px;
-                margin-top: 10px;
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid #e0e0e0;
+            }
+
+            .vaccination-item.expanded .vaccination-details {
+                display: grid;
+            }
+
+            .vaccination-expand-icon {
+                margin-left: auto;
+                transition: transform 0.3s ease;
+                width: 20px;
+                height: 20px;
+            }
+
+            .vaccination-item.expanded .vaccination-expand-icon {
+                transform: rotate(180deg);
             }
 
             .vaccination-detail-item {
                 font-size: 0.9rem;
                 color: #666;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px;
+                background: white;
+                border-radius: 6px;
             }
 
             .vaccination-proof {
-                width: 150px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
+                display: none;
+                margin-top: 15px;
             }
 
-            .vaccination-proof-image {
-                width: 120px;
-                height: 120px;
-                object-fit: cover;
-                border-radius: 8px;
-                border: 2px solid #e8e8e8;
-                cursor: pointer;
-                transition: all 0.3s;
-            }
-
-            .vaccination-proof-image:hover {
-                border-color: #1890ff;
-                transform: scale(1.05);
+            .vaccination-item.expanded .vaccination-proof {
+                display: block;
             }
 
             .view-proof-btn {
-                padding: 5px 12px;
+                padding: 10px 20px;
                 background: #1890ff;
                 color: white;
                 border: none;
-                border-radius: 6px;
+                border-radius: 8px;
                 cursor: pointer;
-                font-size: 0.85rem;
+                font-size: 0.9rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s;
             }
 
             .view-proof-btn:hover {
                 background: #096dd9;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+            }
+
+            .vaccination-notes {
+                display: none;
+                margin-top: 15px;
+                padding: 15px;
+                background: white;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                color: #666;
+                border-left: 3px solid #1890ff;
+            }
+
+            .vaccination-item.expanded .vaccination-notes {
+                display: block;
             }
 
             .image-modal {
@@ -2030,32 +2071,59 @@
                 
                 let html = '<div class="vaccination-timeline">';
                 
-                vaccinations.forEach(vac => {
+                vaccinations.forEach((vac, index) => {
                     const date = new Date(vac.vaccination_date);
                     const day = date.getDate();
                     const month = date.toLocaleDateString('th-TH', { month: 'short', year: 'numeric' });
-                    
+
                     html += `
-                        <div class="vaccination-item">
-                            <div class="vaccination-date">
-                                <div class="vaccination-date-day">${day}</div>
-                                <div class="vaccination-date-month">${month}</div>
-                            </div>
-                            <div class="vaccination-content">
-                                <div class="vaccination-vaccine-name"><img src="/icon/syringe.png" alt="Vaccine" style="width:20px;height:20px;"> ${vac.vaccine_name}</div>
-                                ${vac.vaccine_type ? `<div style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">${vac.vaccine_type}</div>` : ''}
-                                <div class="vaccination-details">
-                                    ${vac.veterinarian ? `<div class="vaccination-detail-item"><div class="vaccination-vaccine-name"><img src="/icon/veterinarian.png" alt="Doctor" style="width:20px;height:20px;"> สัตวแพทย์: ${vac.veterinarian}</div>` : ''}
-                                    ${vac.clinic_name ? `<div class="vaccination-detail-item"><img src="/icon/veterinary.png" alt="Clinic" style="width:20px;height:20px;"> คลินิก: ${vac.clinic_name}</div>` : ''}
-                                    ${vac.batch_number ? `<div class="vaccination-detail-item"><img src="/icon/barcode.png" alt="Batch" style="width:20px;height:20px;"> Batch: ${vac.batch_number}</div>` : ''}
-                                    ${vac.next_due_date ? `<div class="vaccination-detail-item"><img src="/icon/right-arrow.png" alt="Next Dua Date" style="width:20px;height:20px;"> นัดครั้งถัดไป: ${new Date(vac.next_due_date).toLocaleDateString('th-TH')}</div>` : ''}
+                        <div class="vaccination-item" onclick="toggleVaccinationDetails(${index})">
+                            <div class="vaccination-header">
+                                <div class="vaccination-date">
+                                    <div class="vaccination-date-day">${day}</div>
+                                    <div class="vaccination-date-month">${month}</div>
                                 </div>
-                                ${vac.notes ? `<div style="margin-top: 10px; padding: 10px; background: white; border-radius: 6px; font-size: 0.9rem; color: #666;"><img src="/icon/medical-book.png" alt="Vaccine Book" style="width:20px;height:20px;"> ${vac.notes}</div>` : ''}
+                                <div style="flex: 1;">
+                                    <div class="vaccination-vaccine-name">
+                                        <img src="/icon/syringe.png" alt="Vaccine" style="width:20px;height:20px;"> ${vac.vaccine_name}
+                                    </div>
+                                    ${vac.vaccine_type ? `<div style="color: #666; font-size: 0.9rem;">${vac.vaccine_type}</div>` : ''}
+                                </div>
+                                <img src="/icon/midnight.png" alt="Expand" class="vaccination-expand-icon">
                             </div>
+
+                            <div class="vaccination-details">
+                                ${vac.clinic_name ? `<div class="vaccination-detail-item">
+                                    <img src="/icon/veterinary.png" alt="Clinic" style="width:20px;height:20px;">
+                                    <strong>คลินิก:</strong> ${vac.clinic_name}
+                                </div>` : ''}
+                                ${vac.veterinarian ? `<div class="vaccination-detail-item">
+                                    <img src="/icon/veterinarian.png" alt="Doctor" style="width:20px;height:20px;">
+                                    <strong>สัตวแพทย์:</strong> ${vac.veterinarian}
+                                </div>` : ''}
+                                ${vac.batch_number ? `<div class="vaccination-detail-item">
+                                    <img src="/icon/barcode.png" alt="Batch" style="width:20px;height:20px;">
+                                    <strong>Batch:</strong> ${vac.batch_number}
+                                </div>` : ''}
+                                ${vac.next_due_date ? `<div class="vaccination-detail-item">
+                                    <img src="/icon/midnight.png" alt="Next Due Date" style="width:20px;height:20px;">
+                                    <strong>นัดครั้งถัดไป:</strong> ${new Date(vac.next_due_date).toLocaleDateString('th-TH')}
+                                </div>` : ''}
+                            </div>
+
                             ${vac.proof_image ? `
                             <div class="vaccination-proof">
-                                <img src="${vac.proof_image}" class="vaccination-proof-image" alt="หลักฐาน" onclick="openImageModal('${vac.proof_image}'); event.stopPropagation();" onerror="this.style.display='none'">
-                                <button class="view-proof-btn" onclick="openImageModal('${vac.proof_image}'); event.stopPropagation();">ดูหลักฐาน</button>
+                                <button class="view-proof-btn" onclick="openImageModal('${vac.proof_image}'); event.stopPropagation();">
+                                    <img src="/icon/image.png" alt="Image" style="width:18px;height:18px;filter: brightness(0) invert(1);">
+                                    ดูหลักฐาน
+                                </button>
+                            </div>
+                            ` : ''}
+
+                            ${vac.notes ? `
+                            <div class="vaccination-notes">
+                                <img src="/icon/medical-book.png" alt="Notes" style="width:20px;height:20px;">
+                                <strong>หมายเหตุ:</strong> ${vac.notes}
                             </div>
                             ` : ''}
                         </div>
@@ -2064,6 +2132,14 @@
                 
                 html += '</div>';
                 container.innerHTML = html;
+            }
+
+            // Toggle vaccination details
+            function toggleVaccinationDetails(index) {
+                const items = document.querySelectorAll('.vaccination-item');
+                if (items[index]) {
+                    items[index].classList.toggle('expanded');
+                }
             }
 
             // Navigation functions
