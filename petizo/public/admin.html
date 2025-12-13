@@ -3007,14 +3007,39 @@
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     });
-                    if (!resp.ok) throw new Error('Cannot load admin blog posts: ' + resp.status);
-                    allBlogPosts = await resp.json();
+
+                    // ตรวจสอบสถานะ response
+                    if (!resp.ok) {
+                        if (resp.status === 403) {
+                            throw new Error('ไม่มีสิทธิ์เข้าถึง กรุณาเข้าสู่ระบบใหม่');
+                        }
+                        throw new Error('Cannot load admin blog posts: ' + resp.status);
+                    }
+
+                    const data = await resp.json();
+
+                    // ตรวจสอบว่าข้อมูลเป็น array
+                    if (!Array.isArray(data)) {
+                        console.error('Blog response is not an array:', data);
+                        throw new Error('Invalid data format');
+                    }
+
+                    allBlogPosts = data;
                     displayBlogPosts(allBlogPosts);
                     updateBlogStats();
-                    setupBlogFilters(); 
+                    setupBlogFilters();
                 } catch (err) {
                     console.error('loadAdminBlogPosts error', err);
-                    document.getElementById('blogGrid').innerHTML = `<div style="text-align:center;padding:60px;color:#999;">โหลดไม่สำเร็จ</div>`;
+                    const errorMessage = err.message || 'โหลดไม่สำเร็จ';
+                    document.getElementById('blogGrid').innerHTML =
+                        `<div style="text-align:center;padding:60px;color:#999;">❌ ${errorMessage}</div>`;
+
+                    // ถ้าเป็น 403 ให้ logout
+                    if (err.message.includes('403') || err.message.includes('สิทธิ์')) {
+                        setTimeout(() => {
+                            logout();
+                        }, 2000);
+                    }
                 }
             }
 
@@ -5653,22 +5678,46 @@
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
                 });
-                
-                allUsers = await response.json();
-                
+
+                // ตรวจสอบสถานะ response
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error('ไม่มีสิทธิ์เข้าถึง กรุณาเข้าสู่ระบบใหม่');
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // ตรวจสอบว่าข้อมูลเป็น array
+                if (!Array.isArray(data)) {
+                    console.error('Response is not an array:', data);
+                    throw new Error('Invalid data format');
+                }
+
+                allUsers = data;
+
                 // แยก admins และ members โดยใช้ userType
                 adminUsers = allUsers.filter(u => u.userType === 'admin' || u.role === 'admin');
                 memberUsers = allUsers.filter(u => u.userType === 'member' || u.role === 'user');
-                
+
                 displayAdmins(adminUsers);
                 displayMembers(memberUsers);
                 updateUserCounts();
             } catch (error) {
                 console.error('Error loading users:', error);
-                document.getElementById('adminsTableContainer').innerHTML = 
-                    '<div class="loading">ไม่สามารถโหลดข้อมูลได้</div>';
-                document.getElementById('membersTableContainer').innerHTML = 
-                    '<div class="loading">ไม่สามารถโหลดข้อมูลได้</div>';
+                const errorMessage = error.message || 'ไม่สามารถโหลดข้อมูลได้';
+                document.getElementById('adminsTableContainer').innerHTML =
+                    `<div class="loading">❌ ${errorMessage}</div>`;
+                document.getElementById('membersTableContainer').innerHTML =
+                    `<div class="loading">❌ ${errorMessage}</div>`;
+
+                // ถ้าเป็น 403 ให้ logout
+                if (error.message.includes('403') || error.message.includes('สิทธิ์')) {
+                    setTimeout(() => {
+                        logout();
+                    }, 2000);
+                }
             }
         }
 
@@ -5809,6 +5858,12 @@
 
         // Update user counts
         function updateUserCounts() {
+            // ตรวจสอบว่า allUsers เป็น array
+            if (!Array.isArray(allUsers)) {
+                console.error('allUsers is not an array:', allUsers);
+                return;
+            }
+
             const activeCount = allUsers.filter(u => u.status === 'active' || u.is_hidden === 0 || u.is_hidden === null).length;
             const hiddenCount = allUsers.filter(u => u.status === 'hidden' || u.is_hidden === 1).length;
             const adminCount = allUsers.filter(u => u.userType === 'admin' || u.role === 'admin').length;
