@@ -196,30 +196,35 @@
         }
 
         .vaccine-item {
-            border: 2px solid #e0e0e0;
+            border: 3px solid #e0e0e0;
             border-radius: 12px;
             padding: 20px;
             transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
 
         .vaccine-item.completed {
             border-color: #52c41a;
-            background: #f6ffed;
+            background: #ffffff;
+            border-left-width: 8px;
         }
 
         .vaccine-item.due {
             border-color: #f39c12;
-            background: #fff3cd;
+            background: #ffffff;
+            border-left-width: 8px;
         }
 
         .vaccine-item.overdue {
             border-color: #c0392b;
-            background: #f8d7da;
+            background: #ffffff;
+            border-left-width: 8px;
         }
 
         .vaccine-item.upcoming {
             border-color: #7f8c8d;
-            background: #e2e3e5;
+            background: #ffffff;
+            border-left-width: 8px;
         }
 
         .vaccine-header {
@@ -231,8 +236,8 @@
 
         .vaccine-name {
             font-size: 18px;
-            font-weight: 600;
-            color: #333;
+            font-weight: 700;
+            color: #1a1a1a;
         }
 
         .vaccine-status-badge {
@@ -266,19 +271,21 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
-            color: #666;
+            color: #2c3e50;
             font-size: 14px;
+            font-weight: 500;
             margin-bottom: 12px;
         }
 
         .vaccine-description {
-            color: #666;
+            color: #34495e;
             font-size: 14px;
             line-height: 1.6;
             padding: 12px;
-            background: rgba(0, 188, 212, 0.05);
+            background: #f8f9fa;
             border-radius: 8px;
             margin-bottom: 12px;
+            border-left: 3px solid #00bcd4;
         }
 
         .vaccine-actions {
