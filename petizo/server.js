@@ -531,7 +531,12 @@ app.put('/api/pets/:id', authenticateToken, upload.single('photo'), (req, res) =
     params.push(req.params.id, req.user.id);
     
     db.run(query, params, function(err) {
-        if (err) return res.status(500).json({ error: 'ไม่สามารถอัปเดตได้' });
+        if (err) {
+            console.error('Error updating pet:', err);
+            console.error('Query:', query);
+            console.error('Params:', params);
+            return res.status(500).json({ error: 'ไม่สามารถอัปเดตได้', details: err.message });
+        }
         if (this.changes === 0) return res.status(404).json({ error: 'ไม่พบข้อมูล' });
         res.json({ message: 'อัปเดตสำเร็จ' });
     });
