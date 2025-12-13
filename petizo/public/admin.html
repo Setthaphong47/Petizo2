@@ -4880,7 +4880,7 @@
                 <div class="analytics-header">
                     <div class="analytics-header-top">
                         <div class="analytics-title">
-                            <h2>📊 รายงานและวิเคราะห์ข้อมูล</h2>
+                            <h2><img src="/icon/chart.png" alt="Chart" style="height:1.2em;vertical-align:middle;"> รายงานและวิเคราะห์ข้อมูล</h2>
                             <p class="analytics-subtitle" id="analyticsCurrentDate">กำลังโหลด...</p>
                         </div>
                         <div class="analytics-controls">
@@ -4903,7 +4903,7 @@
                         <div class="stat-header">
                             <div class="stat-title">ผู้ใช้งานทั้งหมด</div>
                             <div class="stat-icon" style="background: linear-gradient(135deg, rgba(0,188,212,0.1) 0%, rgba(0,188,212,0.2) 100%);">
-                                👥
+                                <img src="/icon/love.png" alt="Users" style="height:1.2em;vertical-align:middle;">
                             </div>
                         </div>
                         <div class="stat-value" id="analyticsTotalUsers">-</div>
@@ -4917,12 +4917,12 @@
                         <div class="stat-header">
                             <div class="stat-title">สัตว์เลี้ยงทั้งหมด</div>
                             <div class="stat-icon" style="background: linear-gradient(135deg, rgba(237,137,54,0.1) 0%, rgba(237,137,54,0.2) 100%);">
-                                🐱
+                                <img src="/icon/cat.png" alt="Cat" style="height:1.2em;vertical-align:middle;">
                             </div>
                         </div>
                         <div class="stat-value" id="analyticsTotalPets">-</div>
                         <div class="stat-change neutral" id="analyticsPetChange">
-                            <span>📈</span>
+                            
                             <span>กำลังโหลด...</span>
                         </div>
                     </div>
@@ -4931,7 +4931,7 @@
                         <div class="stat-header">
                             <div class="stat-title">อายุเฉลี่ยของแมว</div>
                             <div class="stat-icon" style="background: linear-gradient(135deg, rgba(72,187,120,0.1) 0%, rgba(72,187,120,0.2) 100%);">
-                                ⏱️
+                                <img src="/icon/average age.png" alt="Average Age" style="height:1.2em;vertical-align:middle;">
                             </div>
                         </div>
                         <div class="stat-value" id="analyticsAverageAge">-</div>
@@ -4944,7 +4944,7 @@
                         <div class="stat-header">
                             <div class="stat-title">บทความทั้งหมด</div>
                             <div class="stat-icon" style="background: linear-gradient(135deg, rgba(245,101,118,0.1) 0%, rgba(245,101,118,0.2) 100%);">
-                                📝
+                                <img src="/icon/communication.png" alt="Communication" style="height:1.2em;vertical-align:middle;">
                             </div>
                         </div>
                         <div class="stat-value" id="analyticsTotalBlogs">-</div>
@@ -4961,7 +4961,7 @@
                     <!-- User Growth Chart -->
                     <div class="chart-card full-width">
                         <div class="chart-header">
-                            <h3 class="chart-title">📈 การเติบโตของผู้ใช้งาน</h3>
+                            <h3 class="chart-title">การเติบโตของผู้ใช้งาน</h3>
                             <p class="chart-subtitle">จำนวนผู้ใช้ใหม่และเปอร์เซ็นต์การเปลี่ยนแปลงในแต่ละเดือน</p>
                         </div>
                         <div class="chart-container">
@@ -4972,7 +4972,7 @@
                     <!-- Top Breeds Chart -->
                     <div class="chart-card">
                         <div class="chart-header">
-                            <h3 class="chart-title">🐾 สายพันธุ์ยอดนิยม</h3>
+                            <h3 class="chart-title">สายพันธุ์ยอดนิยม</h3>
                             <p class="chart-subtitle">สายพันธุ์แมวที่มีการลงทะเบียนมากที่สุด</p>
                         </div>
                         <div class="chart-container small">
@@ -4983,7 +4983,7 @@
                     <!-- Age Distribution Chart -->
                     <div class="chart-card">
                         <div class="chart-header">
-                            <h3 class="chart-title">🎂 การกระจายช่วงอายุแมว</h3>
+                            <h3 class="chart-title">การกระจายช่วงอายุแมว</h3>
                             <p class="chart-subtitle">จำนวนแมวแยกตามช่วงอายุ</p>
                         </div>
                         <div class="chart-container small">
@@ -4995,7 +4995,7 @@
                 <!-- Breed & Age Summary Table -->
                 <div class="table-card" style="margin-bottom: 24px;">
                     <div class="chart-header">
-                        <h3 class="chart-title">📋 สรุปสายพันธุ์และอายุแมว</h3>
+                        <h3 class="chart-title">สรุปสายพันธุ์และอายุแมว</h3>
                         <p class="chart-subtitle">ข้อมูลสายพันธุ์ พร้อมอายุเฉลี่ยและจำนวน</p>
                     </div>
                     <table class="data-table">
@@ -5024,7 +5024,7 @@
                 <!-- Top 5 Blog Articles Table -->
                 <div class="table-card" style="margin-bottom: 24px;">
                     <div class="chart-header">
-                        <h3 class="chart-title">🏆 บทความยอดนิยม TOP 5</h3>
+                        <h3 class="chart-title">บทความยอดนิยม TOP 5</h3>
                         <p class="chart-subtitle">บทความที่มีจำนวนการเข้าชมสูงสุด</p>
                     </div>
                     <table class="data-table">
@@ -5550,7 +5550,11 @@
                                 day: 'numeric'
                             }) : '-';
 
-                            const rankBadge = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+                            let rankBadge = '';
+                            if(index === 0) rankBadge = '<span style="display:inline-block;padding:2px 10px;border:2px solid gold;border-radius:12px;color:#bfa100;font-weight:bold;background:#fffbe6;">1</span>';
+                            else if(index === 1) rankBadge = '<span style="display:inline-block;padding:2px 10px;border:2px solid silver;border-radius:12px;color:#7d7d7d;font-weight:bold;background:#f8f8f8;">2</span>';
+                            else if(index === 2) rankBadge = '<span style="display:inline-block;padding:2px 10px;border:2px solid #cd7f32;border-radius:12px;color:#a97142;font-weight:bold;background:#f9f6f2;">3</span>';
+                            else rankBadge = `<span style=\"display:inline-block;padding:2px 10px;border:2px solid #eee;border-radius:12px;\">${index+1}</span>`;
 
                             row.innerHTML = `
                                 <td style="text-align: center;"><span class="rank-badge ${rankClass}">${rankBadge}</span></td>
