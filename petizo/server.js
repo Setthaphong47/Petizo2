@@ -502,14 +502,18 @@ app.get('/api/pets/:id', authenticateToken, (req, res) => {
 
 app.post('/api/pets', authenticateToken, upload.single('photo'), (req, res) => {
     const petColumn = getPetUserColumn();
-    const { name, species, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
+    const { name, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
     const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
 
     db.run(
-        `INSERT INTO pets (${petColumn}, name, species, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [req.user.id, name, species || 'cat', breed, gender, birth_date, color, weight, microchip_id, photo_url, notes],
+        `INSERT INTO pets (${petColumn}, name, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [req.user.id, name, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes],
         function(err) {
-            if (err) return res.status(500).json({ error: 'ไม่สามารถสร้างข้อมูลได้' });
+            if (err) {
+                console.error('Error creating pet:', err);
+                console.error('Params:', [req.user.id, name, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes]);
+                return res.status(500).json({ error: 'ไม่สามารถสร้างข้อมูลได้', details: err.message });
+            }
             res.json({ message: 'สร้างข้อมูลสำเร็จ', petId: this.lastID });
         }
     );
