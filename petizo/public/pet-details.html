@@ -739,7 +739,10 @@
                 <h2 class="section-title">
                     <img src="/icon/health-check.png" alt="Suggest" style="width:40px;height:40px;"> ตารางวัคซีนแนะนำ
                 </h2>
-                <button class="btn-primary" onclick="window.location.href='vaccination-record.html?petId='+currentPetId">สมุดวัคซีน</button>
+                <button class="btn-primary" onclick="window.location.href='vaccination-record.html?petId='+currentPetId">
+                    <img src="/icon/cal-book.png" alt="Calendar" style="width:20px;height:20px;vertical-align:middle;margin-right:8px;">
+                    สมุดวัคซีน
+                </button>
             </div>
 
             <div id="petAgeInfo" class="pet-age-info" style="display: none;">
@@ -1033,11 +1036,17 @@
             document.getElementById('petAgeInfo').style.display = 'block';
             document.getElementById('petAgeText').textContent = ageText;
         
-            // Build timeline (แสดงทุกรายการ)
+            // Build timeline (แสดงเฉพาะวัคซีนที่ยังไม่ฉีด)
             let html = '<div class="vaccine-timeline">';
-        
-            const displayVaccines = data.vaccines;
-            
+
+            // กรองเฉพาะวัคซีนที่ยังไม่ฉีด และเรียงลำดับ: ถึงกำหนด → กำลังจะถึง → เกินกำหนด
+            const statusOrder = { 'due': 1, 'upcoming': 2, 'overdue': 3 };
+            const displayVaccines = data.vaccines
+                .filter(v => v.status !== 'completed') // กรองเอาเฉพาะที่ยังไม่ฉีด
+                .sort((a, b) => {
+                    return (statusOrder[a.status] || 999) - (statusOrder[b.status] || 999);
+                });
+
             // ฟังก์ชันแปลงช่วงอายุเป็นข้อความภาษาไทย
             function formatAgeRange(min, max) {
                 if (min == null && max == null) return '-';
