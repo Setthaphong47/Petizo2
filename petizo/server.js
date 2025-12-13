@@ -517,10 +517,10 @@ app.post('/api/pets', authenticateToken, upload.single('photo'), (req, res) => {
 
 app.put('/api/pets/:id', authenticateToken, upload.single('photo'), (req, res) => {
     const petColumn = getPetUserColumn();
-    const { name, species, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
+    const { name, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
 
-    let query = `UPDATE pets SET name = ?, species = ?, breed = ?, gender = ?, birth_date = ?, color = ?, weight = ?, microchip_id = ?, notes = ?, updated_at = CURRENT_TIMESTAMP`;
-    let params = [name, species || 'cat', breed || null, gender || null, birth_date || null, color || null, weight || null, microchip_id || null, notes || null];
+    let query = `UPDATE pets SET name = ?, breed = ?, gender = ?, birth_date = ?, color = ?, weight = ?, microchip_id = ?, notes = ?, updated_at = CURRENT_TIMESTAMP`;
+    let params = [name, breed || null, gender || null, birth_date || null, color || null, weight || null, microchip_id || null, notes || null];
     
     if (req.file) {
         query += ', photo_url = ?';
