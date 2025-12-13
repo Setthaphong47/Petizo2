@@ -5335,8 +5335,8 @@
                 });
                 
                 const stats = await response.json();
-                document.getElementById('totalUsers').textContent = stats.totalUsers || 0;
-                document.getElementById('hiddenUsers').textContent = stats.hiddenUsers || 0;
+                document.getElementById('totalUsers').textContent = stats.activeUsers || 0;
+                document.getElementById('hiddenUsers').textContent = stats.suspendedUsers || 0;
             } catch (error) {
                 console.error('Error loading stats:', error);
             }
