@@ -1586,6 +1586,9 @@ app.get('/api/admin/dashboard/stats', authenticateToken, isAdmin, async (req, re
         const userTable = DB_STRUCTURE === 'new' ? 'members' : 'users';
         const userColumn = DB_STRUCTURE === 'new' ? 'member_id' : 'user_id';
 
+        // Get month parameter for filtering (format: YYYY-MM)
+        const month = req.query.month;
+
         // Get date range from query params (default to last 6 months)
         const endDate = req.query.endDate || new Date().toISOString();
         const startDate = req.query.startDate || new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString();
@@ -1627,58 +1630,108 @@ app.get('/api/admin/dashboard/stats', authenticateToken, isAdmin, async (req, re
             userGrowth,
             petGrowth
         ] = await Promise.all([
-            // Total users
-            dbGet(`SELECT COUNT(*) as total FROM ${userTable}`),
-            // Active users (not hidden)
-            dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE is_hidden = 0 OR is_hidden IS NULL`),
-            // Suspended users (hidden)
-            dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE is_hidden = 1`),
+            // Total users (filter by month if specified)
+            month
+                ? dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE strftime('%Y-%m', created_at) = ?`, [month])
+                : dbGet(`SELECT COUNT(*) as total FROM ${userTable}`),
+            // Active users (not hidden, filter by month if specified)
+            month
+                ? dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE (is_hidden = 0 OR is_hidden IS NULL) AND strftime('%Y-%m', created_at) = ?`, [month])
+                : dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE is_hidden = 0 OR is_hidden IS NULL`),
+            // Suspended users (hidden, filter by month if specified)
+            month
+                ? dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE is_hidden = 1 AND strftime('%Y-%m', created_at) = ?`, [month])
+                : dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE is_hidden = 1`),
             // New users this month
-            dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE created_at >= ?`, [startOfMonth]),
-            // Total pets (cats only)
-            dbGet('SELECT COUNT(*) as total FROM pets'),
-            // Pets by gender
-            dbGet(`SELECT
-                SUM(CASE WHEN LOWER(gender) = 'male' OR LOWER(gender) = 'ผู้' OR LOWER(gender) = 'ชาย' THEN 1 ELSE 0 END) as male,
-                SUM(CASE WHEN LOWER(gender) = 'female' OR LOWER(gender) = 'เมีย' OR LOWER(gender) = 'หญิง' THEN 1 ELSE 0 END) as female,
-                SUM(CASE WHEN gender IS NULL OR gender = '' OR (LOWER(gender) NOT IN ('male', 'female', 'ผู้', 'เมีย', 'ชาย', 'หญิง')) THEN 1 ELSE 0 END) as unknown
-            FROM pets`),
-            // Top breeds
-            dbAll(`SELECT breed, COUNT(*) as count FROM pets
-                   WHERE breed IS NOT NULL AND breed != ''
-                   GROUP BY breed ORDER BY count DESC LIMIT 10`),
+            month
+                ? dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE strftime('%Y-%m', created_at) = ?`, [month])
+                : dbGet(`SELECT COUNT(*) as total FROM ${userTable} WHERE created_at >= ?`, [startOfMonth]),
+            // Total pets (cats only, filter by month if specified)
+            month
+                ? dbGet('SELECT COUNT(*) as total FROM pets WHERE strftime(\'%Y-%m\', created_at) = ?', [month])
+                : dbGet('SELECT COUNT(*) as total FROM pets'),
+            // Pets by gender (filter by month if specified)
+            month
+                ? dbGet(`SELECT
+                    SUM(CASE WHEN LOWER(gender) = 'male' OR LOWER(gender) = 'ผู้' OR LOWER(gender) = 'ชาย' THEN 1 ELSE 0 END) as male,
+                    SUM(CASE WHEN LOWER(gender) = 'female' OR LOWER(gender) = 'เมีย' OR LOWER(gender) = 'หญิง' THEN 1 ELSE 0 END) as female,
+                    SUM(CASE WHEN gender IS NULL OR gender = '' OR (LOWER(gender) NOT IN ('male', 'female', 'ผู้', 'เมีย', 'ชาย', 'หญิง')) THEN 1 ELSE 0 END) as unknown
+                FROM pets WHERE strftime('%Y-%m', created_at) = ?`, [month])
+                : dbGet(`SELECT
+                    SUM(CASE WHEN LOWER(gender) = 'male' OR LOWER(gender) = 'ผู้' OR LOWER(gender) = 'ชาย' THEN 1 ELSE 0 END) as male,
+                    SUM(CASE WHEN LOWER(gender) = 'female' OR LOWER(gender) = 'เมีย' OR LOWER(gender) = 'หญิง' THEN 1 ELSE 0 END) as female,
+                    SUM(CASE WHEN gender IS NULL OR gender = '' OR (LOWER(gender) NOT IN ('male', 'female', 'ผู้', 'เมีย', 'ชาย', 'หญิง')) THEN 1 ELSE 0 END) as unknown
+                FROM pets`),
+            // Top breeds (filter by month if specified)
+            month
+                ? dbAll(`SELECT breed, COUNT(*) as count FROM pets
+                       WHERE breed IS NOT NULL AND breed != '' AND strftime('%Y-%m', created_at) = ?
+                       GROUP BY breed ORDER BY count DESC LIMIT 10`, [month])
+                : dbAll(`SELECT breed, COUNT(*) as count FROM pets
+                       WHERE breed IS NOT NULL AND breed != ''
+                       GROUP BY breed ORDER BY count DESC LIMIT 10`),
             // New pets this month
-            dbGet('SELECT COUNT(*) as total FROM pets WHERE created_at >= ?', [startOfMonth]),
-            // Total blogs
-            dbGet('SELECT COUNT(*) as total FROM blogs'),
-            // Published blogs
-            dbGet('SELECT COUNT(*) as total FROM blogs WHERE status = "published" OR status = "เผยแพร่"'),
-            // Popular blogs (top 5 by views)
-            dbAll(`SELECT id, title, views, created_at, updated_at FROM blogs
-                   WHERE status = 'published' OR status = 'เผยแพร่'
-                   ORDER BY views DESC LIMIT 5`),
+            month
+                ? dbGet('SELECT COUNT(*) as total FROM pets WHERE strftime(\'%Y-%m\', created_at) = ?', [month])
+                : dbGet('SELECT COUNT(*) as total FROM pets WHERE created_at >= ?', [startOfMonth]),
+            // Total blogs (filter by month if specified)
+            month
+                ? dbGet('SELECT COUNT(*) as total FROM blogs WHERE strftime(\'%Y-%m\', created_at) = ?', [month])
+                : dbGet('SELECT COUNT(*) as total FROM blogs'),
+            // Published blogs (filter by month if specified)
+            month
+                ? dbGet('SELECT COUNT(*) as total FROM blogs WHERE (status = "published" OR status = "เผยแพร่") AND strftime(\'%Y-%m\', created_at) = ?', [month])
+                : dbGet('SELECT COUNT(*) as total FROM blogs WHERE status = "published" OR status = "เผยแพร่"'),
+            // Popular blogs (top 5 by views, filter by month if specified)
+            month
+                ? dbAll(`SELECT id, title, views, created_at, updated_at FROM blogs
+                       WHERE (status = 'published' OR status = 'เผยแพร่') AND strftime('%Y-%m', created_at) = ?
+                       ORDER BY views DESC LIMIT 5`, [month])
+                : dbAll(`SELECT id, title, views, created_at, updated_at FROM blogs
+                       WHERE status = 'published' OR status = 'เผยแพร่'
+                       ORDER BY views DESC LIMIT 5`),
             // New blogs this month
-            dbGet('SELECT COUNT(*) as total FROM blogs WHERE created_at >= ?', [startOfMonth]),
-            // User growth by month (last 6 months)
-            dbAll(`SELECT
-                strftime('%Y-%m', created_at) as month,
-                COUNT(*) as count
-                FROM ${userTable}
-                WHERE created_at >= ? AND created_at <= ?
-                GROUP BY month
-                ORDER BY month ASC`, [startDate, endDate]),
-            // Pet growth by month (last 6 months)
-            dbAll(`SELECT
-                strftime('%Y-%m', created_at) as month,
-                COUNT(*) as count
-                FROM pets
-                WHERE created_at >= ? AND created_at <= ?
-                GROUP BY month
-                ORDER BY month ASC`, [startDate, endDate])
+            month
+                ? dbGet('SELECT COUNT(*) as total FROM blogs WHERE strftime(\'%Y-%m\', created_at) = ?', [month])
+                : dbGet('SELECT COUNT(*) as total FROM blogs WHERE created_at >= ?', [startOfMonth]),
+            // User growth by month (last 6 months or specific month)
+            month
+                ? dbAll(`SELECT
+                    strftime('%Y-%m', created_at) as month,
+                    COUNT(*) as count
+                    FROM ${userTable}
+                    WHERE strftime('%Y-%m', created_at) = ?
+                    GROUP BY month
+                    ORDER BY month ASC`, [month])
+                : dbAll(`SELECT
+                    strftime('%Y-%m', created_at) as month,
+                    COUNT(*) as count
+                    FROM ${userTable}
+                    WHERE created_at >= ? AND created_at <= ?
+                    GROUP BY month
+                    ORDER BY month ASC`, [startDate, endDate]),
+            // Pet growth by month (last 6 months or specific month)
+            month
+                ? dbAll(`SELECT
+                    strftime('%Y-%m', created_at) as month,
+                    COUNT(*) as count
+                    FROM pets
+                    WHERE strftime('%Y-%m', created_at) = ?
+                    GROUP BY month
+                    ORDER BY month ASC`, [month])
+                : dbAll(`SELECT
+                    strftime('%Y-%m', created_at) as month,
+                    COUNT(*) as count
+                    FROM pets
+                    WHERE created_at >= ? AND created_at <= ?
+                    GROUP BY month
+                    ORDER BY month ASC`, [startDate, endDate])
         ]);
 
-        // Calculate age groups from birth_date
-        const petsWithAge = await dbAll('SELECT birth_date FROM pets WHERE birth_date IS NOT NULL AND birth_date != ""');
+        // Calculate age groups from birth_date (filter by month if specified)
+        const petsWithAge = month
+            ? await dbAll('SELECT birth_date FROM pets WHERE birth_date IS NOT NULL AND birth_date != "" AND strftime(\'%Y-%m\', created_at) = ?', [month])
+            : await dbAll('SELECT birth_date FROM pets WHERE birth_date IS NOT NULL AND birth_date != ""');
         const ageGroups = {
             kitten: 0,      // 0-1 year
             young: 0,       // 1-3 years
@@ -1790,12 +1843,25 @@ app.get('/api/admin/dashboard/top-vaccines', authenticateToken, isAdmin, (req, r
 
 // Top Breeds
 app.get('/api/admin/dashboard/top-breeds', authenticateToken, isAdmin, (req, res) => {
-    db.all(`SELECT breed, COUNT(*) as count
-            FROM pets
-            WHERE breed IS NOT NULL AND breed != ''
-            GROUP BY breed
-            ORDER BY count DESC
-            LIMIT 5`, (err, rows) => {
+    const month = req.query.month;
+
+    const query = month
+        ? `SELECT breed, COUNT(*) as count
+           FROM pets
+           WHERE breed IS NOT NULL AND breed != '' AND strftime('%Y-%m', created_at) = ?
+           GROUP BY breed
+           ORDER BY count DESC
+           LIMIT 5`
+        : `SELECT breed, COUNT(*) as count
+           FROM pets
+           WHERE breed IS NOT NULL AND breed != ''
+           GROUP BY breed
+           ORDER BY count DESC
+           LIMIT 5`;
+
+    const params = month ? [month] : [];
+
+    db.all(query, params, (err, rows) => {
         if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
         res.json(rows || []);
     });
@@ -1971,13 +2037,27 @@ app.get('/api/admin/dashboard/blog-ranking', authenticateToken, isAdmin, (req, r
 
 // 4. Average Cat Age
 app.get('/api/admin/dashboard/average-cat-age', authenticateToken, isAdmin, (req, res) => {
-    db.get(`SELECT
-        AVG(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as average_age,
-        COUNT(*) as total_with_birthdate,
-        MIN(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as youngest,
-        MAX(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as oldest
-    FROM pets
-    WHERE birth_date IS NOT NULL AND birth_date != ''`, (err, result) => {
+    const month = req.query.month;
+
+    const query = month
+        ? `SELECT
+            AVG(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as average_age,
+            COUNT(*) as total_with_birthdate,
+            MIN(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as youngest,
+            MAX(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as oldest
+        FROM pets
+        WHERE birth_date IS NOT NULL AND birth_date != '' AND strftime('%Y-%m', created_at) = ?`
+        : `SELECT
+            AVG(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as average_age,
+            COUNT(*) as total_with_birthdate,
+            MIN(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as youngest,
+            MAX(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as oldest
+        FROM pets
+        WHERE birth_date IS NOT NULL AND birth_date != ''`;
+
+    const params = month ? [month] : [];
+
+    db.get(query, params, (err, result) => {
         if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
         res.json({
             averageAge: result.average_age ? parseFloat(result.average_age.toFixed(2)) : 0,
@@ -2053,26 +2133,53 @@ app.get('/api/admin/dashboard/available-months', authenticateToken, isAdmin, (re
 
 // 7. Age Distribution
 app.get('/api/admin/dashboard/age-distribution', authenticateToken, isAdmin, (req, res) => {
-    db.all(`SELECT
-        CASE
-            WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) < 1 THEN '0-1 ปี (ลูกแมว)'
-            WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 1 AND 3 THEN '1-3 ปี (วัยเยาว์)'
-            WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 3 AND 7 THEN '3-7 ปี (วัยผู้ใหญ่)'
-            WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 7 AND 11 THEN '7-11 ปี (วัยสูงอายุ)'
-            ELSE '11+ ปี (วัยชรา)'
-        END as age_group,
-        COUNT(*) as count
-    FROM pets
-    WHERE birth_date IS NOT NULL AND birth_date != ''
-    GROUP BY age_group
-    ORDER BY
-        CASE age_group
-            WHEN '0-1 ปี (ลูกแมว)' THEN 1
-            WHEN '1-3 ปี (วัยเยาว์)' THEN 2
-            WHEN '3-7 ปี (วัยผู้ใหญ่)' THEN 3
-            WHEN '7-11 ปี (วัยสูงอายุ)' THEN 4
-            ELSE 5
-        END`, (err, rows) => {
+    const month = req.query.month;
+
+    const query = month
+        ? `SELECT
+            CASE
+                WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) < 1 THEN '0-1 ปี (ลูกแมว)'
+                WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 1 AND 3 THEN '1-3 ปี (วัยเยาว์)'
+                WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 3 AND 7 THEN '3-7 ปี (วัยผู้ใหญ่)'
+                WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 7 AND 11 THEN '7-11 ปี (วัยสูงอายุ)'
+                ELSE '11+ ปี (วัยชรา)'
+            END as age_group,
+            COUNT(*) as count
+        FROM pets
+        WHERE birth_date IS NOT NULL AND birth_date != '' AND strftime('%Y-%m', created_at) = ?
+        GROUP BY age_group
+        ORDER BY
+            CASE age_group
+                WHEN '0-1 ปี (ลูกแมว)' THEN 1
+                WHEN '1-3 ปี (วัยเยาว์)' THEN 2
+                WHEN '3-7 ปี (วัยผู้ใหญ่)' THEN 3
+                WHEN '7-11 ปี (วัยสูงอายุ)' THEN 4
+                ELSE 5
+            END`
+        : `SELECT
+            CASE
+                WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) < 1 THEN '0-1 ปี (ลูกแมว)'
+                WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 1 AND 3 THEN '1-3 ปี (วัยเยาว์)'
+                WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 3 AND 7 THEN '3-7 ปี (วัยผู้ใหญ่)'
+                WHEN CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL) BETWEEN 7 AND 11 THEN '7-11 ปี (วัยสูงอายุ)'
+                ELSE '11+ ปี (วัยชรา)'
+            END as age_group,
+            COUNT(*) as count
+        FROM pets
+        WHERE birth_date IS NOT NULL AND birth_date != ''
+        GROUP BY age_group
+        ORDER BY
+            CASE age_group
+                WHEN '0-1 ปี (ลูกแมว)' THEN 1
+                WHEN '1-3 ปี (วัยเยาว์)' THEN 2
+                WHEN '3-7 ปี (วัยผู้ใหญ่)' THEN 3
+                WHEN '7-11 ปี (วัยสูงอายุ)' THEN 4
+                ELSE 5
+            END`;
+
+    const params = month ? [month] : [];
+
+    db.all(query, params, (err, rows) => {
         if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
         res.json(rows || []);
     });
@@ -2081,18 +2188,35 @@ app.get('/api/admin/dashboard/age-distribution', authenticateToken, isAdmin, (re
 // 8. Breed & Age Summary
 app.get('/api/admin/dashboard/breed-age-summary', authenticateToken, isAdmin, (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
+    const month = req.query.month;
 
-    db.all(`SELECT
-        breed,
-        COUNT(*) as count,
-        ROUND(AVG(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)), 2) as avg_age,
-        MIN(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as min_age,
-        MAX(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as max_age
-    FROM pets
-    WHERE breed IS NOT NULL AND breed != '' AND birth_date IS NOT NULL AND birth_date != ''
-    GROUP BY breed
-    ORDER BY count DESC
-    LIMIT ?`, [limit], (err, rows) => {
+    const query = month
+        ? `SELECT
+            breed,
+            COUNT(*) as count,
+            ROUND(AVG(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)), 2) as avg_age,
+            MIN(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as min_age,
+            MAX(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as max_age
+        FROM pets
+        WHERE breed IS NOT NULL AND breed != '' AND birth_date IS NOT NULL AND birth_date != '' AND strftime('%Y-%m', created_at) = ?
+        GROUP BY breed
+        ORDER BY count DESC
+        LIMIT ?`
+        : `SELECT
+            breed,
+            COUNT(*) as count,
+            ROUND(AVG(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)), 2) as avg_age,
+            MIN(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as min_age,
+            MAX(CAST((julianday('now') - julianday(birth_date)) / 365.25 AS REAL)) as max_age
+        FROM pets
+        WHERE breed IS NOT NULL AND breed != '' AND birth_date IS NOT NULL AND birth_date != ''
+        GROUP BY breed
+        ORDER BY count DESC
+        LIMIT ?`;
+
+    const params = month ? [month, limit] : [limit];
+
+    db.all(query, params, (err, rows) => {
         if (err) return res.status(500).json({ error: 'ไม่สามารถดึงข้อมูลได้' });
 
         // Calculate percentage change (mock for now, can be enhanced)

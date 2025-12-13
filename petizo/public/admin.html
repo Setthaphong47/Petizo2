@@ -4965,9 +4965,12 @@
         }
 
         // Load User Growth Data
-        async function loadAnalyticsUserGrowth() {
+        async function loadAnalyticsUserGrowth(month = null) {
             try {
-                const response = await fetch(`${API_URL}/admin/dashboard/user-growth-detailed?months=12`, {
+                const url = month
+                    ? `${API_URL}/admin/dashboard/user-growth-detailed?month=${month}`
+                    : `${API_URL}/admin/dashboard/user-growth-detailed?months=12`;
+                const response = await fetch(url, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const data = await response.json();
@@ -5182,9 +5185,12 @@
         }
 
         // Load Pet Stats and Growth
-        async function loadAnalyticsPetStats() {
+        async function loadAnalyticsPetStats(month = null) {
             try {
-                const statsResponse = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                const url = month
+                    ? `${API_URL}/admin/dashboard/stats?month=${month}`
+                    : `${API_URL}/admin/dashboard/stats`;
+                const statsResponse = await fetch(url, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const stats = await statsResponse.json();
@@ -5233,9 +5239,12 @@
         }
 
         // Load Average Cat Age
-        async function loadAnalyticsAverageCatAge() {
+        async function loadAnalyticsAverageCatAge(month = null) {
             try {
-                const response = await fetch(`${API_URL}/admin/dashboard/average-cat-age`, {
+                const url = month
+                    ? `${API_URL}/admin/dashboard/average-cat-age?month=${month}`
+                    : `${API_URL}/admin/dashboard/average-cat-age`;
+                const response = await fetch(url, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const data = await response.json();
@@ -5251,9 +5260,12 @@
 
         // Load Age Distribution
         let analyticsAgeChart = null;
-        async function loadAnalyticsAgeDistribution() {
+        async function loadAnalyticsAgeDistribution(month = null) {
             try {
-                const response = await fetch(`${API_URL}/admin/dashboard/age-distribution`, {
+                const url = month
+                    ? `${API_URL}/admin/dashboard/age-distribution?month=${month}`
+                    : `${API_URL}/admin/dashboard/age-distribution`;
+                const response = await fetch(url, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const data = await response.json();
@@ -5318,9 +5330,12 @@
         }
 
         // Load Breed & Age Summary
-        async function loadAnalyticsBreedAgeSummary() {
+        async function loadAnalyticsBreedAgeSummary(month = null) {
             try {
-                const response = await fetch(`${API_URL}/admin/dashboard/breed-age-summary?limit=10`, {
+                const url = month
+                    ? `${API_URL}/admin/dashboard/breed-age-summary?limit=10&month=${month}`
+                    : `${API_URL}/admin/dashboard/breed-age-summary?limit=10`;
+                const response = await fetch(url, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const data = await response.json();
@@ -5357,9 +5372,12 @@
         }
 
         // Load Top 5 Blog Articles
-        async function loadAnalyticsTopBlogs() {
+        async function loadAnalyticsTopBlogs(month = null) {
             try {
-                const response = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                const url = month
+                    ? `${API_URL}/admin/dashboard/stats?month=${month}`
+                    : `${API_URL}/admin/dashboard/stats`;
+                const response = await fetch(url, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const stats = await response.json();
@@ -5407,13 +5425,13 @@
             try {
                 updateAnalyticsDate();
                 await Promise.all([
-                    loadAnalyticsUserGrowth(),
-                    loadAnalyticsPetStats(),
+                    loadAnalyticsUserGrowth(month),
+                    loadAnalyticsPetStats(month),
                     loadAnalyticsTopBreeds(month),
-                    loadAnalyticsAverageCatAge(),
-                    loadAnalyticsAgeDistribution(),
-                    loadAnalyticsBreedAgeSummary(),
-                    loadAnalyticsTopBlogs()
+                    loadAnalyticsAverageCatAge(month),
+                    loadAnalyticsAgeDistribution(month),
+                    loadAnalyticsBreedAgeSummary(month),
+                    loadAnalyticsTopBlogs(month)
                 ]);
             } catch (error) {
                 console.error('Error loading analytics dashboard:', error);
