@@ -4793,6 +4793,20 @@
                         </div>
                     </div>
 
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">บทความทั้งหมด</div>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, rgba(245,101,118,0.1) 0%, rgba(245,101,118,0.2) 100%);">
+                                📝
+                            </div>
+                        </div>
+                        <div class="stat-value" id="analyticsTotalBlogs">-</div>
+                        <div class="stat-change neutral" id="analyticsBlogChange">
+                            <span>📊</span>
+                            <span>กำลังโหลด...</span>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Charts -->
@@ -4983,18 +4997,18 @@
                         datasets: [{
                             label: 'ผู้ใช้ใหม่',
                             data: data.map(d => d.count),
-                            borderColor: '#00bcd4',
-                            backgroundColor: 'rgba(0, 188, 212, 0.1)',
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
                             tension: 0.4,
                             fill: true,
                             pointRadius: 5,
                             pointHoverRadius: 7,
-                            pointBackgroundColor: '#00bcd4'
+                            pointBackgroundColor: '#667eea'
                         }, {
                             label: '% การเปลี่ยนแปลง',
                             data: data.map(d => d.percentageChange),
-                            borderColor: '#48bb78',
-                            backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                            borderColor: '#f093fb',
+                            backgroundColor: 'rgba(240, 147, 251, 0.1)',
                             tension: 0.4,
                             yAxisID: 'y1',
                             borderDash: [5, 5],
@@ -5102,9 +5116,9 @@
                 }
 
                 const colors = [
-                    '#00bcd4', '#00e5ff', '#4dd0e1', '#00acc1',
-                    '#0097a7', '#00838f', '#006064', '#48bb78',
-                    '#4facfe', '#00f260'
+                    '#ff6b6b', '#ee5a6f', '#f06595', '#cc5de8',
+                    '#845ef7', '#5f3dc4', '#ff922b', '#fd7e14',
+                    '#ffa94d', '#ffd43b'
                 ];
 
                 analyticsBreedsChart = new Chart(ctx, {
@@ -5139,6 +5153,57 @@
                 });
             } catch (error) {
                 console.error('Error loading breeds:', error);
+            }
+        }
+
+        // Load Pet Stats and Growth
+        async function loadAnalyticsPetStats() {
+            try {
+                const statsResponse = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const stats = await statsResponse.json();
+
+                // Update pet count
+                const petCountEl = document.getElementById('analyticsTotalPets');
+                if (petCountEl) {
+                    petCountEl.textContent = (stats.totalPets || 0).toLocaleString();
+                }
+
+                // Update pet change
+                const petChangeEl = document.getElementById('analyticsPetChange');
+                if (petChangeEl) {
+                    const newThisMonth = stats.newPetsThisMonth || 0;
+                    if (newThisMonth > 0) {
+                        petChangeEl.className = 'stat-change positive';
+                        petChangeEl.innerHTML = `<span>📈</span><span>+${newThisMonth} ตัวใหม่เดือนนี้</span>`;
+                    } else {
+                        petChangeEl.className = 'stat-change neutral';
+                        petChangeEl.innerHTML = `<span>📊</span><span>ไม่มีสัตว์เลี้ยงใหม่</span>`;
+                    }
+                }
+
+                // Update blog stats
+                const blogCountEl = document.getElementById('analyticsTotalBlogs');
+                if (blogCountEl) {
+                    blogCountEl.textContent = (stats.totalBlogs || 0).toLocaleString();
+                }
+
+                const blogChangeEl = document.getElementById('analyticsBlogChange');
+                if (blogChangeEl) {
+                    const published = stats.publishedBlogs || 0;
+                    const total = stats.totalBlogs || 0;
+                    if (total > 0) {
+                        const percent = ((published / total) * 100).toFixed(0);
+                        blogChangeEl.className = 'stat-change positive';
+                        blogChangeEl.innerHTML = `<span>✅</span><span>${published} เผยแพร่ (${percent}%)</span>`;
+                    } else {
+                        blogChangeEl.className = 'stat-change neutral';
+                        blogChangeEl.innerHTML = `<span>📊</span><span>ยังไม่มีบทความ</span>`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading pet stats:', error);
             }
         }
 
@@ -5272,6 +5337,7 @@
                 updateAnalyticsDate();
                 await Promise.all([
                     loadAnalyticsUserGrowth(),
+                    loadAnalyticsPetStats(),
                     loadAnalyticsTopBreeds(month),
                     loadAnalyticsAverageCatAge(),
                     loadAnalyticsAgeDistribution(),
