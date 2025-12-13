@@ -288,41 +288,96 @@
             return;
         }
 
-        // ฟังก์ชันแปลงช่วงอายุเป็นข้อความภาษาไทย
-        function formatAgeRange(min, max) {
-            if (min == null && max == null) return '-';
-            if (min == null) return `${max} สัปดาห์`;
-            if (max == null) return `${min} สัปดาห์`;
-            if (min === max) return `${min} สัปดาห์`;
-            return `${min}-${max} สัปดาห์`;
-        }
-        // แสดงกล่องแจ้งเตือน พร้อมเน้นช่วงอายุเป็นตัวหนา
-        container.innerHTML = notifications.map((notif, idx) => {
-            const urgencyClass = notif.type || 'info';
-            const dueHtml = notif.dueDate ? `<div style=\"margin-top:8px;\"><span class=\"notification-date\">กำหนดฉีด: ${formatThaiDate(notif.dueDate)}</span></div>` : '';
-            const descHtml = notif.description ? `<div class=\"vaccine-description\" style=\"background:none;padding:0;margin-bottom:8px;\">${escapeHtml(notif.description)}</div>` : '';
-            // ปรับข้อความแจ้งเตือน overdue
-            let message = notif.message || '';
-            if (notif.type === 'urgent' && typeof notif.daysLeft === 'number' && notif.daysLeft < 0) {
-                message = `เกินกำหนดแล้ว ${formatOverdue(Math.abs(notif.daysLeft))}`;
+        // inject urgent style (ถ้ายังไม่มี)
+        if (!document.getElementById('notificationUrgentStyles')) {
+            const urgentStyles = `
+            <style id="notificationUrgentStyles">
+            .notification-item.urgent {
+                display: flex; align-items: flex-start;
+                background: #fff6f6;
+                border: 2px solid #ff6b6b;
+                border-radius: 14px;
+                padding: 18px 20px;
+                margin-bottom: 16px;
+                box-shadow: 0 2px 8px rgba(255,107,107,0.08);
             }
-            // แสดงช่วงอายุเป็นตัวหนาและชัดเจน
-            const ageRangeHtml = `<div class=\"vaccine-age-range\"><b>ช่วงอายุ :</b> <span style=\"color:#1976d2;font-weight:bold\">${formatAgeRange(notif.age_weeks_min, notif.age_weeks_max)}</span></div>`;
-            return `
-                <div class=\"notification-item ${urgencyClass}\" data-petid=\"${notif.petId}\" data-idx=\"${idx}\">
-                    <div class=\"notification-top\">
-                        <div class=\"notification-icon\"><img src=\"/icon/syringe.png\" alt=\"Vaccine\" style=\"width:24px;height:24px;\"></div>
-                        <div class=\"notification-details\">
-                            <div class=\"pet-name\">${escapeHtml(notif.petName || 'ไม่ทราบชื่อ')}</div>
-                            <div class=\"vaccine-name\">${escapeHtml(notif.vaccineName || '')}</div>
-                            ${descHtml}
-                            ${ageRangeHtml}
-                            <div class=\"notification-message\">${escapeHtml(message)}</div>
-                            ${dueHtml}
+            .urgent-icon img {
+                width: 38px; height: 38px; margin-right: 16px;
+            }
+            .urgent-content { flex: 1; }
+            .urgent-content .pet-name {
+                font-size: 17px; font-weight: bold; color: #d32f2f; margin-bottom: 2px;
+            }
+            .urgent-content .vaccine-name {
+                font-size: 15px; color: #444; margin-bottom: 6px;
+            }
+            .urgent-content .urgent-message {
+                font-size: 14px; color: #d32f2f; font-weight: 600; margin-bottom: 4px;
+            }
+            .urgent-content .due-date {
+                font-size: 13px; color: #888; margin-bottom: 8px;
+            }
+            .urgent-detail-btn {
+                background: #ff6b6b; color: #fff; border: none; border-radius: 8px;
+                padding: 6px 16px; font-weight: 600; cursor: pointer; font-size: 13px;
+                transition: background 0.15s;
+            }
+            .urgent-detail-btn:hover { background: #d32f2f; }
+            </style>
+            `;
+            document.head.insertAdjacentHTML('beforeend', urgentStyles);
+        }
+
+        // Render notifications
+        container.innerHTML = notifications.map((notif, idx) => {
+            if (notif.type === 'urgent') {
+                // สั้น กระชับ ตามหลัก UX/UI
+                let message = notif.message || '';
+                if (typeof notif.daysLeft === 'number' && notif.daysLeft < 0) {
+                    message = `เกินกำหนดฉีดวัคซีนแล้ว ${formatOverdue(Math.abs(notif.daysLeft))}`;
+                }
+                return `
+                <div class="notification-item urgent" data-petid="${notif.petId}" data-idx="${idx}">
+                  <div class="urgent-icon"><img src="/icon/syringe.png" alt="Vaccine"></div>
+                  <div class="urgent-content">
+                    <div class="pet-name">${escapeHtml(notif.petName || 'ไม่ทราบชื่อ')}</div>
+                    <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
+                    <div class="urgent-message">${escapeHtml(message)}</div>
+                    ${notif.dueDate ? `<div class="due-date">กำหนดเดิม: ${formatThaiDate(notif.dueDate)}</div>` : ''}
+                    <button class="urgent-detail-btn" data-petid="${notif.petId}">ดูรายละเอียด</button>
+                  </div>
+                </div>
+                `;
+            } else {
+                // ...เดิมสำหรับ warning/info...
+                // ฟังก์ชันแปลงช่วงอายุเป็นข้อความภาษาไทย
+                function formatAgeRange(min, max) {
+                    if (min == null && max == null) return '-';
+                    if (min == null) return `${max} สัปดาห์`;
+                    if (max == null) return `${min} สัปดาห์`;
+                    if (min === max) return `${min} สัปดาห์`;
+                    return `${min}-${max} สัปดาห์`;
+                }
+                const urgencyClass = notif.type || 'info';
+                const dueHtml = notif.dueDate ? `<div style="margin-top:8px;"><span class="notification-date">กำหนดฉีด: ${formatThaiDate(notif.dueDate)}</span></div>` : '';
+                const descHtml = notif.description ? `<div class="vaccine-description" style="background:none;padding:0;margin-bottom:8px;">${escapeHtml(notif.description)}</div>` : '';
+                const ageRangeHtml = `<div class="vaccine-age-range"><b>ช่วงอายุ :</b> <span style="color:#1976d2;font-weight:bold">${formatAgeRange(notif.age_weeks_min, notif.age_weeks_max)}</span></div>`;
+                return `
+                    <div class="notification-item ${urgencyClass}" data-petid="${notif.petId}" data-idx="${idx}">
+                        <div class="notification-top">
+                            <div class="notification-icon"><img src="/icon/syringe.png" alt="Vaccine" style="width:24px;height:24px;"></div>
+                            <div class="notification-details">
+                                <div class="pet-name">${escapeHtml(notif.petName || 'ไม่ทราบชื่อ')}</div>
+                                <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
+                                ${descHtml}
+                                ${ageRangeHtml}
+                                <div class="notification-message">${escapeHtml(notif.message || '')}</div>
+                                ${dueHtml}
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         }).join('');
     // แปลงจำนวนวัน overdue เป็น เดือน/ปี/วัน ตามเงื่อนไขที่กำหนด
     function formatOverdue(days) {
@@ -344,8 +399,15 @@
 
         // ไม่มีปุ่มลบแจ้งเตือนอีกต่อไป
 
-        // add click handlers for items (navigate to pet details)
-        Array.from(container.querySelectorAll('.notification-item')).forEach(item => {
+        // urgent: click ที่ปุ่มเท่านั้น, warning/info: click ทั้งกล่อง
+        Array.from(container.querySelectorAll('.notification-item.urgent .urgent-detail-btn')).forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const petId = btn.getAttribute('data-petid');
+                if (petId) window.location.href = `pet-details.html?id=${petId}`;
+            });
+        });
+        Array.from(container.querySelectorAll('.notification-item.warning, .notification-item.info')).forEach(item => {
             item.addEventListener('click', () => {
                 const petId = item.getAttribute('data-petid');
                 if (petId) window.location.href = `pet-details.html?id=${petId}`;
@@ -467,16 +529,10 @@
             viewAllBtn.addEventListener('click', viewAllHandler);
         }
 
-        // backdrop click to close
-        if (modalEl) {
-            // cleanup previous handler
-            if (modalBackdropHandler) modalEl.removeEventListener('click', modalBackdropHandler);
-            modalBackdropHandler = function(e) {
-                if (e.target === modalEl) {
-                    closeModal();
-                }
-            };
-            modalEl.addEventListener('click', modalBackdropHandler);
+        // backdrop click to close (ปิดฟีเจอร์นี้ ไม่ให้ปิด modal เมื่อคลิกนอก notification-content)
+        if (modalEl && modalBackdropHandler) {
+            modalEl.removeEventListener('click', modalBackdropHandler);
+            modalBackdropHandler = null;
         }
 
         // Escape key closes

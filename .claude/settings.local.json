@@ -21,7 +21,8 @@
       "Bash(tree:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []
