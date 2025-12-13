@@ -842,7 +842,7 @@
                                     </div>
                                     <div class="preview-actions">
                                         <button type="button" class="btn-scan" id="scanButton" onclick="scanVaccineLabel()">
-                                            สแกนฉลากวัคซีน
+                                            ประมวลผล
                                         </button>
                                         <button type="button" class="btn-upload" onclick="document.getElementById('recordProofImage').click()">
                                             เปลี่ยนรูป
@@ -856,7 +856,7 @@
                                 <!-- Scanning Loader -->
                                 <div id="scanningLoader" class="scanning-loader" style="display: none;">
                                     <div class="scanning-spinner"></div>
-                                    <p class="scanning-text">กำลังสแกนฉลากวัคซีน...</p>
+                                    <p class="scanning-text">กำลังประมวลผล...</p>
                                     <small class="scanning-note">กรุณารอสักครู่</small>
                                 </div>
                             </div>
@@ -1325,12 +1325,6 @@
             }
         });
 
-        // Close modal on outside click
-        document.getElementById('recordVaccineModal').addEventListener('click', (e) => {
-            if (e.target.id === 'recordVaccineModal') {
-                closeRecordVaccineModal();
-            }
-        });
     </script>
     <script src="/js/footer.js"></script>
 </body>
