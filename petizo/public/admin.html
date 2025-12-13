@@ -4198,6 +4198,7 @@
                     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
                     gap: 20px;
                     margin-bottom: 24px;
+                    min-width: 0;
                 }
 
                 .stat-card {
@@ -4205,14 +4206,16 @@
                     border-radius: 12px;
                     padding: 24px;
                     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-                    transition: all 0.3s;
+                    transition: box-shadow 0.3s, transform 0.2s;
                     position: relative;
                     overflow: hidden;
                     border-left: 4px solid #00bcd4;
+                    min-width: 220px;
+                    min-height: 120px;
                 }
 
                 .stat-card:hover {
-                    transform: translateY(-4px);
+                    transform: translateY(-2px) scale(1.01);
                     box-shadow: 0 8px 20px rgba(0,0,0,0.1);
                 }
 
@@ -4232,6 +4235,8 @@
                 .stat-icon {
                     width: 40px;
                     height: 40px;
+                    min-width: 40px;
+                    min-height: 40px;
                     border-radius: 10px;
                     display: flex;
                     align-items: center;
