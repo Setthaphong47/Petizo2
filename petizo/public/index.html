@@ -541,7 +541,7 @@
                 let allNotifications = [];
 
                 for (const pet of pets) {
-                    const historyResponse = await fetch(`${API_URL}/pets/${pet.id}/vaccination-history`, {
+                    const historyResponse = await fetch(`${API_URL}/pets/${pet.id}/vaccinations`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     

@@ -169,7 +169,7 @@
             for (const pet of pets) {
                 logDebug('--- START processing pet ---', pet.id, pet.name, pet.birth_date || pet.birthDate || pet.birthDateString);
                 try {
-                    const historyUrl = `${API_URL}/pets/${pet.id}/vaccination-history`;
+                    const historyUrl = `${API_URL}/pets/${pet.id}/vaccinations`;
                     logDebug('Fetching history for pet', pet.id, 'url:', historyUrl);
                     const historyResp = await fetch(historyUrl, { headers: { 'Authorization': `Bearer ${token}` } });
                     logDebug(`historyResp for pet ${pet.id} status:`, historyResp.status);
