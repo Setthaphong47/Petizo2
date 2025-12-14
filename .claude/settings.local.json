@@ -22,7 +22,8 @@
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(npm install:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(railway up:*)"
     ],
     "deny": [],
     "ask": []

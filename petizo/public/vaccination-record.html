@@ -371,25 +371,26 @@
         }
 
         .view-proof-btn, .btn-view {
-            padding: 12px 28px;
-            background: linear-gradient(135deg, #00bcd4 0%, #00acc1 100%);
-            color: white;
-            border: none;
+            padding: 10px 24px;
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 0.9rem;
+            font-weight: 600;
             transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
         .view-proof-btn:hover, .btn-view:hover {
-            background: linear-gradient(135deg, #00e5ff 0%, #00bcd4 100%);
+            background: #e9ecef;
+            border-color: #adb5bd;
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 188, 212, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
 
         .view-proof-btn:active, .btn-view:active {
@@ -449,6 +450,7 @@
             padding-top: 15px;
             border-top: 2px dashed #e0e0e0;
             animation: slideDown 0.3s ease;
+            justify-content: flex-end;
         }
 
         .vaccination-item.expanded .vaccination-actions {
@@ -903,7 +905,6 @@
                         ${vaccination.proof_image ? `
                             <div class="vaccination-proof">
                                 <button class="btn-view" onclick="viewProof('${vaccination.proof_image}'); event.stopPropagation();">
-                                    <img src="/icon/oath.png" alt="View" style="width:20px;height:20px;">
                                     ดูหลักฐาน
                                 </button>
                             </div>
