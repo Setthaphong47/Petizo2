@@ -503,14 +503,16 @@
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label>อีเมล</label>
-                        <input type="email" id="loginEmail" required placeholder="info.madhu786@gmail.com">
+                        <input type="email" id="loginEmail" required placeholder="Petizo178@gmail.com">
                     </div>
 
                     <div class="form-group">
                         <label>รหัสผ่าน</label>
                         <div class="input-wrapper">
                             <input type="password" id="loginPassword" required placeholder="••••••••">
-                            <span class="password-toggle" onclick="togglePassword()">👁</span>
+                            <span class="password-toggle" onclick="togglePassword()">
+                                <img id="toggleIcon" src="/icon/close-eye.png" alt="Toggle Password" style="width:20px;height:20px;">
+                            </span>
                         </div>
                     </div>
 
@@ -540,8 +542,15 @@
         // Toggle password visibility
         function togglePassword() {
             const passwordInput = document.getElementById('loginPassword');
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.src = '/icon/visible.png';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.src = '/icon/close-eye.png';
+            }
         }
 
         // Show message
