@@ -109,7 +109,7 @@
                 .notification-item.warning { border-left:3px solid #ffa726; background:#fffef7; }
                 .notification-item.info { border-left:3px solid #78909c; background:#f9fafb; }
                 .notification-top { display:flex; gap:8px; align-items:center; flex:1; }
-                .notification-icon { display:flex; align-items:center; justify-content:center; flex-shrink:0; background:transparent; }
+                .notification-icon { display:flex; align-items:center; justify-content:center; flex-shrink:0; background:transparent !important; border-radius:0 !important; padding:0 !important; }
                 .notification-icon img { width:16px; height:16px; opacity:0.85; }
                 .notification-details { flex:1; line-height:1.3; }
                 .notification-header-row { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
