@@ -5151,7 +5151,12 @@
                 // Update stats card
                 if (data.length > 0) {
                     const latest = data[data.length - 1];
-                    const statsResponse = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                    // ส่ง month parameter ไปที่ API /admin/dashboard/stats
+                    let statsUrl = `${API_URL}/admin/dashboard/stats`;
+                    if (month) {
+                        statsUrl += `?month=${month}`;
+                    }
+                    const statsResponse = await fetch(statsUrl, {
                         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                     });
                     const stats = await statsResponse.json();
@@ -5352,10 +5357,11 @@
         // Load Pet Stats and Growth
         async function loadAnalyticsPetStats(month = null) {
             try {
-                const url = month
-                    ? `${API_URL}/admin/dashboard/stats?month=${month}`
-                    : `${API_URL}/admin/dashboard/stats`;
-                const statsResponse = await fetch(url, {
+                let statsUrl = `${API_URL}/admin/dashboard/stats`;
+                if (month) {
+                    statsUrl += `?month=${month}`;
+                }
+                const statsResponse = await fetch(statsUrl, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
                 });
                 const stats = await statsResponse.json();
