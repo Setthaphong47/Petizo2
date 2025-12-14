@@ -79,25 +79,6 @@ class NavigationBar {
                 </div>
             </nav>
 
-            <!-- Notification Modal -->
-            <div class="notification-modal" id="notificationModal">
-                <div class="notification-content">
-                    <div class="notification-header">
-                        <h2>
-                            <span><img src="/icon/alarm.png" alt="Notification" style="width:30px;height:30px;"></span>
-                            <span>การแจ้งเตือนวัคซีน</span>
-                        </h2>
-                        <button class="close-modal-btn" id="closeNotificationBtn">×</button>
-                    </div>
-                    
-                    <div class="notification-body" id="notificationList">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            <div>กำลังโหลดการแจ้งเตือน</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         `;
     }
 
