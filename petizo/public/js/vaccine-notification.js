@@ -96,7 +96,7 @@
                 .notification-modal { display: none; position: fixed; inset:0; background: rgba(0,0,0,0.5); z-index:10000; padding:20px; align-items:center; justify-content:center; }
                 .notification-modal.active { display:flex; }
                 .notification-content { background:white; border-radius:16px; width:100%; max-width:640px; max-height:80vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 8px 30px rgba(2,6,23,0.2); }
-                .notification-header { padding:18px 20px; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center; background: linear-gradient(135deg,#00bcd4 0%,#00e5ff 100%); color:white; }
+                .notification-header { padding:18px 20px; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center; background: white; color:#1a1a1a; }
                 .notification-header .notification-title { font-size:18px; font-weight:700; display:flex; align-items:center; gap:10px; margin:0; }
                 .close-modal-btn { width:36px; height:36px; border:none; background: rgba(255,255,255,0.15); border-radius:50%; cursor:pointer; font-size:22px; color:white; display:flex; align-items:center; justify-content:center; }
                 .notification-body { padding:20px; overflow-y:auto; flex:1; background:#fbfbfc; }
