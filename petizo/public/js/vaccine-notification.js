@@ -105,9 +105,9 @@
                 .notification-close-btn { background:transparent; color:#999; border:none; padding:2px; cursor:pointer; transition:all 0.2s; width:16px; height:16px; display:flex; align-items:center; justify-content:center; border-radius:3px; flex-shrink:0; }
                 .notification-close-btn:hover { background:#f5f5f5; color:#666; }
                 .notification-close-btn img { width:10px; height:10px; }
-                .notification-item.urgent { border-left:3px solid #ff6b6b; background:#fffafa; border:1px solid #ffcdd2; border-left:3px solid #ff6b6b; }
-                .notification-item.warning { border-left:3px solid #ffa726; background:#fffef7; border:1px solid #ffe0b2; border-left:3px solid #ffa726; }
-                .notification-item.info { border-left:3px solid #78909c; background:#f9fafb; border:1px solid #cfd8dc; border-left:3px solid #78909c; }
+                .notification-item.urgent { background:#fffafa; border:1px solid #ffcdd2; border-left-width:3px; border-left-color:#ff6b6b; }
+                .notification-item.warning { background:#fffef7; border:1px solid #ffe0b2; border-left-width:3px; border-left-color:#ffa726; }
+                .notification-item.info { background:#f9fafb; border:1px solid #cfd8dc; border-left-width:3px; border-left-color:#78909c; }
                 .notification-top { display:flex; gap:8px; align-items:center; flex:1; }
                 .notification-details { flex:1; line-height:1.3; }
                 .status-badge { display:inline-flex; align-items:center; justify-content:center; padding:3px 8px; border-radius:8px; font-size:9px; font-weight:600; letter-spacing:0.2px; flex-shrink:0; min-width:52px; text-align:center; }
