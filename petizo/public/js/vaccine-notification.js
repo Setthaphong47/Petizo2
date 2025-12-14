@@ -106,7 +106,7 @@
                 .notification-close-btn:hover, .notification-close-btn:focus { background:#ffeaea; color:#d32f2f; }
                 .notification-item.urgent { border-color:#ff6b6b; }
                 .notification-item.warning { border-color:#ffb84d; }
-                .notification-item.info { border-color:#00bcd4; }
+                .notification-item.info { border-color:#bdbdbd; }
                 .notification-top { display:flex; gap:14px; align-items:flex-start; }
                 .notification-icon { width:44px; height:44px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:#f0f8ff; }
                 .notification-details { flex:1; }

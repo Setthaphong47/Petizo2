@@ -219,21 +219,7 @@
         /* Timeline Container */
         .timeline-container {
             position: relative;
-            padding-left: 80px;
             animation: slideIn 0.6s ease 0.4s both;
-        }
-
-        .timeline-line {
-            position: absolute;
-            left: 32px;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: linear-gradient(to bottom, 
-                rgba(0, 188, 212, 0.6) 0%, 
-                rgba(0, 188, 212, 0.2) 100%
-            );
-            border-radius: 4px;
         }
 
         /* Vaccination Item */
@@ -625,20 +611,7 @@
                 gap: 12px;
             }
 
-            .timeline-container {
-                padding-left: 0;
-            }
-
-            .timeline-line,
-            .timeline-dot {
-                display: none;
-            }
-
-            .vaccination-card {
-                padding: 24px;
-            }
-
-            .vaccine-details {
+            .vaccination-details {
                 grid-template-columns: 1fr;
             }
 
@@ -700,7 +673,6 @@
 
         <!-- Vaccination Timeline -->
         <div class="timeline-container" id="vaccinationTimeline">
-            <div class="timeline-line"></div>
             <div class="loading">กำลังโหลดประวัติวัคซีน</div>
         </div>
     </div>
@@ -844,16 +816,14 @@
                 return;
             }
 
-            let html = '<div class="timeline-line"></div>';
+            let html = '';
 
             vaccinations.forEach((vaccination, index) => {
-                const vaccinationDate = new Date(vaccination.vaccination_date).toLocaleDateString('th-TH', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                });
+                const date = new Date(vaccination.vaccination_date);
+                const day = date.getDate();
+                const month = date.toLocaleDateString('th-TH', { month: 'short' });
 
-                const nextDueDate = vaccination.next_due_date 
+                const nextDueDate = vaccination.next_due_date
                     ? new Date(vaccination.next_due_date).toLocaleDateString('th-TH', {
                         day: 'numeric',
                         month: 'long',
@@ -862,88 +832,81 @@
                     : '-';
 
                 html += `
-                    <div class="vaccination-item">
-                        <div class="timeline-dot">✓</div>
-                        <div class="vaccination-card">
-                            <div class="vaccine-header">
-                                <div class="vaccine-main-info">
-                                    <div class="vaccine-name">
-                                        <span class="vaccine-icon"><img src="/icon/syringe.png" alt="male" style="width:25px;height:25px;"></span>
-                                        ${vaccination.vaccine_name}
-                                    </div>
-                                    <div class="vaccine-date">
-                                        <img src="/icon/calendar (2).png" alt="male" style="width:25px;height:25px;"> ${vaccinationDate}
-                                    </div>
-                                </div>
-                                <div class="vaccine-actions">
-                                    ${vaccination.proof_image ? `
-                                        <button class="action-btn btn-view"
-                                                onclick="viewProof('${vaccination.proof_image}')">
-                                            <img src="/icon/oath.png" alt="View">
-                                            <span>ดูหลักฐาน</span>
-                                        </button>
-                                    ` : ''}
-                                    <button class="action-btn btn-delete"
-                                            onclick="deleteVaccination(${vaccination.id}, '${vaccination.vaccine_name}')">
-                                        <img src="/icon/bin.png" alt="Delete">
-                                        <span>ลบ</span>
-                                    </button>
+                    <div class="vaccination-item" onclick="toggleVaccinationDetails(${index})">
+                        <div class="vaccination-header">
+                            <div class="vaccination-date">
+                                <div class="vaccination-date-day">${day}</div>
+                                <div class="vaccination-date-month">${month}</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="vaccination-vaccine-name">
+                                    <img src="/icon/syringe.png" alt="Vaccine" style="width:20px;height:20px;"> ${vaccination.vaccine_name}
                                 </div>
                             </div>
+                            <img src="/icon/down-arrow.png" alt="Expand" class="vaccination-expand-icon">
+                        </div>
 
-                            <div class="vaccine-details">
-                                ${vaccination.veterinarian ? `
-                                    <div class="detail-item">
-                                        <div class="detail-label"><img src="/icon/veterinarian.png" alt="Doctor" style="width:25px;height:25px;"> สัตวแพทย์</div>
-                                        <div class="detail-value">${vaccination.veterinarian}</div>
-                                    </div>
-                                ` : ''}
-                                ${vaccination.clinic_name ? `
-                                    <div class="detail-item">
-                                        <div class="detail-label"><img src="/icon/veterinary.png" alt="Clinic" style="width:25px;height:25px;"> คลินิก</div>
-                                        <div class="detail-value">${vaccination.clinic_name}</div>
-                                    </div>
-                                ` : ''}
-                                ${vaccination.batch_number ? `
-                                    <div class="detail-item">
-                                        <div class="detail-label"><img src="/icon/barcode.png" alt="Batch Num" style="width:25px;height:25px;"> Batch</div>
-                                        <div class="detail-value">${vaccination.batch_number}</div>
-                                    </div>
-                                ` : ''}
-                                <div class="detail-item">
-                                    <div class="detail-label"><img src="/icon/right-arrow.png" alt="Next Dua Date" style="width:25px;height:25px;"> นัดครั้งถัดไป</div>
-                                    <div class="detail-value">${nextDueDate}</div>
+                        <div class="vaccination-details">
+                            ${vaccination.clinic_name ? `
+                                <div class="vaccination-detail-item">
+                                    <img src="/icon/veterinary.png" alt="Clinic" style="width:20px;height:20px;">
+                                    <strong>คลินิก:</strong> ${vaccination.clinic_name}
                                 </div>
+                            ` : ''}
+                            ${vaccination.veterinarian ? `
+                                <div class="vaccination-detail-item">
+                                    <img src="/icon/veterinarian.png" alt="Doctor" style="width:20px;height:20px;">
+                                    <strong>สัตวแพทย์:</strong> ${vaccination.veterinarian}
+                                </div>
+                            ` : ''}
+                            ${vaccination.batch_number ? `
+                                <div class="vaccination-detail-item">
+                                    <img src="/icon/barcode.png" alt="Batch" style="width:20px;height:20px;">
+                                    <strong>Batch:</strong> ${vaccination.batch_number}
+                                </div>
+                            ` : ''}
+                            ${vaccination.next_due_date ? `
+                                <div class="vaccination-detail-item">
+                                    <img src="/icon/right-arrow.png" alt="Next Due Date" style="width:20px;height:20px;">
+                                    <strong>นัดครั้งถัดไป:</strong> ${nextDueDate}
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        ${vaccination.proof_image ? `
+                            <div class="vaccination-proof">
+                                <button class="btn-view" onclick="viewProof('${vaccination.proof_image}'); event.stopPropagation();">
+                                    <img src="/icon/oath.png" alt="View" style="width:20px;height:20px;">
+                                    ดูหลักฐาน
+                                </button>
                             </div>
+                        ` : ''}
 
-                            ${vaccination.proof_image ? `
-                                <div class="vaccine-proof">
-                                    <div class="proof-label">
-                                        <img src="/icon/oath.png" alt="Evidence" style="width:25px;height:25px;"> หลักฐาน
-                                    </div>
-                                    <div class="proof-image-container" onclick="viewProof('${vaccination.proof_image}')">
-                                        <img src="${vaccination.proof_image}" 
-                                             alt="Proof" 
-                                             class="proof-image">
-                                        <div class="proof-overlay">
-                                            <span class="proof-overlay-text"><img src="/icon/search (1).png" alt="More" style="width:25px;height:25px;"> ขยาย</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ` : ''}
+                        ${vaccination.notes ? `
+                            <div class="vaccination-notes">
+                                <img src="/icon/notes.png" alt="Notes" style="width:20px;height:20px;">
+                                <strong>หมายเหตุ:</strong> ${vaccination.notes}
+                            </div>
+                        ` : ''}
 
-                            ${vaccination.notes ? `
-                                <div class="vaccine-notes">
-                                    <span class="notes-label"><img src="/icon/notes.png" alt="Note" style="width:25px;height:25px;"> หมายเหตุ :</span>
-                                    ${vaccination.notes}
-                                </div>
-                            ` : ''}
+                        <div class="vaccination-actions">
+                            <button class="btn-delete" onclick="deleteVaccination(${vaccination.id}, '${vaccination.vaccine_name}'); event.stopPropagation();">
+                                <img src="/icon/bin.png" alt="Delete" style="width:20px;height:20px;">
+                                ลบ
+                            </button>
                         </div>
                     </div>
                 `;
             });
 
             timeline.innerHTML = html;
+        }
+
+        function toggleVaccinationDetails(index) {
+            const items = document.querySelectorAll('.vaccination-item');
+            if (items[index]) {
+                items[index].classList.toggle('expanded');
+            }
         }
 
         function viewProof(imagePath) {
@@ -971,9 +934,11 @@
                 });
 
                 if (response.ok) {
-                    const card = event.target.closest('.vaccination-card');
-                    card.style.animation = 'fadeOutRight 0.5s ease forwards';
-                    
+                    const item = event.target.closest('.vaccination-item');
+                    item.style.transition = 'all 0.5s ease';
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(100px)';
+
                     setTimeout(() => {
                         loadVaccinationHistory();
                     }, 500);
