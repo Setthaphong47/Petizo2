@@ -135,6 +135,15 @@
     filter: brightness(0) invert(1);
 }
 
+#profileBtn:hover {
+    background: #f8f9fa;
+    transform: scale(1.1);
+}
+
+#profileBtn:hover img {
+    filter: none;
+}
+
 /* Notification Badge */
 .notification-badge {
     position: absolute;
