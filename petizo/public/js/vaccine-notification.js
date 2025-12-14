@@ -108,17 +108,14 @@
                 .notification-item.urgent { border-left:3px solid #ff6b6b; background:#fffafa; }
                 .notification-item.warning { border-left:3px solid #ffa726; background:#fffef7; }
                 .notification-item.info { border-left:3px solid #78909c; background:#f9fafb; }
-                .notification-top { display:flex; gap:8px; align-items:center; flex:1; }
-                .notification-icon { display:flex; align-items:center; justify-content:center; flex-shrink:0; background:transparent !important; border-radius:0 !important; padding:0 !important; }
-                .notification-icon img { width:16px; height:16px; opacity:0.85; }
+                .notification-top { display:flex; gap:8px; align-items:flex-start; flex:1; }
                 .notification-details { flex:1; line-height:1.3; }
-                .notification-header-row { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
-                .status-badge { display:inline-block; padding:1px 6px; border-radius:8px; font-size:9px; font-weight:600; letter-spacing:0.2px; }
+                .status-badge { display:inline-flex; align-items:center; justify-content:center; padding:3px 8px; border-radius:8px; font-size:9px; font-weight:600; letter-spacing:0.2px; flex-shrink:0; min-width:52px; text-align:center; }
                 .status-overdue { background:#ffebee; color:#d32f2f; border:1px solid #ffcdd2; }
                 .status-due { background:#fff8e1; color:#f57c00; border:1px solid #ffe0b2; }
                 .status-upcoming { background:#eceff1; color:#546e7a; border:1px solid #cfd8dc; }
                 .pet-name { font-size:12px; font-weight:700; color:#111; margin-bottom:2px; }
-                .vaccine-name { font-size:12px; font-weight:600; color:#333; display:inline; }
+                .vaccine-name { font-size:12px; font-weight:600; color:#333; margin-bottom:2px; }
                 .notification-info { font-size:11px; color:#666; }
                 .notification-message { font-size:11px; color:#666; }
                 .notification-date { font-size:11px; color:#999; }
@@ -354,12 +351,9 @@
             return `
                 <div class="notification-item ${urgencyClass}" data-idx="${idx}">
                     <div class="notification-top" data-petid="${notif.petId}" style="cursor:pointer;">
-                        <div class="notification-icon"><img src="/icon/syringe.png" alt="Vaccine"></div>
+                        ${statusBadge}
                         <div class="notification-details">
-                            <div class="notification-header-row">
-                                ${statusBadge}
-                                <span class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</span>
-                            </div>
+                            <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
                             <div class="notification-info">${escapeHtml(message)} • ${dueDate}</div>
                         </div>
                     </div>
