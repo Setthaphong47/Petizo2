@@ -33,10 +33,6 @@
     transition: all 0.3s ease;
 }
 
-.chat-button:hover img {
-    filter: brightness(0) invert(1);
-}
-
 .chat-button i {
     color: #000;
     font-size: 24px;

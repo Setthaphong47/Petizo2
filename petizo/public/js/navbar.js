@@ -63,11 +63,11 @@ class NavigationBar {
                     </button>
                     <div class="profile-dropdown">
                         <button class="icon-btn" id="profileBtn" title="โปรไฟล์">
-                            <img id="navProfilePicture" src="/icon/profile.png" alt="User" style="width:35px;height:35px;border-radius:50%;object-fit:cover;">
+                            <img id="navProfilePicture" src="/icon/profile.png" alt="User" style="width:35px;height:35px;border-radius:50%;object-fit:cover;border:2px solid #ddd;">
                         </button>
                         <div class="dropdown-menu" id="profileDropdown">
                             <a href="user-profile.html" class="dropdown-item">
-                                <img id="dropdownProfilePicture" src="/icon/profile.png" alt="User" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
+                                <img id="dropdownProfilePicture" src="/icon/profile.png" alt="User" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #ddd;">
                                 <span>ข้อมูลผู้ใช้งาน</span>
                             </a>
                             <button class="dropdown-item logout">
