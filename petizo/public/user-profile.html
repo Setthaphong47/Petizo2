@@ -878,6 +878,12 @@
                         const user = JSON.parse(localStorage.getItem('user'));
                         user.profile_picture = result.profile_picture;
                         localStorage.setItem('user', JSON.stringify(user));
+
+                        // Update navbar profile picture
+                        if (window.NavigationBar) {
+                            NavigationBar.updateProfilePicture();
+                        }
+
                         alert('อัพโหลดรูปโปรไฟล์สำเร็จ');
                     } else {
                         const error = await response.json();

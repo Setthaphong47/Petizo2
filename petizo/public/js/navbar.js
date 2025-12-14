@@ -63,11 +63,11 @@ class NavigationBar {
                     </button>
                     <div class="profile-dropdown">
                         <button class="icon-btn" id="profileBtn" title="โปรไฟล์">
-                            <img src="/icon/profile.png" alt="User" style="width:35px;height:35px;">
+                            <img id="navProfilePicture" src="/icon/profile.png" alt="User" style="width:35px;height:35px;border-radius:50%;object-fit:cover;">
                         </button>
                         <div class="dropdown-menu" id="profileDropdown">
                             <a href="user-profile.html" class="dropdown-item">
-                                <img src="/icon/profile.png" alt="User" style="width:30px;height:30px;">
+                                <img id="dropdownProfilePicture" src="/icon/profile.png" alt="User" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
                                 <span>ข้อมูลผู้ใช้งาน</span>
                             </a>
                             <button class="dropdown-item logout">
@@ -262,6 +262,9 @@ class NavigationBar {
                         if (userDisplayName) {
                             userDisplayName.textContent = userData.full_name || userData.username || 'User';
                         }
+
+                        // Update profile pictures
+                        this.updateProfilePictures(userData.profile_picture);
                     } catch (e) {
                         console.error('Error parsing user data:', e);
                     }
@@ -470,10 +473,39 @@ class NavigationBar {
         }
     }
 
+    updateProfilePictures(profilePictureUrl) {
+        const navProfileImg = document.getElementById('navProfilePicture');
+        const dropdownProfileImg = document.getElementById('dropdownProfilePicture');
+
+        if (profilePictureUrl) {
+            if (navProfileImg) {
+                navProfileImg.src = profilePictureUrl;
+            }
+            if (dropdownProfileImg) {
+                dropdownProfileImg.src = profilePictureUrl;
+            }
+        }
+    }
+
     static refreshAuth() {
         // Use existing instance instead of creating new one
         if (window.navbar) {
             window.navbar.updateAuthState();
+        }
+    }
+
+    static updateProfilePicture() {
+        // Update profile pictures from localStorage
+        if (window.navbar) {
+            const user = localStorage.getItem('user');
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    window.navbar.updateProfilePictures(userData.profile_picture);
+                } catch (e) {
+                    console.error('Error updating profile picture:', e);
+                }
+            }
         }
     }
 }
