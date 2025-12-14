@@ -79,9 +79,6 @@
                             <div>กำลังโหลดการแจ้งเตือน</div>
                         </div>
                     </div>
-                    <div class="notification-footer">
-                        <button class="view-all-btn" id="viewAllNotifications">ดูทั้งหมด</button>
-                    </div>
                 </div>
             </div>
         `;
@@ -327,9 +324,6 @@
                             <div class="vaccine-name">${petNameDisplay}${escapeHtml(notif.vaccineName || '')}</div>
                             <div class="notification-info">${escapeHtml(message)} • ${dueDate}</div>
                         </div>
-                    </div>
-                    <button class="notification-close-btn" data-idx="${idx}" onclick="event.stopPropagation(); window.NotificationSystem.removeNotification(${idx});"><img src="/icon/x.png" alt="ลบ"></button>
-                </div>
             `;
         }).join('');
     // แปลงจำนวนวัน overdue เป็น เดือน/ปี/วัน ตามเงื่อนไขที่กำหนด
