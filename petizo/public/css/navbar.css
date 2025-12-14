@@ -343,6 +343,7 @@
 .notification-item.urgent {
     background: #fff3cd;
     border-left: 4px solid #ffc107;
+    border: 1.5px solid #ffc107;
 }
 
 .notification-item.urgent:hover {
@@ -352,7 +353,8 @@
         
 
 .notification-item.warning {
-    border-color: #ffa502;
+    border-left: 4px solid #ffa502;
+    border: 1.5px solid #ffa502;
     background: linear-gradient(to right, #fff 0%, #fffbf5 100%);
 }
 
