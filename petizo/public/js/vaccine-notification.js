@@ -348,12 +348,14 @@
             const dueDate = notif.dueDate ? formatThaiDate(notif.dueDate) : '-';
             const urgencyClass = notif.type || 'info';
 
+            const petNameDisplay = notif.petName ? `${escapeHtml(notif.petName)} • ` : '';
+
             return `
                 <div class="notification-item ${urgencyClass}" data-idx="${idx}">
                     <div class="notification-top" data-petid="${notif.petId}" style="cursor:pointer;">
                         ${statusBadge}
                         <div class="notification-details">
-                            <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
+                            <div class="vaccine-name">${petNameDisplay}${escapeHtml(notif.vaccineName || '')}</div>
                             <div class="notification-info">${escapeHtml(message)} • ${dueDate}</div>
                         </div>
                     </div>
