@@ -324,6 +324,8 @@
                             <div class="vaccine-name">${petNameDisplay}${escapeHtml(notif.vaccineName || '')}</div>
                             <div class="notification-info">${escapeHtml(message)} • ${dueDate}</div>
                         </div>
+                    </div>
+                </div>
             `;
         }).join('');
     // แปลงจำนวนวัน overdue เป็น เดือน/ปี/วัน ตามเงื่อนไขที่กำหนด
