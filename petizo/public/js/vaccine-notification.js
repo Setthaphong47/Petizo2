@@ -100,25 +100,27 @@
                 .notification-header .notification-title { font-size:18px; font-weight:700; display:flex; align-items:center; gap:10px; margin:0; }
                 .close-modal-btn { width:36px; height:36px; border:none; background: rgba(255,255,255,0.15); border-radius:50%; cursor:pointer; font-size:22px; color:white; display:flex; align-items:center; justify-content:center; }
                 .notification-body { padding:20px; overflow-y:auto; flex:1; background:#fbfbfc; }
-                .notification-item { background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 12px; margin-bottom:8px; transition:all 0.3s; cursor:pointer; position:relative; display:flex; align-items:center; gap:10px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
-                .notification-item:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.08); border-color:#d0d0d0; }
-                .notification-close-btn { background:transparent; color:#999; border:none; padding:2px; cursor:pointer; transition:all 0.2s; width:20px; height:20px; display:flex; align-items:center; justify-content:center; border-radius:4px; }
+                .notification-item { background:white; border:1px solid #e0e0e0; border-radius:6px; padding:8px 10px; margin-bottom:6px; transition:all 0.3s; cursor:pointer; position:relative; display:flex; align-items:center; gap:8px; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
+                .notification-item:hover { transform:translateY(-1px); box-shadow:0 3px 8px rgba(0,0,0,0.06); border-color:#d0d0d0; }
+                .notification-close-btn { background:transparent; color:#999; border:none; padding:2px; cursor:pointer; transition:all 0.2s; width:16px; height:16px; display:flex; align-items:center; justify-content:center; border-radius:3px; flex-shrink:0; }
                 .notification-close-btn:hover { background:#f5f5f5; color:#666; }
-                .notification-close-btn img { width:12px; height:12px; }
+                .notification-close-btn img { width:10px; height:10px; }
                 .notification-item.urgent { border-left:3px solid #ff6b6b; background:#fffafa; }
                 .notification-item.warning { border-left:3px solid #ffa726; background:#fffef7; }
                 .notification-item.info { border-left:3px solid #78909c; background:#f9fafb; }
-                .notification-top { display:flex; gap:10px; align-items:center; flex:1; }
+                .notification-top { display:flex; gap:8px; align-items:center; flex:1; }
                 .notification-icon { display:flex; align-items:center; justify-content:center; flex-shrink:0; background:transparent; }
-                .notification-icon img { width:18px; height:18px; opacity:0.85; }
-                .notification-details { flex:1; line-height:1.4; }
-                .status-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; margin-bottom:4px; letter-spacing:0.2px; }
+                .notification-icon img { width:16px; height:16px; opacity:0.85; }
+                .notification-details { flex:1; line-height:1.3; }
+                .notification-header-row { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+                .status-badge { display:inline-block; padding:1px 6px; border-radius:8px; font-size:9px; font-weight:600; letter-spacing:0.2px; }
                 .status-overdue { background:#ffebee; color:#d32f2f; border:1px solid #ffcdd2; }
                 .status-due { background:#fff8e1; color:#f57c00; border:1px solid #ffe0b2; }
                 .status-upcoming { background:#eceff1; color:#546e7a; border:1px solid #cfd8dc; }
-                .pet-name { font-size:13px; font-weight:700; color:#111; margin-bottom:2px; }
-                .vaccine-name { font-size:13px; font-weight:600; color:#333; margin-bottom:4px; }
-                .notification-message { font-size:12px; color:#666; margin-bottom:2px; }
+                .pet-name { font-size:12px; font-weight:700; color:#111; margin-bottom:2px; }
+                .vaccine-name { font-size:12px; font-weight:600; color:#333; display:inline; }
+                .notification-info { font-size:11px; color:#666; }
+                .notification-message { font-size:11px; color:#666; }
                 .notification-date { font-size:11px; color:#999; }
                 .notification-footer { padding:12px 20px; border-top:1px solid #f0f0f0; text-align:right; }
                 .view-all-btn { background:#00bcd4; color:white; border:none; padding:8px 14px; border-radius:8px; font-weight:600; cursor:pointer; }
@@ -354,10 +356,11 @@
                     <div class="notification-top" data-petid="${notif.petId}" style="cursor:pointer;">
                         <div class="notification-icon"><img src="/icon/syringe.png" alt="Vaccine"></div>
                         <div class="notification-details">
-                            ${statusBadge}
-                            <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
-                            <div class="notification-message">${escapeHtml(message)}</div>
-                            <div class="notification-date">กำหนดฉีด: ${dueDate}</div>
+                            <div class="notification-header-row">
+                                ${statusBadge}
+                                <span class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</span>
+                            </div>
+                            <div class="notification-info">${escapeHtml(message)} • ${dueDate}</div>
                         </div>
                     </div>
                     <button class="notification-close-btn" data-idx="${idx}" onclick="event.stopPropagation(); window.NotificationSystem.removeNotification(${idx});"><img src="/icon/x.png" alt="ลบ"></button>
