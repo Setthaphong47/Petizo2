@@ -302,6 +302,8 @@
                 display: flex; align-items: flex-start;
                 background: #fff6f6;
                 border: 2px solid #ff6b6b;
+                border-left-width: 3px;
+                border-left-color: #ff6b6b;
                 border-radius: 14px;
                 padding: 18px 20px;
                 margin-bottom: 16px;

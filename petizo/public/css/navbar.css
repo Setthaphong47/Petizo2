@@ -326,42 +326,7 @@
     padding: 20px;
 }
 
-.notification-item {
-    padding: 16px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    transition: all 0.2s;
-    cursor: pointer;
-}
 
-.notification-item:hover {
-    background: #e9ecef;
-    transform: translateX(4px);
-}
-
-.notification-item.urgent {
-    background: #fff3cd;
-    border-left: 4px solid #ffc107;
-    border: 1.5px solid #ffc107;
-}
-
-.notification-item.urgent:hover {
-    background: #ffe69c;
-}
-
-        
-
-.notification-item.warning {
-    border-left: 4px solid #ffa502;
-    border: 1.5px solid #ffa502;
-    background: linear-gradient(to right, #fff 0%, #fffbf5 100%);
-}
-
-.notification-item.info {
-    border-color: #00bcd4;
-    background: linear-gradient(to right, #fff 0%, #f0fcff 100%);
-}
 
         .notification-top {
             display: flex;
