@@ -105,7 +105,13 @@
                 .notification-close-btn { background:transparent; color:#999; border:none; padding:2px; cursor:pointer; transition:all 0.2s; width:16px; height:16px; display:flex; align-items:center; justify-content:center; border-radius:3px; flex-shrink:0; }
                 .notification-close-btn:hover { background:#f5f5f5; color:#666; }
                 .notification-close-btn img { width:10px; height:10px; }
-                .notification-item.urgent { background:#fffafa; border:1px solid #ffcdd2; border-left-width:3px; border-left-color:#ff6b6b; }
+                .notification-item.urgent {
+                    background: #fff6f6;
+                    border: 1px solid #ff6b6b;
+                    border-left-width: 3px;
+                    border-left-color: #ff6b6b;
+                    border-radius: 6px;
+                }
                 .notification-item.warning { background:#fffef7; border:1px solid #ffe0b2; border-left-width:3px; border-left-color:#ffa726; }
                 .notification-item.info { background:#f9fafb; border:1px solid #cfd8dc; border-left-width:3px; border-left-color:#78909c; }
                 .notification-top { display:flex; gap:8px; align-items:center; flex:1; }
