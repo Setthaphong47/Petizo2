@@ -301,46 +301,7 @@
         }
 
         // inject urgent style (ถ้ายังไม่มี)
-        if (!document.getElementById('notificationUrgentStyles')) {
-            const urgentStyles = `
-            <style id="notificationUrgentStyles">
-            .notification-item.urgent {
-                display: flex; align-items: flex-start;
-                background: #fff6f6;
-                border: 2px solid #ff6b6b;
-                border-left-width: 3px;
-                border-left-color: #ff6b6b;
-                border-radius: 14px;
-                padding: 18px 20px;
-                margin-bottom: 16px;
-                box-shadow: 0 2px 8px rgba(255,107,107,0.08);
-            }
-            .urgent-icon img {
-                width: 38px; height: 38px; margin-right: 16px;
-            }
-            .urgent-content { flex: 1; }
-            .urgent-content .pet-name {
-                font-size: 17px; font-weight: bold; color: #d32f2f; margin-bottom: 2px;
-            }
-            .urgent-content .vaccine-name {
-                font-size: 15px; color: #444; margin-bottom: 6px;
-            }
-            .urgent-content .urgent-message {
-                font-size: 14px; color: #d32f2f; font-weight: 600; margin-bottom: 4px;
-            }
-            .urgent-content .due-date {
-                font-size: 13px; color: #888; margin-bottom: 8px;
-            }
-            .urgent-detail-btn {
-                background: #ff6b6b; color: #fff; border: none; border-radius: 8px;
-                padding: 6px 16px; font-weight: 600; cursor: pointer; font-size: 13px;
-                transition: background 0.15s;
-            }
-            .urgent-detail-btn:hover { background: #d32f2f; }
-            </style>
-            `;
-            document.head.insertAdjacentHTML('beforeend', urgentStyles);
-        }
+            // ลบการ inject urgent style ซ้ำซ้อน (ใช้แค่ injectNotificationStyles)
 
         // Render notifications - New compact design
         container.innerHTML = notifications.map((notif, idx) => {
