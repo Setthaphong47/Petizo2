@@ -106,10 +106,10 @@
                 .notification-close-btn:hover { background:#f5f5f5; color:#666; }
                 .notification-close-btn img { width:10px; height:10px; }
                 .notification-item.urgent {
-                    background: #fff6f6;
-                    border: 1px solid #ff6b6b;
+                    background: #fffef7;
+                    border: 1px solid #ffe0b2;
                     border-left-width: 3px;
-                    border-left-color: #ff6b6b;
+                    border-left-color: #ffa726;
                     border-radius: 6px;
                 }
                 .notification-item.warning { background:#fffef7; border:1px solid #ffe0b2; border-left-width:3px; border-left-color:#ffa726; }
