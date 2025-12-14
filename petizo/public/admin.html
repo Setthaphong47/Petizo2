@@ -5163,16 +5163,8 @@
 
                     const changeElement = document.getElementById('analyticsUserChange');
                     if (changeElement) {
-                        if (latest.percentageChange > 0) {
-                            changeElement.className = 'stat-change positive';
-                            changeElement.innerHTML = `<span>+${latest.percentageChange}% จากเดือนที่แล้ว</span>`;
-                        } else if (latest.percentageChange < 0) {
-                            changeElement.className = 'stat-change negative';
-                            changeElement.innerHTML = `<span>${latest.percentageChange}% จากเดือนที่แล้ว</span>`;
-                        } else {
-                            changeElement.className = 'stat-change neutral';
-                            changeElement.innerHTML = `<span>ไม่เปลี่ยนแปลง</span>`;
-                        }
+                        changeElement.className = 'stat-change neutral';
+                        changeElement.innerHTML = '';
                     }
                 }
 
@@ -5378,13 +5370,8 @@
                 const petChangeEl = document.getElementById('analyticsPetChange');
                 if (petChangeEl) {
                     const newThisMonth = stats.newPetsThisMonth || 0;
-                    if (newThisMonth > 0) {
-                        petChangeEl.className = 'stat-change positive';
-                        petChangeEl.innerHTML = `<span>+${newThisMonth} ตัวใหม่เดือนนี้</span>`;
-                    } else {
-                        petChangeEl.className = 'stat-change neutral';
-                        petChangeEl.innerHTML = `<span>ไม่มีสัตว์เลี้ยงใหม่</span>`;
-                    }
+                    petChangeEl.className = 'stat-change neutral';
+                    petChangeEl.innerHTML = '';
                 }
 
                 // Update blog stats
@@ -5397,14 +5384,8 @@
                 if (blogChangeEl) {
                     const published = stats.publishedBlogs || 0;
                     const total = stats.totalBlogs || 0;
-                    if (total > 0) {
-                        const percent = ((published / total) * 100).toFixed(0);
-                        blogChangeEl.className = 'stat-change positive';
-                        blogChangeEl.innerHTML = `<span>${published} เผยแพร่ (${percent}%)</span>`;
-                    } else {
-                        blogChangeEl.className = 'stat-change neutral';
-                        blogChangeEl.innerHTML = `<span>ยังไม่มีบทความ</span>`;
-                    }
+                    blogChangeEl.className = 'stat-change neutral';
+                    blogChangeEl.innerHTML = '';
                 }
             } catch (error) {
                 console.error('Error loading pet stats:', error);
