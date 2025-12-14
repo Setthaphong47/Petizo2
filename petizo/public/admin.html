@@ -5296,15 +5296,6 @@
                         .slice(0, 10);
                 }
 
-                // Update pet stats
-                const statsResponse = await fetch(`${API_URL}/admin/dashboard/stats`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-                });
-                const stats = await statsResponse.json();
-                const petCountEl = document.getElementById('analyticsTotalPets');
-                if (petCountEl) {
-                    petCountEl.textContent = (stats.totalPets || 0).toLocaleString();
-                }
 
                 const ctx = document.getElementById('analyticsBreedsChart');
                 if (!ctx) return;
