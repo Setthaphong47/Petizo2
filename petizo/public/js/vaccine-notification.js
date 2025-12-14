@@ -100,26 +100,26 @@
                 .notification-header .notification-title { font-size:18px; font-weight:700; display:flex; align-items:center; gap:10px; margin:0; }
                 .close-modal-btn { width:36px; height:36px; border:none; background: rgba(255,255,255,0.15); border-radius:50%; cursor:pointer; font-size:22px; color:white; display:flex; align-items:center; justify-content:center; }
                 .notification-body { padding:20px; overflow-y:auto; flex:1; background:#fbfbfc; }
-                .notification-item { background:white; border:1px solid #e0e0e0; border-radius:12px; padding:14px 16px; margin-bottom:10px; transition:all 0.3s; cursor:pointer; position:relative; display:flex; align-items:center; gap:14px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+                .notification-item { background:white; border:1px solid #e0e0e0; border-radius:8px; padding:10px 12px; margin-bottom:8px; transition:all 0.3s; cursor:pointer; position:relative; display:flex; align-items:center; gap:10px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
                 .notification-item:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.08); border-color:#d0d0d0; }
-                .notification-close-btn { background:transparent; color:#999; border:none; padding:4px; cursor:pointer; transition:all 0.2s; width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:4px; }
+                .notification-close-btn { background:transparent; color:#999; border:none; padding:2px; cursor:pointer; transition:all 0.2s; width:20px; height:20px; display:flex; align-items:center; justify-content:center; border-radius:4px; }
                 .notification-close-btn:hover { background:#f5f5f5; color:#666; }
-                .notification-close-btn img { width:14px; height:14px; }
-                .notification-item.urgent { border-left:4px solid #ff6b6b; background:#fffafa; }
-                .notification-item.warning { border-left:4px solid #ffa726; background:#fffef7; }
-                .notification-item.info { border-left:4px solid #78909c; background:#f9fafb; }
-                .notification-top { display:flex; gap:12px; align-items:center; flex:1; }
-                .notification-icon { display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-                .notification-icon img { width:22px; height:22px; opacity:0.85; }
-                .notification-details { flex:1; line-height:1.5; }
-                .status-badge { display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; margin-bottom:6px; letter-spacing:0.3px; }
+                .notification-close-btn img { width:12px; height:12px; }
+                .notification-item.urgent { border-left:3px solid #ff6b6b; background:#fffafa; }
+                .notification-item.warning { border-left:3px solid #ffa726; background:#fffef7; }
+                .notification-item.info { border-left:3px solid #78909c; background:#f9fafb; }
+                .notification-top { display:flex; gap:10px; align-items:center; flex:1; }
+                .notification-icon { display:flex; align-items:center; justify-content:center; flex-shrink:0; background:transparent; }
+                .notification-icon img { width:18px; height:18px; opacity:0.85; }
+                .notification-details { flex:1; line-height:1.4; }
+                .status-badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; margin-bottom:4px; letter-spacing:0.2px; }
                 .status-overdue { background:#ffebee; color:#d32f2f; border:1px solid #ffcdd2; }
                 .status-due { background:#fff8e1; color:#f57c00; border:1px solid #ffe0b2; }
                 .status-upcoming { background:#eceff1; color:#546e7a; border:1px solid #cfd8dc; }
-                .pet-name { font-size:14px; font-weight:700; color:#111; margin-bottom:2px; }
-                .vaccine-name { font-size:14px; font-weight:600; color:#333; margin-bottom:5px; }
-                .notification-message { font-size:13px; color:#666; margin-bottom:3px; }
-                .notification-date { font-size:12px; color:#999; }
+                .pet-name { font-size:13px; font-weight:700; color:#111; margin-bottom:2px; }
+                .vaccine-name { font-size:13px; font-weight:600; color:#333; margin-bottom:4px; }
+                .notification-message { font-size:12px; color:#666; margin-bottom:2px; }
+                .notification-date { font-size:11px; color:#999; }
                 .notification-footer { padding:12px 20px; border-top:1px solid #f0f0f0; text-align:right; }
                 .view-all-btn { background:#00bcd4; color:white; border:none; padding:8px 14px; border-radius:8px; font-weight:600; cursor:pointer; }
                 .loading { text-align:center; color:#9aa1a8; padding:30px 0; }
