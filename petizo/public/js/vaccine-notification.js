@@ -71,7 +71,7 @@
                             <span><img src="/icon/alarm.png" alt="Notification" style="width:26px;height:26px;"></span>
                             <span>การแจ้งเตือนวัคซีน</span>
                         </h2>
-                        <button class="close-modal-btn" id="closeModalBtn" aria-label="ปิด">×</button>
+                        <button class="close-modal-btn" id="closeModalBtn" aria-label="ปิด"><img src="/icon/circle-with-x.png" alt="ปิด" style="width:22px;height:22px;"></button>
                     </div>
                     <div class="notification-body" id="notificationList">
                         <div class="loading">
