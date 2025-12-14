@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
     chatPopup.innerHTML = `
         <div class="chat-widget" id="chat-widget">
             <div class="chat-button" onclick="toggleChat()">
-                <img src="/icon/chat.png" alt="Chat" style="width:30px;height:30px;">
+                <img src="/icon/bot-assistant.png" alt="AI Chat Bot">
             </div>
             <div class="chat-popup" id="chat-popup">
                 <div class="chat-header">
