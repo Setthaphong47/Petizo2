@@ -56,9 +56,9 @@
         .pet-header {
             background: white;
             border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            margin-bottom: 40px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
             position: relative;
             overflow: hidden;
             animation: slideIn 0.6s ease;
@@ -80,34 +80,34 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(135deg, rgba(0, 188, 212, 0.08) 0%, rgba(0, 229, 255, 0.08) 100%);
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.05) 0%, rgba(0, 229, 255, 0.05) 100%);
             border-radius: 50%;
-            transform: translate(30%, -30%);
+            transform: translate(40%, -40%);
         }
 
         .pet-header-content {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 20px;
             position: relative;
             z-index: 1;
         }
 
         .pet-avatar {
-            width: 140px;
-            height: 140px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 64px;
+            font-size: 40px;
             color: white;
             flex-shrink: 0;
-            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3);
-            border: 5px solid white;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
+            border: 3px solid white;
             position: relative;
         }
 
@@ -123,45 +123,46 @@
         }
 
         .pet-name {
-            font-size: 36px;
-            font-weight: 800;
+            font-size: 24px;
+            font-weight: 700;
             color: #1a1a1a;
             margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .pet-badge {
-            padding: 6px 16px;
+            padding: 4px 12px;
             background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 700;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
             color: white;
-            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 188, 212, 0.25);
         }
 
         .pet-details {
             display: flex;
-            gap: 30px;
-            margin-top: 12px;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
         }
 
         .detail-chip {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
+            gap: 6px;
+            padding: 6px 12px;
             background: #e0f7fa;
-            border-radius: 12px;
-            font-size: 14px;
+            border-radius: 10px;
+            font-size: 13px;
             color: #00695c;
             font-weight: 500;
         }
 
         .detail-icon {
-            font-size: 18px;
+            font-size: 16px;
         }
 
         /* Page Title */
