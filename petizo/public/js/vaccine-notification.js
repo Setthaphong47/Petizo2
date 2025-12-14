@@ -100,20 +100,25 @@
                 .notification-header .notification-title { font-size:18px; font-weight:700; display:flex; align-items:center; gap:10px; margin:0; }
                 .close-modal-btn { width:36px; height:36px; border:none; background: rgba(255,255,255,0.15); border-radius:50%; cursor:pointer; font-size:22px; color:white; display:flex; align-items:center; justify-content:center; }
                 .notification-body { padding:20px; overflow-y:auto; flex:1; background:#fbfbfc; }
-                .notification-item { background:white; border:2px solid #e9ecef; border-radius:12px; padding:14px; margin-bottom:14px; transition:all 0.15s; cursor:pointer; position:relative; }
-                .notification-item:hover { transform:translateY(-4px); box-shadow:0 6px 18px rgba(0,0,0,0.06); }
-                .notification-close-btn { position:absolute; top:8px; right:10px; background:transparent; border:none; color:#888; font-size:18px; font-weight:bold; cursor:pointer; border-radius:50%; width:28px; height:28px; line-height:1; display:flex; align-items:center; justify-content:center; transition:background 0.15s; z-index:2; }
-                .notification-close-btn:hover, .notification-close-btn:focus { background:#ffeaea; color:#d32f2f; }
-                .notification-item.urgent { border-color:#ff6b6b; }
-                .notification-item.warning { border-color:#ffb84d; }
-                .notification-item.info { border-color:#bdbdbd; }
-                .notification-top { display:flex; gap:14px; align-items:flex-start; }
-                .notification-icon { width:44px; height:44px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background:#f0f8ff; }
+                .notification-item { background:white; border:2px solid #e9ecef; border-radius:10px; padding:12px 14px; margin-bottom:12px; transition:all 0.2s; cursor:pointer; position:relative; display:flex; align-items:center; gap:12px; }
+                .notification-item:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.08); }
+                .notification-close-btn { background:#e74c3c; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; }
+                .notification-close-btn:hover { background:#c0392b; }
+                .notification-item.urgent { border-color:#e74c3c; background:#fff5f5; }
+                .notification-item.warning { border-color:#ffc107; background:#fffbf0; }
+                .notification-item.info { border-color:#bdbdbd; background:#f8f9fa; }
+                .notification-top { display:flex; gap:12px; align-items:center; flex:1; }
+                .notification-icon { width:36px; height:36px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+                .notification-icon img { width:20px; height:20px; }
                 .notification-details { flex:1; }
-                .pet-name { font-size:16px; font-weight:700; color:#111; margin-bottom:4px; }
-                .vaccine-name { font-size:14px; font-weight:600; color:#444; margin-bottom:8px; }
-                .notification-message { font-size:13px; color:#666; margin-bottom:6px; }
-                .notification-date { font-size:12px; color:#888; }
+                .status-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; margin-bottom:4px; }
+                .status-overdue { background:#e74c3c; color:white; }
+                .status-due { background:#ffc107; color:#333; }
+                .status-upcoming { background:#6c757d; color:white; }
+                .pet-name { font-size:14px; font-weight:700; color:#111; margin-bottom:2px; }
+                .vaccine-name { font-size:13px; font-weight:600; color:#444; margin-bottom:4px; }
+                .notification-message { font-size:12px; color:#666; }
+                .notification-date { font-size:11px; color:#999; margin-top:2px; }
                 .notification-footer { padding:12px 20px; border-top:1px solid #f0f0f0; text-align:right; }
                 .view-all-btn { background:#00bcd4; color:white; border:none; padding:8px 14px; border-radius:8px; font-weight:600; cursor:pointer; }
                 .loading { text-align:center; color:#9aa1a8; padding:30px 0; }
@@ -260,9 +265,10 @@
             } // end for pets
 
             // final sort & return
+            // เรียงลำดับ: 1.ถึงกำหนด(warning) 2.กำลังจะถึง(info) 3.เกินกำหนด(urgent)
             logDebug('All notifications before sort count:', allNotifications.length, allNotifications);
             allNotifications.sort((a,b) => {
-                const urgencyOrder = { 'urgent':0, 'warning':1, 'info':2 };
+                const urgencyOrder = { 'warning':0, 'info':1, 'urgent':2 };
                 if (urgencyOrder[a.type] !== urgencyOrder[b.type]) return urgencyOrder[a.type] - urgencyOrder[b.type];
                 const aDays = (typeof a.daysLeft === 'number') ? a.daysLeft : Infinity;
                 const bDays = (typeof b.daysLeft === 'number') ? b.daysLeft : Infinity;
@@ -328,56 +334,34 @@
             document.head.insertAdjacentHTML('beforeend', urgentStyles);
         }
 
-        // Render notifications
+        // Render notifications - New compact design
         container.innerHTML = notifications.map((notif, idx) => {
-            if (notif.type === 'urgent') {
-                // สั้น กระชับ ตามหลัก UX/UI
-                let message = notif.message || '';
-                if (typeof notif.daysLeft === 'number' && notif.daysLeft < 0) {
-                    message = `เกินกำหนดฉีดวัคซีนแล้ว ${formatOverdue(Math.abs(notif.daysLeft))}`;
-                }
-                return `
-                <div class="notification-item urgent" data-petid="${notif.petId}" data-idx="${idx}">
-                  <div class="urgent-icon"><img src="/icon/syringe.png" alt="Vaccine"></div>
-                  <div class="urgent-content">
-                    <div class="pet-name">${escapeHtml(notif.petName || 'ไม่ทราบชื่อ')}</div>
-                    <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
-                    <div class="urgent-message">${escapeHtml(message)}</div>
-                    ${notif.dueDate ? `<div class="due-date">กำหนดเดิม: ${formatThaiDate(notif.dueDate)}</div>` : ''}
-                    <button class="urgent-detail-btn" data-petid="${notif.petId}">ดูรายละเอียด</button>
-                  </div>
-                </div>
-                `;
-            } else {
-                // ...เดิมสำหรับ warning/info...
-                // ฟังก์ชันแปลงช่วงอายุเป็นข้อความภาษาไทย
-                function formatAgeRange(min, max) {
-                    if (min == null && max == null) return '-';
-                    if (min == null) return `${max} สัปดาห์`;
-                    if (max == null) return `${min} สัปดาห์`;
-                    if (min === max) return `${min} สัปดาห์`;
-                    return `${min}-${max} สัปดาห์`;
-                }
-                const urgencyClass = notif.type || 'info';
-                const dueHtml = notif.dueDate ? `<div style="margin-top:8px;"><span class="notification-date">กำหนดฉีด: ${formatThaiDate(notif.dueDate)}</span></div>` : '';
-                const descHtml = notif.description ? `<div class="vaccine-description" style="background:none;padding:0;margin-bottom:8px;">${escapeHtml(notif.description)}</div>` : '';
-                const ageRangeHtml = `<div class="vaccine-age-range"><b>ช่วงอายุ :</b> <span style="color:#1976d2;font-weight:bold">${formatAgeRange(notif.age_weeks_min, notif.age_weeks_max)}</span></div>`;
-                return `
-                    <div class="notification-item ${urgencyClass}" data-petid="${notif.petId}" data-idx="${idx}">
-                        <div class="notification-top">
-                            <div class="notification-icon"><img src="/icon/syringe.png" alt="Vaccine" style="width:24px;height:24px;"></div>
-                            <div class="notification-details">
-                                <div class="pet-name">${escapeHtml(notif.petName || 'ไม่ทราบชื่อ')}</div>
-                                <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
-                                ${descHtml}
-                                ${ageRangeHtml}
-                                <div class="notification-message">${escapeHtml(notif.message || '')}</div>
-                                ${dueHtml}
-                            </div>
+            const statusBadge = notif.type === 'urgent' ? '<span class="status-badge status-overdue">เกินกำหนด</span>' :
+                               notif.type === 'warning' ? '<span class="status-badge status-due">ถึงกำหนด</span>' :
+                               '<span class="status-badge status-upcoming">กำลังจะถึง</span>';
+
+            let message = notif.message || '';
+            if (notif.type === 'urgent' && typeof notif.daysLeft === 'number' && notif.daysLeft < 0) {
+                message = `เกินกำหนดฉีดวัคซีนแล้ว ${formatOverdue(Math.abs(notif.daysLeft))}`;
+            }
+
+            const dueDate = notif.dueDate ? formatThaiDate(notif.dueDate) : '-';
+            const urgencyClass = notif.type || 'info';
+
+            return `
+                <div class="notification-item ${urgencyClass}" data-idx="${idx}">
+                    <div class="notification-top" data-petid="${notif.petId}" style="cursor:pointer;">
+                        <div class="notification-icon"><img src="/icon/syringe.png" alt="Vaccine"></div>
+                        <div class="notification-details">
+                            ${statusBadge}
+                            <div class="vaccine-name">${escapeHtml(notif.vaccineName || '')}</div>
+                            <div class="notification-message">${escapeHtml(message)}</div>
+                            <div class="notification-date">กำหนดฉีด: ${dueDate}</div>
                         </div>
                     </div>
-                `;
-            }
+                    <button class="notification-close-btn" data-idx="${idx}" onclick="event.stopPropagation(); window.NotificationSystem.removeNotification(${idx});">ลบ</button>
+                </div>
+            `;
         }).join('');
     // แปลงจำนวนวัน overdue เป็น เดือน/ปี/วัน ตามเงื่อนไขที่กำหนด
     function formatOverdue(days) {
@@ -397,19 +381,10 @@
         }
     }
 
-        // ไม่มีปุ่มลบแจ้งเตือนอีกต่อไป
-
-        // urgent: click ที่ปุ่มเท่านั้น, warning/info: click ทั้งกล่อง
-        Array.from(container.querySelectorAll('.notification-item.urgent .urgent-detail-btn')).forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const petId = btn.getAttribute('data-petid');
-                if (petId) window.location.href = `pet-details.html?id=${petId}`;
-            });
-        });
-        Array.from(container.querySelectorAll('.notification-item.warning, .notification-item.info')).forEach(item => {
-            item.addEventListener('click', () => {
-                const petId = item.getAttribute('data-petid');
+        // Click handlers for notification items
+        Array.from(container.querySelectorAll('.notification-top')).forEach(top => {
+            top.addEventListener('click', () => {
+                const petId = top.getAttribute('data-petid');
                 if (petId) window.location.href = `pet-details.html?id=${petId}`;
             });
         });
@@ -597,6 +572,7 @@
     window.NotificationSystem.openModal = window.NotificationSystem.openModal || openModal;
     window.NotificationSystem.closeModal = window.NotificationSystem.closeModal || closeModal;
     window.NotificationSystem.loadNotifications = window.NotificationSystem.loadNotifications || loadAndRenderNotifications;
+    window.NotificationSystem.removeNotification = removeNotification;
 
     // Auto-init
     if (document.readyState === 'loading') {
