@@ -244,30 +244,38 @@
         }
 
         .vaccine-status-badge {
-            padding: 4px 12px;
-            border-radius: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
         }
 
         .badge-completed {
-            background: #d4edda;
-            color: #155724;
+            background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+            color: #ffffff;
+            border: 2px solid #52c41a;
         }
 
         .badge-due {
-            background: #ffc107;
-            color: #6b4d00;
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            color: #ffffff;
+            border: 2px solid #ffc107;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
         }
 
         .badge-overdue {
-            background: #dc3545;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
             color: #ffffff;
+            border: 2px solid #dc3545;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
         }
 
         .badge-upcoming {
-            background: #6c757d;
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
             color: #ffffff;
+            border: 2px solid #6c757d;
         }
 
         .vaccine-details {
@@ -298,18 +306,22 @@
         }
 
         .btn-record {
-            padding: 8px 16px;
-            background: #00bcd4;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
+            box-shadow: 0 3px 8px rgba(0, 188, 212, 0.3);
+            transition: all 0.3s;
         }
 
         .btn-record:hover {
-            background: #00acc1;
+            background: linear-gradient(135deg, #00acc1 0%, #00bcd4 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 188, 212, 0.4);
         }
 
         /* Empty State */
