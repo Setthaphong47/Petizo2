@@ -895,6 +895,10 @@
             }
         }
     </style>
+
+    <!-- Cropper.js for image cropping -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 </head>
 <body>
 
@@ -1022,10 +1026,35 @@
         </div>
     </div>
 
+    <!-- Image Cropper Modal -->
+    <div id="cropperModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px; background: white; border-radius: 16px; padding: 0; overflow: hidden;">
+            <div style="padding: 24px; border-bottom: 2px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; color: #1a1a1a; font-size: 22px;">ปรับรูปภาพ</h2>
+                <button onclick="closeCropperModal()" style="background: none; border: none; font-size: 32px; cursor: pointer; color: #999; line-height: 1;">&times;</button>
+            </div>
+            <div style="padding: 20px; background: #f8f9fa;">
+                <div style="max-height: 500px; background: #000;">
+                    <img id="cropperImage" style="max-width: 100%; display: block;">
+                </div>
+            </div>
+            <div style="padding: 20px; border-top: 2px solid #e0e0e0; display: flex; justify-content: flex-end; gap: 12px; background: white;">
+                <button onclick="closeCropperModal()" style="padding: 12px 32px; background: #e9ecef; color: #495057; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                    ยกเลิก
+                </button>
+                <button onclick="cropAndSave()" style="padding: 12px 32px; background: linear-gradient(135deg, #00bcd4 0%, #00acc1 100%); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);">
+                    ตกลง
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/config.js"></script>
     <script>
         const API_URL = CONFIG.API_URL || 'http://localhost:3000/api';
         let currentPetId = null;
+        let cropper = null;
+        let currentCroppedBlob = null;
 
         function checkAuth() {
             const token = localStorage.getItem('token');
@@ -1167,22 +1196,90 @@
         function previewPhoto(event) {
             const file = event.target.files[0];
             if (file) {
+                // Check if file is an image
+                if (!file.type.startsWith('image/')) {
+                    alert('กรุณาเลือกไฟล์รูปภาพ');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Show cropper modal
+                    const cropperImage = document.getElementById('cropperImage');
+                    cropperImage.src = e.target.result;
+                    document.getElementById('cropperModal').style.display = 'flex';
+
+                    // Destroy previous cropper if exists
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    // Initialize new cropper
+                    cropper = new Cropper(cropperImage, {
+                        aspectRatio: 1, // Square crop
+                        viewMode: 2,
+                        autoCropArea: 1,
+                        responsive: true,
+                        background: false,
+                        guides: true,
+                        center: true,
+                        highlight: true,
+                        cropBoxResizable: true,
+                        cropBoxMovable: true,
+                        dragMode: 'move'
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function closeCropperModal() {
+            document.getElementById('cropperModal').style.display = 'none';
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            // Reset file input
+            document.getElementById('petPhoto').value = '';
+        }
+
+        function cropAndSave() {
+            if (!cropper) return;
+
+            // Get cropped canvas
+            const canvas = cropper.getCroppedCanvas({
+                width: 800,
+                height: 800,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
+
+            // Convert canvas to blob
+            canvas.toBlob(function(blob) {
+                currentCroppedBlob = blob;
+
+                // Show preview in the form
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('photoPreview').innerHTML = `<img src="${e.target.result}">`;
                 };
-                reader.readAsDataURL(file);
-            }
+                reader.readAsDataURL(blob);
+
+                // Close cropper modal
+                closeCropperModal();
+            }, 'image/jpeg', 0.9);
         }
 
         function closePetModal() {
             document.getElementById('petModal').classList.remove('active');
             document.getElementById('petForm').reset();
             document.getElementById('photoPreview').innerHTML = '<div class="photo-placeholder">+</div>';
+            currentCroppedBlob = null;
         }
 
         function openAddPetModal() {
             currentPetId = null;
+            currentCroppedBlob = null;
             document.getElementById('petForm').reset();
             document.getElementById('petId').value = '';
             document.getElementById('photoPreview').innerHTML = '<div class="photo-placeholder">+</div>';
@@ -1200,8 +1297,9 @@
                 if (!response.ok) throw new Error('Failed to load pet');
 
                 const pet = await response.json();
-                
+
                 currentPetId = petId;
+                currentCroppedBlob = null;
                 document.getElementById('petId').value = petId;
                 document.getElementById('petName').value = pet.name || '';
                 document.getElementById('petType').value = pet.type || 'แมว';
@@ -1245,9 +1343,14 @@
             formData.append('microchip_id', '');
             formData.append('notes', '');
 
-            const photoFile = document.getElementById('petPhoto').files[0];
-            if (photoFile) {
-                formData.append('photo', photoFile);
+            // Use cropped blob if available, otherwise use original file
+            if (currentCroppedBlob) {
+                formData.append('photo', currentCroppedBlob, 'pet-photo.jpg');
+            } else {
+                const photoFile = document.getElementById('petPhoto').files[0];
+                if (photoFile) {
+                    formData.append('photo', photoFile);
+                }
             }
 
             try {
