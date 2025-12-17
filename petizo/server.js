@@ -1451,7 +1451,7 @@ app.get('/api/admin/blog', authenticateToken, isAdmin, (req, res) => {
     db.all(
         `SELECT b.*, u.username as author_name, u.full_name as author_full_name
          FROM blogs b LEFT JOIN ${userTable} u ON b.${authorColumn} = u.id
-         ORDER BY b.created_at DESC`,
+         ORDER BY b.pinned DESC, b.created_at DESC`,
         (err, blogs) => {
             if (err) {
                 console.error('Blog fetch error:', err);
@@ -1495,9 +1495,30 @@ app.delete('/api/admin/blog/:id', authenticateToken, isAdmin, (req, res) => {
     });
 });
 
+// ปักหมุด/ยกเลิกปักหมุด Blog
+app.patch('/api/admin/blog/:id/pin', authenticateToken, isAdmin, (req, res) => {
+    const { id } = req.params;
+    const { pinned } = req.body; // pinned: 1 = ปักหมุด, 0 = ยกเลิกปักหมุด
+
+    db.run('UPDATE blogs SET pinned = ? WHERE id = ?', [pinned ? 1 : 0, id], function(err) {
+        if (err) {
+            console.error('Error updating pinned status:', err);
+            return res.status(500).json({ error: 'ไม่สามารถอัพเดทสถานะได้' });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'ไม่พบบทความ' });
+        }
+        res.json({
+            success: true,
+            message: pinned ? 'ปักหมุดบทความสำเร็จ' : 'ยกเลิกปักหมุดบทความสำเร็จ',
+            pinned: pinned ? 1 : 0
+        });
+    });
+});
+
 app.get('/api/blog', (req, res) => {
     db.all(
-        `SELECT * FROM blogs WHERE LOWER(status) IN ('published','public') OR status = 'เผยแพร่' ORDER BY datetime(published_at) DESC`,
+        `SELECT * FROM blogs WHERE LOWER(status) IN ('published','public') OR status = 'เผยแพร่' ORDER BY pinned DESC, datetime(published_at) DESC`,
         (err, rows) => {
             if (err) {
                 console.error('Blog public fetch error:', err);
@@ -1512,7 +1533,7 @@ app.get('/api/blog', (req, res) => {
 });
 
 app.get('/api/blog/all', (req, res) => {
-    db.all(`SELECT * FROM blogs WHERE status = 'published' ORDER BY published_at DESC`, (err, blogs) => {
+    db.all(`SELECT * FROM blogs WHERE status = 'published' ORDER BY pinned DESC, published_at DESC`, (err, blogs) => {
         if (err) return res.status(500).json({ error: 'ไม่สามารถโหลดได้' });
         blogs.forEach(b => {
             try { b.tags = JSON.parse(b.tags || '[]'); } catch { b.tags = []; }

@@ -3263,11 +3263,16 @@
                             </div>
                             
                             <div class="blog-card-footer">
-                                <button class="blog-action-btn btn-blog-edit" 
+                                <button class="blog-action-btn btn-blog-pin"
+                                        onclick="togglePinBlog(${post.id}, ${post.pinned || 0})"
+                                        style="background: ${post.pinned ? 'linear-gradient(135deg, #FFA726 0%, #FF9800 100%)' : 'linear-gradient(135deg, #90A4AE 0%, #78909C 100%)'};">
+                                    ${post.pinned ? '📌 ยกเลิกปักหมุด' : '📍 ปักหมุด'}
+                                </button>
+                                <button class="blog-action-btn btn-blog-edit"
                                         onclick="editBlogPost(${post.id})">
                                     แก้ไข
                                 </button>
-                                <button class="blog-action-btn btn-blog-delete" 
+                                <button class="blog-action-btn btn-blog-delete"
                                         onclick="deleteBlogPost(${post.id}, '${post.title.replace(/'/g, "\\'")}')">
                                     ลบ
                                 </button>
@@ -3395,6 +3400,31 @@
 
 
             // Delete blog 
+            // Toggle pin/unpin blog post
+            async function togglePinBlog(postId, currentPinStatus) {
+                const newPinStatus = currentPinStatus ? 0 : 1;
+
+                try {
+                    const response = await fetch(`${API_URL}/admin/blog/${postId}/pin`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify({ pinned: newPinStatus })
+                    });
+
+                    if (!response.ok) throw new Error('Failed to update pin status');
+
+                    const result = await response.json();
+                    showSuccessNotification(result.message);
+                    loadAdminBlogPosts(); // Reload the blog list
+                } catch (error) {
+                    console.error('Error toggling pin status:', error);
+                    alert('ไม่สามารถอัพเดทสถานะปักหมุดได้: ' + error.message);
+                }
+            }
+
             async function deleteBlogPost(postId, postTitle) {
                 if (!confirm(`คุณต้องการลบบทความ "${postTitle}" ใช่หรือไม่?`)) {
                     return;
