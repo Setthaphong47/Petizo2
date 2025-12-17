@@ -1,35 +1,22 @@
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 
-// สร้าง transporter สำหรับส่งอีเมล (ใช้ SendGrid SMTP)
-const createTransporter = () => {
-    return nodemailer.createTransport({
-        host: 'smtp.sendgrid.net',
-        port: 2525, // Port 2525 เหมาะกับ cloud platforms (ไม่โดน block)
-        secure: false, // false สำหรับ port 2525
-        auth: {
-            user: 'apikey', // SendGrid ใช้ string "apikey" เป็น username เสมอ
-            pass: process.env.SENDGRID_API_KEY // SendGrid API Key
-        },
-        connectionTimeout: 10000, // 10 seconds
-        greetingTimeout: 10000,
-        socketTimeout: 10000
-    });
-};
+// ตั้งค่า SendGrid API Key
+if (process.env.SENDGRID_API_KEY) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
-// ส่งอีเมล reset password
+// ส่งอีเมล reset password (ใช้ SendGrid HTTP API)
 const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
     try {
-        const transporter = createTransporter();
-
         // สร้าง reset link (ใช้ URL ของ frontend)
         const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password.html?token=${resetToken}`;
 
-        const mailOptions = {
+        const msg = {
+            to: recipientEmail,
             from: {
                 name: 'Petizo - ระบบจัดการสัตว์เลี้ยง',
-                address: process.env.EMAIL_FROM_ADDRESS || 'noreply@petizo.com'
+                email: process.env.EMAIL_FROM_ADDRESS || 'noreply@petizo.com'
             },
-            to: recipientEmail,
             subject: 'รีเซ็ตรหัสผ่าน - Petizo',
             html: `
                 <!DOCTYPE html>
@@ -146,15 +133,16 @@ const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
             `
         };
 
-        console.log('Attempting to send email via SMTP...');
-        const info = await transporter.sendMail(mailOptions);
-        console.log('✅ ส่งอีเมลสำเร็จ:', info.messageId);
-        return { success: true, messageId: info.messageId };
+        console.log('📧 Sending email via SendGrid HTTP API...');
+        const response = await sgMail.send(msg);
+        console.log('✅ ส่งอีเมลสำเร็จ:', response[0].statusCode);
+        return { success: true, messageId: response[0].headers['x-message-id'] };
     } catch (error) {
         console.error('❌ ส่งอีเมลไม่สำเร็จ:', error.message);
-        console.error('Error code:', error.code);
-        console.error('Error response:', error.response);
-        return { success: false, error: `${error.code || 'UNKNOWN'}: ${error.message}` };
+        if (error.response) {
+            console.error('SendGrid error body:', error.response.body);
+        }
+        return { success: false, error: error.message };
     }
 };
 
