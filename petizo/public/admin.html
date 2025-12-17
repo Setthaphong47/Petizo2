@@ -3235,15 +3235,37 @@
                     const imageUrl = post.featured_image || post.image_url || post.image || '';
                     
                     return `
-                        <div class="blog-card">
+                        <div class="blog-card" style="position: relative;">
                             ${imageUrl ? `<img src="${imageUrl}" alt="${post.title}" class="blog-card-image">` : ''}
+
+                            <!-- Pin Icon (Top-Right Corner) -->
+                            <div onclick="togglePinBlog(${post.id}, ${post.pinned || 0})"
+                                 style="position: absolute;
+                                        top: 16px;
+                                        right: 16px;
+                                        width: 36px;
+                                        height: 36px;
+                                        background: ${post.pinned ? '#FF9800' : 'rgba(255,255,255,0.9)'};
+                                        border-radius: 50%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        cursor: pointer;
+                                        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                                        transition: all 0.3s;
+                                        z-index: 10;"
+                                 onmouseover="this.style.transform='scale(1.1)'"
+                                 onmouseout="this.style.transform='scale(1)'">
+                                <span style="font-size: 18px;">${post.pinned ? '📌' : '📍'}</span>
+                            </div>
+
                             <div class="blog-card-header">
                                 <div class="blog-meta">
                                     <span class="blog-meta-item">
-                                        <img src="/icon/calendar (2).png" alt="Date" style="width:30px;height:30px;"> ${new Date(post.created_at).toLocaleDateString('th-TH', { 
-                                            year: 'numeric', 
-                                            month: 'short', 
-                                            day: 'numeric' 
+                                        <img src="/icon/calendar (2).png" alt="Date" style="width:30px;height:30px;"> ${new Date(post.created_at).toLocaleDateString('th-TH', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric'
                                         })}
                                     </span>
                                     <span class="blog-meta-item">
@@ -3263,11 +3285,6 @@
                             </div>
                             
                             <div class="blog-card-footer">
-                                <button class="blog-action-btn btn-blog-pin"
-                                        onclick="togglePinBlog(${post.id}, ${post.pinned || 0})"
-                                        style="background: ${post.pinned ? 'linear-gradient(135deg, #FFA726 0%, #FF9800 100%)' : 'linear-gradient(135deg, #90A4AE 0%, #78909C 100%)'};">
-                                    ${post.pinned ? '📌 ยกเลิกปักหมุด' : '📍 ปักหมุด'}
-                                </button>
                                 <button class="blog-action-btn btn-blog-edit"
                                         onclick="editBlogPost(${post.id})">
                                     แก้ไข
