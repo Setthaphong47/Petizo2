@@ -3648,24 +3648,27 @@
                 // Create modal
                 const modal = document.createElement('div');
                 modal.style.cssText = `
-                    background: #2c3e50;
+                    background: #3a4a5a;
                     color: white;
-                    padding: 24px 32px;
-                    border-radius: 12px;
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-                    text-align: center;
-                    min-width: 300px;
+                    padding: 20px 28px;
+                    border-radius: 8px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+                    text-align: left;
+                    min-width: 320px;
                     animation: scaleIn 0.3s;
                 `;
 
                 modal.innerHTML = `
-                    <div style="font-size: 16px; margin-bottom: 20px; line-height: 1.5;">${message}</div>
-                    <button onclick="this.parentElement.parentElement.remove()"
-                            style="background: #5a9fd4; color: white; border: none; padding: 10px 24px;
-                                   border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;
-                                   transition: background 0.2s;">
-                        ตกลง
-                    </button>
+                    <div style="font-size: 14px; margin-bottom: 12px; color: #e8e8e8;">petizo.up.railway.app บอกว่า</div>
+                    <div style="font-size: 15px; margin-bottom: 20px; line-height: 1.5; color: white;">${message}</div>
+                    <div style="text-align: center;">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()"
+                                style="background: #6fa8dc; color: white; border: none; padding: 8px 32px;
+                                       border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;
+                                       transition: background 0.2s; min-width: 100px;">
+                            ตกลง
+                        </button>
+                    </div>
                 `;
 
                 overlay.appendChild(modal);
@@ -3673,8 +3676,8 @@
 
                 // Add hover effect to button
                 const button = modal.querySelector('button');
-                button.onmouseover = () => button.style.background = '#4a8fc4';
-                button.onmouseout = () => button.style.background = '#5a9fd4';
+                button.onmouseover = () => button.style.background = '#5a8fc4';
+                button.onmouseout = () => button.style.background = '#6fa8dc';
             }
 
             const style = document.createElement('style');
