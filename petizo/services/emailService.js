@@ -1,17 +1,14 @@
 const nodemailer = require('nodemailer');
 
-// สร้าง transporter สำหรับส่งอีเมล
+// สร้าง transporter สำหรับส่งอีเมล (ใช้ SendGrid SMTP)
 const createTransporter = () => {
     return nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true, // true for 465, false for other ports
+        host: 'smtp.sendgrid.net',
+        port: 2525, // Port 2525 เหมาะกับ cloud platforms (ไม่โดน block)
+        secure: false, // false สำหรับ port 2525
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_APP_PASSWORD
-        },
-        tls: {
-            rejectUnauthorized: false
+            user: 'apikey', // SendGrid ใช้ string "apikey" เป็น username เสมอ
+            pass: process.env.SENDGRID_API_KEY // SendGrid API Key
         },
         connectionTimeout: 10000, // 10 seconds
         greetingTimeout: 10000,
@@ -30,7 +27,7 @@ const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
         const mailOptions = {
             from: {
                 name: 'Petizo - ระบบจัดการสัตว์เลี้ยง',
-                address: process.env.EMAIL_USER
+                address: process.env.EMAIL_FROM_ADDRESS || 'noreply@petizo.com'
             },
             to: recipientEmail,
             subject: 'รีเซ็ตรหัสผ่าน - Petizo',
@@ -141,7 +138,7 @@ const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
                         </div>
                         <div class="footer">
                             <p>อีเมลนี้ส่งมาจาก Petizo - ระบบจัดการสัตว์เลี้ยง<br>
-                            หากมีคำถามติดต่อได้ที่ <a href="mailto:${process.env.EMAIL_USER}">${process.env.EMAIL_USER}</a></p>
+                            หากมีคำถามติดต่อได้ที่ <a href="mailto:${process.env.EMAIL_FROM_ADDRESS || 'support@petizo.com'}">${process.env.EMAIL_FROM_ADDRESS || 'support@petizo.com'}</a></p>
                         </div>
                     </div>
                 </body>

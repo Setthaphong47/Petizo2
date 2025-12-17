@@ -363,13 +363,13 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
     }
 
     // ตรวจสอบ environment variables
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+    if (!process.env.SENDGRID_API_KEY || !process.env.EMAIL_FROM_ADDRESS) {
         console.error('❌ Missing email configuration:', {
-            EMAIL_USER: process.env.EMAIL_USER ? 'Set' : 'Missing',
-            EMAIL_APP_PASSWORD: process.env.EMAIL_APP_PASSWORD ? 'Set' : 'Missing',
+            SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ? 'Set' : 'Missing',
+            EMAIL_FROM_ADDRESS: process.env.EMAIL_FROM_ADDRESS ? 'Set' : 'Missing',
             FRONTEND_URL: process.env.FRONTEND_URL || 'Not set (using default)'
         });
-        return res.status(500).json({ error: 'ระบบส่งอีเมลยังไม่ได้ตั้งค่า' });
+        return res.status(500).json({ error: 'ระบบส่งอีเมลยังไม่ได้ตั้งค่า กรุณาติดต่อผู้ดูแลระบบ' });
     }
 
     try {
