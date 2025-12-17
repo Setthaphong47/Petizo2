@@ -2586,6 +2586,31 @@ app.post('/api/admin/upload-file', authenticateToken, isAdmin, upload.single('fi
     });
 });
 
+// ============= DATABASE EXPORT ENDPOINT =============
+
+// Download database file (admin only)
+app.get('/api/admin/export-database', authenticateToken, isAdmin, (req, res) => {
+    const dbPath = path.join(__dirname, 'data', 'petizo.db');
+
+    // Check if database file exists
+    if (!fs.existsSync(dbPath)) {
+        return res.status(404).json({ error: 'Database file not found' });
+    }
+
+    // Set headers for file download
+    res.setHeader('Content-Type', 'application/x-sqlite3');
+    res.setHeader('Content-Disposition', `attachment; filename="petizo-export-${Date.now()}.db"`);
+
+    // Stream the database file
+    const fileStream = fs.createReadStream(dbPath);
+    fileStream.pipe(res);
+
+    fileStream.on('error', (err) => {
+        console.error('Error streaming database file:', err);
+        res.status(500).json({ error: 'Failed to export database' });
+    });
+});
+
 // ============= ERROR HANDLING & START =============
 
 app.use((err, req, res, next) => {
