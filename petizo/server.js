@@ -382,7 +382,7 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
         if (DB_STRUCTURE === 'new') {
             // ค้นหาใน admins
             user = await new Promise((resolve, reject) => {
-                db.get('SELECT id, email FROM admins WHERE email = ?', [email], (err, row) => {
+                db.get('SELECT id, email, full_name, username FROM admins WHERE email = ?', [email], (err, row) => {
                     if (err) reject(err);
                     else resolve(row);
                 });
@@ -392,7 +392,7 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
             // ค้นหาใน members ถ้าไม่พบใน admins
             if (!user) {
                 user = await new Promise((resolve, reject) => {
-                    db.get('SELECT id, email FROM members WHERE email = ?', [email], (err, row) => {
+                    db.get('SELECT id, email, full_name, username FROM members WHERE email = ?', [email], (err, row) => {
                         if (err) reject(err);
                         else resolve(row);
                     });
@@ -402,7 +402,7 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
         } else {
             // ค้นหาใน users
             user = await new Promise((resolve, reject) => {
-                db.get('SELECT id, email, role FROM users WHERE email = ?', [email], (err, row) => {
+                db.get('SELECT id, email, full_name, username, role FROM users WHERE email = ?', [email], (err, row) => {
                     if (err) reject(err);
                     else resolve(row);
                 });
@@ -414,15 +414,18 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
 
         if (!user) {
             console.log('⚠️  Email not found in database:', email);
-            // ไม่ส่ง error เพื่อความปลอดภัย (ไม่ให้รู้ว่าอีเมลมีในระบบหรือไม่)
-            return res.json({ message: 'หากอีเมลนี้มีอยู่ในระบบ เราจะส่งลิงก์รีเซ็ตรหัสผ่านไปให้' });
+            // ไม่ส่ง error เพื่อความปลอดภัย (ป้องกัน account enumeration attack)
+            return res.json({ message: 'หากอีเมลนี้อยู่ในระบบ เราได้ส่งลิงก์เปลี่ยนรหัสผ่านไปให้แล้ว กรุณาตรวจสอบกล่องจดหมายและโฟลเดอร์สแปม' });
         }
 
         console.log('✅ User found, userType:', userType);
 
+        // ดึงชื่อผู้ใช้ (ใช้ full_name ถ้ามี ไม่งั้นใช้ username)
+        const userName = user.full_name || user.username || 'ผู้ใช้';
+
         // สร้าง reset token
         const resetToken = crypto.randomBytes(32).toString('hex');
-        const expiresAt = new Date(Date.now() + 3600000).toISOString(); // หมดอายุใน 1 ชั่วโมง
+        const expiresAt = new Date(Date.now() + 900000).toISOString(); // หมดอายุใน 15 นาที
 
         // ลบ token เก่าของอีเมลนี้ (ถ้ามี)
         await new Promise((resolve, reject) => {
@@ -447,7 +450,7 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
         console.log('📧 Sending password reset email...');
 
         // ส่งอีเมล
-        const emailResult = await sendPasswordResetEmail(email, resetToken);
+        const emailResult = await sendPasswordResetEmail(email, resetToken, userName);
 
         if (emailResult.success) {
             console.log('✅ Email sent successfully');

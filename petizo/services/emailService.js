@@ -6,7 +6,7 @@ if (process.env.SENDGRID_API_KEY) {
 }
 
 // ส่งอีเมล reset password (ใช้ SendGrid HTTP API)
-const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
+const sendPasswordResetEmail = async (recipientEmail, resetToken, userName = 'ผู้ใช้') => {
     try {
         // สร้าง reset link (ใช้ URL ของ frontend)
         const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password.html?token=${resetToken}`;
@@ -101,11 +101,11 @@ const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
                 <body>
                     <div class="container">
                         <div class="header">
-                            <h1>🐾 Petizo</h1>
+                            <h1>Petizo</h1>
                         </div>
                         <div class="content">
                             <h2>รีเซ็ตรหัสผ่านของคุณ</h2>
-                            <p>สวัสดีครับ,</p>
+                            <p>สวัสดีครับ, คุณ${userName}</p>
                             <p>เราได้รับคำขอให้รีเซ็ตรหัสผ่านสำหรับบัญชีของคุณ คลิกปุ่มด้านล่างเพื่อสร้างรหัสผ่านใหม่:</p>
 
                             <div style="text-align: center;">
@@ -113,7 +113,7 @@ const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
                             </div>
 
                             <div class="warning">
-                                <strong>⏰ ลิงก์นี้จะหมดอายุภายใน 1 ชั่วโมง</strong>
+                                <strong>ลิงก์นี้จะหมดอายุภายใน 15 นาที</strong>
                             </div>
 
                             <p>หากคุณไม่ได้ขอรีเซ็ตรหัสผ่าน กรุณาเพิกเฉยอีเมลนี้ รหัสผ่านของคุณจะยังคงปลอดภัย</p>
