@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const crypto = require('crypto');
+const { sendPasswordResetEmail } = require('./services/emailService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -349,6 +351,209 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
+// ============= FORGOT PASSWORD =============
+// ส่งลิงก์รีเซ็ตรหัสผ่านทางอีเมล
+app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ error: 'กรุณากรอกอีเมล' });
+    }
+
+    try {
+        // ตรวจสอบว่ามีอีเมลนี้ในระบบหรือไม่
+        let user = null;
+        let userType = null;
+
+        if (DB_STRUCTURE === 'new') {
+            // ค้นหาใน admins
+            user = await new Promise((resolve, reject) => {
+                db.get('SELECT id, email FROM admins WHERE email = ?', [email], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
+            });
+            if (user) userType = 'admin';
+
+            // ค้นหาใน members ถ้าไม่พบใน admins
+            if (!user) {
+                user = await new Promise((resolve, reject) => {
+                    db.get('SELECT id, email FROM members WHERE email = ?', [email], (err, row) => {
+                        if (err) reject(err);
+                        else resolve(row);
+                    });
+                });
+                if (user) userType = 'member';
+            }
+        } else {
+            // ค้นหาใน users
+            user = await new Promise((resolve, reject) => {
+                db.get('SELECT id, email, role FROM users WHERE email = ?', [email], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
+            });
+            if (user) {
+                userType = user.role === 'admin' ? 'admin' : 'member';
+            }
+        }
+
+        if (!user) {
+            // ไม่ส่ง error เพื่อความปลอดภัย (ไม่ให้รู้ว่าอีเมลมีในระบบหรือไม่)
+            return res.json({ message: 'หากอีเมลนี้มีอยู่ในระบบ เราจะส่งลิงก์รีเซ็ตรหัสผ่านไปให้' });
+        }
+
+        // สร้าง reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + 3600000).toISOString(); // หมดอายุใน 1 ชั่วโมง
+
+        // ลบ token เก่าของอีเมลนี้ (ถ้ามี)
+        await new Promise((resolve, reject) => {
+            db.run('DELETE FROM password_resets WHERE email = ?', [email], (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
+        // บันทึก token ลง database
+        await new Promise((resolve, reject) => {
+            db.run(
+                'INSERT INTO password_resets (email, token, user_type, expires_at) VALUES (?, ?, ?, ?)',
+                [email, resetToken, userType, expiresAt],
+                (err) => {
+                    if (err) reject(err);
+                    else resolve();
+                }
+            );
+        });
+
+        // ส่งอีเมล
+        const emailResult = await sendPasswordResetEmail(email, resetToken);
+
+        if (emailResult.success) {
+            res.json({ message: 'ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย' });
+        } else {
+            // ลบ token ถ้าส่งอีเมลไม่สำเร็จ
+            db.run('DELETE FROM password_resets WHERE token = ?', [resetToken]);
+            res.status(500).json({ error: 'ไม่สามารถส่งอีเมลได้ กรุณาลองใหม่อีกครั้ง' });
+        }
+    } catch (error) {
+        console.error('Forgot password error:', error);
+        res.status(500).json({ error: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง' });
+    }
+});
+
+// ตรวจสอบ token ว่าถูกต้องและยังไม่หมดอายุ
+app.get('/api/auth/reset-password/verify/:token', async (req, res) => {
+    const { token } = req.params;
+
+    try {
+        const resetRecord = await new Promise((resolve, reject) => {
+            db.get(
+                'SELECT * FROM password_resets WHERE token = ? AND used = 0',
+                [token],
+                (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                }
+            );
+        });
+
+        if (!resetRecord) {
+            return res.status(400).json({ error: 'ลิงก์รีเซ็ตรหัสผ่านไม่ถูกต้องหรือถูกใช้งานแล้ว' });
+        }
+
+        // ตรวจสอบว่าหมดอายุหรือไม่
+        const now = new Date();
+        const expiresAt = new Date(resetRecord.expires_at);
+
+        if (now > expiresAt) {
+            return res.status(400).json({ error: 'ลิงก์รีเซ็ตรหัสผ่านหมดอายุแล้ว กรุณาขอลิงก์ใหม่' });
+        }
+
+        res.json({
+            valid: true,
+            email: resetRecord.email,
+            message: 'ลิงก์ถูกต้อง สามารถตั้งรหัสผ่านใหม่ได้'
+        });
+    } catch (error) {
+        console.error('Verify token error:', error);
+        res.status(500).json({ error: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง' });
+    }
+});
+
+// รีเซ็ตรหัสผ่าน
+app.post('/api/auth/reset-password', async (req, res) => {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+        return res.status(400).json({ error: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
+    }
+
+    if (newPassword.length < 6) {
+        return res.status(400).json({ error: 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร' });
+    }
+
+    try {
+        // ตรวจสอบ token
+        const resetRecord = await new Promise((resolve, reject) => {
+            db.get(
+                'SELECT * FROM password_resets WHERE token = ? AND used = 0',
+                [token],
+                (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                }
+            );
+        });
+
+        if (!resetRecord) {
+            return res.status(400).json({ error: 'ลิงก์รีเซ็ตรหัสผ่านไม่ถูกต้องหรือถูกใช้งานแล้ว' });
+        }
+
+        // ตรวจสอบว่าหมดอายุหรือไม่
+        const now = new Date();
+        const expiresAt = new Date(resetRecord.expires_at);
+
+        if (now > expiresAt) {
+            return res.status(400).json({ error: 'ลิงก์รีเซ็ตรหัสผ่านหมดอายุแล้ว กรุณาขอลิงก์ใหม่' });
+        }
+
+        // Hash รหัสผ่านใหม่
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // อัพเดทรหัสผ่านในตารางที่เหมาะสม
+        const tableName = getUserTable(resetRecord.user_type);
+
+        await new Promise((resolve, reject) => {
+            db.run(
+                `UPDATE ${tableName} SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE email = ?`,
+                [hashedPassword, resetRecord.email],
+                (err) => {
+                    if (err) reject(err);
+                    else resolve();
+                }
+            );
+        });
+
+        // ทำเครื่องหมายว่า token ถูกใช้งานแล้ว
+        await new Promise((resolve, reject) => {
+            db.run(
+                'UPDATE password_resets SET used = 1 WHERE token = ?',
+                [token],
+                (err) => {
+                    if (err) reject(err);
+                    else resolve();
+                }
+            );
+        });
+
+        res.json({ message: 'รีเซ็ตรหัสผ่านสำเร็จ คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้แล้ว' });
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({ error: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง' });
+    }
+});
 
 // ============= USER PROFILE =============
 // Upload user profile picture

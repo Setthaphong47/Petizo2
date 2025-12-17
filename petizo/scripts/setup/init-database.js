@@ -191,6 +191,22 @@ function createTables() {
         else console.log('ตาราง chat_history สร้างเสร็จแล้ว');
     });
 
+    // ตาราง Password Resets (สำหรับระบบรีเซ็ตรหัสผ่าน)
+    db.run(`
+        CREATE TABLE IF NOT EXISTS password_resets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL,
+            token TEXT UNIQUE NOT NULL,
+            user_type TEXT NOT NULL CHECK(user_type IN ('admin', 'member')),
+            expires_at DATETIME NOT NULL,
+            used INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `, (err) => {
+        if (err) console.error('Error creating password_resets table:', err);
+        else console.log('ตาราง password_resets สร้างเสร็จแล้ว');
+    });
+
     // ตาราง Breeds
     db.run(`
         CREATE TABLE IF NOT EXISTS breeds (
@@ -219,7 +235,9 @@ function createTables() {
         db.run('CREATE INDEX IF NOT EXISTS idx_chat_history_member_id ON chat_history(member_id)');
         db.run('CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email)');
         db.run('CREATE INDEX IF NOT EXISTS idx_members_email ON members(email)');
-        
+        db.run('CREATE INDEX IF NOT EXISTS idx_password_resets_token ON password_resets(token)');
+        db.run('CREATE INDEX IF NOT EXISTS idx_password_resets_email ON password_resets(email)');
+
         console.log('Indexes สร้างเสร็จแล้ว\n');
         
         createSampleData();
