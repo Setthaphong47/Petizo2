@@ -149,9 +149,10 @@ if [ ! -f "/app/petizo/data/petizo.db" ]; then
   echo "Database not found, initializing..."
   node scripts/setup/init-database.js
 else
-  echo "Database exists, checking for password_resets table..."
-  # Run migration to ensure password_resets table exists
-  node scripts/migrations/add-password-resets-table.js || echo "Table may already exist"
+  echo "Database exists, running migrations..."
+  # Run migrations to ensure tables are up to date
+  node scripts/migrations/add-password-resets-table.js || echo "password_resets table migration complete"
+  node scripts/migrations/add-pinned-to-blogs.js || echo "pinned column migration complete"
 fi
 
 # Start the Node.js server
