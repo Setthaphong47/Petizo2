@@ -3,11 +3,19 @@ const nodemailer = require('nodemailer');
 // สร้าง transporter สำหรับส่งอีเมล
 const createTransporter = () => {
     return nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_APP_PASSWORD
-        }
+        },
+        tls: {
+            rejectUnauthorized: false
+        },
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 10000,
+        socketTimeout: 10000
     });
 };
 
@@ -141,12 +149,15 @@ const sendPasswordResetEmail = async (recipientEmail, resetToken) => {
             `
         };
 
+        console.log('Attempting to send email via SMTP...');
         const info = await transporter.sendMail(mailOptions);
         console.log('✅ ส่งอีเมลสำเร็จ:', info.messageId);
         return { success: true, messageId: info.messageId };
     } catch (error) {
-        console.error('❌ ส่งอีเมลไม่สำเร็จ:', error);
-        return { success: false, error: error.message };
+        console.error('❌ ส่งอีเมลไม่สำเร็จ:', error.message);
+        console.error('Error code:', error.code);
+        console.error('Error response:', error.response);
+        return { success: false, error: `${error.code || 'UNKNOWN'}: ${error.message}` };
     }
 };
 
