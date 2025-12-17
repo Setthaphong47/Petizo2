@@ -356,14 +356,28 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
     const { email } = req.body;
 
+    console.log('🔍 Forgot password request for email:', email);
+
     if (!email) {
         return res.status(400).json({ error: 'กรุณากรอกอีเมล' });
+    }
+
+    // ตรวจสอบ environment variables
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+        console.error('❌ Missing email configuration:', {
+            EMAIL_USER: process.env.EMAIL_USER ? 'Set' : 'Missing',
+            EMAIL_APP_PASSWORD: process.env.EMAIL_APP_PASSWORD ? 'Set' : 'Missing',
+            FRONTEND_URL: process.env.FRONTEND_URL || 'Not set (using default)'
+        });
+        return res.status(500).json({ error: 'ระบบส่งอีเมลยังไม่ได้ตั้งค่า' });
     }
 
     try {
         // ตรวจสอบว่ามีอีเมลนี้ในระบบหรือไม่
         let user = null;
         let userType = null;
+
+        console.log('🔍 Searching for user in DB_STRUCTURE:', DB_STRUCTURE);
 
         if (DB_STRUCTURE === 'new') {
             // ค้นหาใน admins
@@ -399,9 +413,12 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
         }
 
         if (!user) {
+            console.log('⚠️  Email not found in database:', email);
             // ไม่ส่ง error เพื่อความปลอดภัย (ไม่ให้รู้ว่าอีเมลมีในระบบหรือไม่)
             return res.json({ message: 'หากอีเมลนี้มีอยู่ในระบบ เราจะส่งลิงก์รีเซ็ตรหัสผ่านไปให้' });
         }
+
+        console.log('✅ User found, userType:', userType);
 
         // สร้าง reset token
         const resetToken = crypto.randomBytes(32).toString('hex');
@@ -427,19 +444,24 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
             );
         });
 
+        console.log('📧 Sending password reset email...');
+
         // ส่งอีเมล
         const emailResult = await sendPasswordResetEmail(email, resetToken);
 
         if (emailResult.success) {
+            console.log('✅ Email sent successfully');
             res.json({ message: 'ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย' });
         } else {
+            console.error('❌ Email sending failed:', emailResult.error);
             // ลบ token ถ้าส่งอีเมลไม่สำเร็จ
             db.run('DELETE FROM password_resets WHERE token = ?', [resetToken]);
-            res.status(500).json({ error: 'ไม่สามารถส่งอีเมลได้ กรุณาลองใหม่อีกครั้ง' });
+            res.status(500).json({ error: 'ไม่สามารถส่งอีเมลได้: ' + emailResult.error });
         }
     } catch (error) {
-        console.error('Forgot password error:', error);
-        res.status(500).json({ error: 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง' });
+        console.error('❌ Forgot password error:', error);
+        console.error('Error stack:', error.stack);
+        res.status(500).json({ error: 'เกิดข้อผิดพลาด: ' + error.message });
     }
 });
 
