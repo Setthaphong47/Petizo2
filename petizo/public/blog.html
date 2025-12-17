@@ -120,10 +120,24 @@
             width: 100%;
             height: 100%;
             transition: transform 0.25s ease;
+            position: relative;
         }
 
         .blog-card:hover {
             transform: translateY(-4px);
+        }
+
+        .recommended-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(25, 118, 210, 0.3);
+            letter-spacing: 0.3px;
         }
 
         .blog-image img {
@@ -494,6 +508,10 @@
                     html += '<div class="blog-card" data-id="'+id+'">';
                     html += '  <div class="blog-image">' + imageHtml + '</div>';
                     html += '  <div class="blog-content">';
+                    // Add recommended badge if pinned (above title)
+                    if (post.pinned === 1 || post.pinned === '1' || post.pinned === true) {
+                        html += '    <div class="recommended-badge">แนะนำ</div>';
+                    }
                     html += '    <h3 class="blog-title">' + (post.title || '') + '</h3>';
                     html += '    <div class="blog-excerpt">' + excerpt + '</div>';
                     html += '    <div class="blog-meta"><div class="blog-tags">' + tagsHtml + '</div></div>';

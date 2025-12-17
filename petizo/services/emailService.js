@@ -100,8 +100,7 @@ const sendPasswordResetEmail = async (recipientEmail, resetToken, userName = 'à¸
                 </head>
                 <body>
                     <div class="container">
-                        <div class="header" style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-                            <img src="${process.env.FRONTEND_URL || 'http://localhost:3000'}/icon/logo.png" alt="Petizo Logo" style="width: 40px; height: 40px;">
+                        <div class="header">
                             <h1 style="margin: 0;">Petizo</h1>
                         </div>
                         <div class="content">
