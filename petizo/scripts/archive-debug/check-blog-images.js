@@ -17,10 +17,10 @@ db.all('SELECT id, title, featured_image, status FROM blogs ORDER BY id', [], (e
     console.log('\n📸 รูปภาพในแต่ละบทความ:\n');
 
     if (rows.length === 0) {
-        console.log('❌ ไม่มีบทความ\n');
+        console.log('ไม่มีบทความ\n');
     } else {
         rows.forEach(blog => {
-            const imageStatus = blog.featured_image ? '✅' : '❌';
+            const imageStatus = blog.featured_image ? '' : '';
             console.log(`${imageStatus} Blog ID: ${blog.id}`);
             console.log(`   Title: ${blog.title}`);
             console.log(`   Image: ${blog.featured_image || 'ไม่มีรูป'}`);

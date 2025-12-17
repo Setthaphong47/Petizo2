@@ -31,9 +31,9 @@ db.all('SELECT id, title, featured_image, status FROM blogs WHERE status = "publ
 
             console.log(`   🖼️  ไฟล์รูป: ${filename}`);
             console.log(`   📁 Path: uploads/${filename}`);
-            console.log(`   ${fileExists ? '✅ มีไฟล์อยู่' : '❌ ไม่พบไฟล์'}`);
+            console.log(`   ${fileExists ? 'มีไฟล์อยู่' : 'ไม่พบไฟล์'}`);
         } else {
-            console.log(`   ❌ ไม่มีรูป`);
+            console.log(`   ไม่มีรูป`);
         }
 
         console.log('');

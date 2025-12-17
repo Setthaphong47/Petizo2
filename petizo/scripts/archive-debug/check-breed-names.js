@@ -8,7 +8,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error opening database:', err);
         process.exit(1);
     }
-    console.log('✅ Connected to database\n');
+    console.log('Connected to database\n');
 });
 
 // Mapping จากภาษาอังกฤษเป็นภาษาไทย
@@ -47,7 +47,7 @@ db.all(`SELECT id, name, breed FROM pets WHERE breed IS NOT NULL AND breed != ''
     }
 
     if (rows.length === 0) {
-        console.log('✅ No pets found in database\n');
+        console.log('No pets found in database\n');
         db.close();
         return;
     }
@@ -65,7 +65,7 @@ db.all(`SELECT id, name, breed FROM pets WHERE breed IS NOT NULL AND breed != ''
         }
     });
 
-    console.log(`✅ Already in Thai: ${alreadyThai.length} pets`);
+    console.log(`Already in Thai: ${alreadyThai.length} pets`);
     if (alreadyThai.length > 0) {
         alreadyThai.forEach(pet => {
             console.log(`   - ${pet.name}: ${pet.breed}`);
@@ -96,14 +96,14 @@ db.all(`SELECT id, name, breed FROM pets WHERE breed IS NOT NULL AND breed != ''
                     processed++;
                     
                     if (updateErr) {
-                        console.error(`❌ Error updating pet ${pet.id}:`, updateErr);
+                        console.error(`Error updating pet ${pet.id}:`, updateErr);
                     } else {
                         updated++;
-                        console.log(`✅ Updated ${pet.name}: ${pet.breed} → ${newBreed}`);
+                        console.log(`Updated ${pet.name}: ${pet.breed} → ${newBreed}`);
                     }
 
                     if (processed === needsUpdate.length) {
-                        console.log(`\n✅ Updated ${updated} out of ${needsUpdate.length} pets`);
+                        console.log(`\nUpdated ${updated} out of ${needsUpdate.length} pets`);
                         db.close();
                     }
                 }

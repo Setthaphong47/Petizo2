@@ -8,7 +8,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error opening database:', err);
         process.exit(1);
     }
-    console.log('✅ Connected to database\n');
+    console.log('Connected to database\n');
 });
 
 // Timestamp from the URL
@@ -36,7 +36,7 @@ db.all(
         }
 
         if (rows.length === 0) {
-            console.log('❌ No blogs found created around that time\n');
+            console.log('No blogs found created around that time\n');
             console.log('📝 Let\'s check the most recent blogs instead:\n');
             
             // Show the 5 most recent blogs
@@ -63,7 +63,7 @@ db.all(
                 }
             );
         } else {
-            console.log(`✅ Found ${rows.length} blog(s) created around that time:\n`);
+            console.log(`Found ${rows.length} blog(s) created around that time:\n`);
             rows.forEach(r => {
                 console.log(`ID: ${r.id}`);
                 console.log(`Title: ${r.title}`);

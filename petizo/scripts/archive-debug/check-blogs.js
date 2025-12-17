@@ -24,7 +24,7 @@ db.all('SELECT id, title, status, published_at FROM blogs LIMIT 10', [], (err, r
     }
 
     if (rows.length === 0) {
-        console.log('❌ No blogs found in database!\n');
+        console.log('No blogs found in database!\n');
     } else {
         console.log('📝 Blogs in database:\n');
         rows.forEach(blog => {

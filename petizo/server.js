@@ -364,7 +364,7 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
 
     // ตรวจสอบ environment variables
     if (!process.env.SENDGRID_API_KEY || !process.env.EMAIL_FROM_ADDRESS) {
-        console.error('❌ Missing email configuration:', {
+        console.error('Missing email configuration:', {
             SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ? 'Set' : 'Missing',
             EMAIL_FROM_ADDRESS: process.env.EMAIL_FROM_ADDRESS ? 'Set' : 'Missing',
             FRONTEND_URL: process.env.FRONTEND_URL || 'Not set (using default)'
@@ -418,7 +418,7 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
             return res.json({ message: 'หากอีเมลนี้อยู่ในระบบ เราได้ส่งลิงก์เปลี่ยนรหัสผ่านไปให้แล้ว กรุณาตรวจสอบกล่องจดหมายและโฟลเดอร์สแปม' });
         }
 
-        console.log('✅ User found, userType:', userType);
+        console.log('User found, userType:', userType);
 
         // ดึงชื่อผู้ใช้ (ใช้ full_name ถ้ามี ไม่งั้นใช้ username)
         const userName = user.full_name || user.username || 'ผู้ใช้';
@@ -447,22 +447,22 @@ app.post('/api/auth/forgot-password/send-reset-link', async (req, res) => {
             );
         });
 
-        console.log('📧 Sending password reset email...');
+        console.log('Sending password reset email...');
 
         // ส่งอีเมล
         const emailResult = await sendPasswordResetEmail(email, resetToken, userName);
 
         if (emailResult.success) {
-            console.log('✅ Email sent successfully');
+            console.log('Email sent successfully');
             res.json({ message: 'ส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมลแล้ว กรุณาตรวจสอบกล่องจดหมาย' });
         } else {
-            console.error('❌ Email sending failed:', emailResult.error);
+            console.error('Email sending failed:', emailResult.error);
             // ลบ token ถ้าส่งอีเมลไม่สำเร็จ
             db.run('DELETE FROM password_resets WHERE token = ?', [resetToken]);
             res.status(500).json({ error: 'ไม่สามารถส่งอีเมลได้: ' + emailResult.error });
         }
     } catch (error) {
-        console.error('❌ Forgot password error:', error);
+        console.error('Forgot password error:', error);
         console.error('Error stack:', error.stack);
         res.status(500).json({ error: 'เกิดข้อผิดพลาด: ' + error.message });
     }
@@ -1373,27 +1373,27 @@ app.post('/api/admin/blog', authenticateToken, isAdmin, upload.single('featured_
     // First, get the next ID to generate slug
     db.get('SELECT MAX(id) as maxId FROM blogs', [], (err, row) => {
         if (err) {
-            console.error('❌ Error getting max ID:', err);
+            console.error('Error getting max ID:', err);
             return res.status(500).json({ error: 'ไม่สามารถสร้างบทความได้' });
         }
-        
+
         const nextId = (row.maxId || 0) + 1;
         const titleSlug = slugify(title);
         const slug = `${nextId}-${titleSlug}`;
         const published_at = status === 'published' ? new Date().toISOString() : null;
-        
+
         console.log('Generated slug:', slug);
-        
+
         db.run(
-            `INSERT INTO blogs (admin_id, title, slug, content, excerpt, featured_image, category, tags, source_name, source_url, status, published_at) 
+            `INSERT INTO blogs (admin_id, title, slug, content, excerpt, featured_image, category, tags, source_name, source_url, status, published_at)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [req.user.id, title, slug, content, excerpt, featured_image, category, tagsJson, source_name || null, source_url || null, status, published_at],
             function(err) {
                 if (err) {
-                    console.error('❌ Blog create error:', err);
+                    console.error('Blog create error:', err);
                     return res.status(500).json({ error: 'ไม่สามารถสร้างบทความได้: ' + err.message });
                 }
-                console.log('✅ Blog created successfully! ID:', this.lastID, 'Slug:', slug);
+                console.log('Blog created successfully! ID:', this.lastID, 'Slug:', slug);
                 res.json({ message: 'สร้างบทความสำเร็จ', id: this.lastID, slug });
             }
         );

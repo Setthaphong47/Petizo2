@@ -3067,7 +3067,7 @@
                     console.error('loadAdminBlogPosts error', err);
                     const errorMessage = err.message || 'โหลดไม่สำเร็จ';
                     document.getElementById('blogGrid').innerHTML =
-                        `<div style="text-align:center;padding:60px;color:#999;">❌ ${errorMessage}</div>`;
+                        `<div style="text-align:center;padding:60px;color:#999;">${errorMessage}</div>`;
 
                     // ถ้าเป็น 403 ให้ logout
                     if (err.message.includes('403') || err.message.includes('สิทธิ์')) {
@@ -5820,9 +5820,9 @@
                 console.error('Error loading users:', error);
                 const errorMessage = error.message || 'ไม่สามารถโหลดข้อมูลได้';
                 document.getElementById('adminsTableContainer').innerHTML =
-                    `<div class="loading">❌ ${errorMessage}</div>`;
+                    `<div class="loading">${errorMessage}</div>`;
                 document.getElementById('membersTableContainer').innerHTML =
-                    `<div class="loading">❌ ${errorMessage}</div>`;
+                    `<div class="loading">${errorMessage}</div>`;
 
                 // ถ้าเป็น 403 ให้ logout
                 if (error.message.includes('403') || error.message.includes('สิทธิ์')) {

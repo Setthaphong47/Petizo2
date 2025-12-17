@@ -50,21 +50,21 @@ petizo/
 ## ไฟล์ที่ต้องย้าย
 
 ### 1. เอกสาร (Documentation)
-- ✅ ANALYTICS_DASHBOARD_REPORT.md → docs/analytics/
-- ✅ ANALYTICS_DASHBOARD_SUMMARY.md → docs/analytics/
-- ✅ docs/DEPLOYMENT.md → docs/deployment/
-- ✅ docs/VOLUME-FIX.md → docs/deployment/
-- ✅ docs/OCR-SETUP.md → docs/setup/
-- ✅ docs/ENV-VARIABLES.txt → docs/setup/
-- ✅ docs/RESTRUCTURE_PLAN.md → docs/development/
+-  ANALYTICS_DASHBOARD_REPORT.md → docs/analytics/
+-  ANALYTICS_DASHBOARD_SUMMARY.md → docs/analytics/
+-  docs/DEPLOYMENT.md → docs/deployment/
+-  docs/VOLUME-FIX.md → docs/deployment/
+-  docs/OCR-SETUP.md → docs/setup/
+-  docs/ENV-VARIABLES.txt → docs/setup/
+-  docs/RESTRUCTURE_PLAN.md → docs/development/
 
 ### 2. Scripts
-- ✅ add-species-column.js → scripts/maintenance/
-- ✅ test-stats-api.js → scripts/testing/
+-  add-species-column.js → scripts/maintenance/
+-  test-stats-api.js → scripts/testing/
 
 ### 3. ไฟล์ที่ควรลบ
-- ❌ nul (ไฟล์ขยะ)
-- ❌ data/petizo.db.backup.* (ย้ายไป backups/ หรือลบ)
+-  nul (ไฟล์ขยะ)
+-  data/petizo.db.backup.* (ย้ายไป backups/ หรือลบ)
 
 ## คำสั่งที่ใช้ย้าย
 

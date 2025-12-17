@@ -38,11 +38,11 @@ alterQueries.forEach((item, index) => {
             if (err.message.includes('duplicate column name')) {
                 console.log(`⚠️  ${item.name} - มีอยู่แล้ว`);
             } else {
-                console.error(`❌ ${item.name} - Error:`, err.message);
+                console.error(`${item.name} - Error:`, err.message);
                 errors++;
             }
         } else {
-            console.log(`✅ ${item.name} - ${item.description}`);
+            console.log(`${item.name} - ${item.description}`);
         }
         
         completed++;
@@ -51,7 +51,7 @@ alterQueries.forEach((item, index) => {
         if (completed === alterQueries.length) {
             console.log('\n' + '='.repeat(50));
             if (errors === 0) {
-                console.log('✅ เพิ่มฟิลด์สำเร็จทั้งหมด!');
+                console.log('เพิ่มฟิลด์สำเร็จทั้งหมด!');
             } else {
                 console.log(`⚠️  เพิ่มฟิลด์เสร็จสิ้น (มี ${errors} ข้อผิดพลาด)`);
             }

@@ -5,10 +5,10 @@ console.log('🔄 เริ่มต้น Migration: แยกตาราง u
 
 const db = new sqlite3.Database('./petizo.db', (err) => {
     if (err) {
-        console.error('❌ ไม่สามารถเชื่อมต่อ database:', err.message);
+        console.error('ไม่สามารถเชื่อมต่อ database:', err.message);
         process.exit(1);
     }
-    console.log('✅ เชื่อมต่อ database สำเร็จ\n');
+    console.log('เชื่อมต่อ database สำเร็จ\n');
 });
 
 // เปิด Foreign Keys
@@ -30,7 +30,7 @@ async function migrate() {
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
-        console.log('✅ สร้างตาราง admins สำเร็จ\n');
+        console.log('สร้างตาราง admins สำเร็จ\n');
 
         // ขั้นตอนที่ 2: สร้างตาราง members
         console.log('📋 ขั้นตอนที่ 2: สร้างตาราง members...');
@@ -47,7 +47,7 @@ async function migrate() {
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         `);
-        console.log('✅ สร้างตาราง members สำเร็จ\n');
+        console.log('สร้างตาราง members สำเร็จ\n');
 
         // ขั้นตอนที่ 3: ย้ายข้อมูล admins
         console.log('📋 ขั้นตอนที่ 3: ย้ายข้อมูล admin users...');
@@ -59,7 +59,7 @@ async function migrate() {
                 INSERT OR IGNORE INTO admins (id, username, email, password, full_name, phone, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             `, [admin.id, admin.username, admin.email, admin.password, admin.full_name, admin.phone, admin.created_at, admin.updated_at]);
-            console.log(`   ✅ ย้าย admin: ${admin.username}`);
+            console.log(`   ย้าย admin: ${admin.username}`);
         }
         console.log('');
 
@@ -73,7 +73,7 @@ async function migrate() {
                 INSERT OR IGNORE INTO members (id, username, email, password, full_name, phone, is_hidden, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             `, [member.id, member.username, member.email, member.password, member.full_name, member.phone, member.is_hidden || 0, member.created_at, member.updated_at]);
-            console.log(`   ✅ ย้าย member: ${member.username}`);
+            console.log(`   ย้าย member: ${member.username}`);
         }
         console.log('');
 
@@ -116,7 +116,7 @@ async function migrate() {
         }
         
         await runQuery('DROP TABLE pets');
-        console.log('✅ อัพเดท pets table สำเร็จ\n');
+        console.log('อัพเดท pets table สำเร็จ\n');
 
         // ขั้นตอนที่ 6: อัพเดท blogs (อ้างอิง admins)
         console.log('📋 ขั้นตอนที่ 6: อัพเดท Foreign Key ของ blogs...');
@@ -156,12 +156,12 @@ async function migrate() {
         }
         
         await runQuery('DROP TABLE blogs');
-        console.log('✅ อัพเดท blogs table สำเร็จ\n');
+        console.log('อัพเดท blogs table สำเร็จ\n');
 
         // ขั้นตอนที่ 8: Backup และลบตาราง users เดิม
         console.log('📋 ขั้นตอนที่ 8: Backup ตาราง users เดิม...');
         await runQuery('ALTER TABLE users RENAME TO users_backup_old');
-        console.log('✅ เปลี่ยนชื่อ users → users_backup_old สำเร็จ\n');
+        console.log('เปลี่ยนชื่อ users → users_backup_old สำเร็จ\n');
 
         // ขั้นตอนที่ 9: สร้าง Indexes
         console.log('📋 ขั้นตอนที่ 9: สร้าง Indexes...');
@@ -169,7 +169,7 @@ async function migrate() {
         await runQuery('CREATE INDEX IF NOT EXISTS idx_blogs_admin_id ON blogs(admin_id)');
         await runQuery('CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email)');
         await runQuery('CREATE INDEX IF NOT EXISTS idx_members_email ON members(email)');
-        console.log('✅ สร้าง Indexes สำเร็จ\n');
+        console.log('สร้าง Indexes สำเร็จ\n');
 
         // สรุป
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -191,7 +191,7 @@ async function migrate() {
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
     } catch (error) {
-        console.error('❌ เกิดข้อผิดพลาด:', error.message);
+        console.error('เกิดข้อผิดพลาด:', error.message);
         console.error('\n⚠️  กรุณาตรวจสอบและลอง restore จาก backup');
     } finally {
         db.close();

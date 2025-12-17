@@ -8,7 +8,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error opening database:', err);
         process.exit(1);
     }
-    console.log('✅ Connected to database\n');
+    console.log('Connected to database\n');
 });
 
 // Improved slugify function that supports Thai
@@ -49,7 +49,7 @@ db.all(`SELECT id, title, slug FROM blogs WHERE slug LIKE '--%' OR slug LIKE '%-
     }
 
     if (rows.length === 0) {
-        console.log('✅ No problematic slugs found\n');
+        console.log('No problematic slugs found\n');
         db.close();
         return;
     }
@@ -78,15 +78,15 @@ db.all(`SELECT id, title, slug FROM blogs WHERE slug LIKE '--%' OR slug LIKE '%-
                 processed++;
                 
                 if (updateErr) {
-                    console.error(`❌ Error updating blog ${blog.id}:`, updateErr);
+                    console.error(`Error updating blog ${blog.id}:`, updateErr);
                 } else {
                     updates++;
-                    console.log(`✅ Updated blog ${blog.id}`);
+                    console.log(`Updated blog ${blog.id}`);
                 }
 
                 // Close database after processing all rows
                 if (processed === rows.length) {
-                    console.log(`\n✅ Updated ${updates} out of ${rows.length} blogs`);
+                    console.log(`\nUpdated ${updates} out of ${rows.length} blogs`);
                     db.close();
                 }
             }

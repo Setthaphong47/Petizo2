@@ -8,7 +8,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error opening database:', err);
         process.exit(1);
     }
-    console.log('✅ Connected to database\n');
+    console.log('Connected to database\n');
 });
 
 console.log('📊 Comparing blog structures:\n');
@@ -24,7 +24,7 @@ db.all(
             process.exit(1);
         }
 
-        console.log(`\n✅ Total blogs: ${rows.length}\n`);
+        console.log(`\nTotal blogs: ${rows.length}\n`);
 
         // Show newest first
         console.log('📝 All blogs (newest first):\n');
@@ -59,7 +59,7 @@ db.all(
             
             // Check if slug is URL-encoded
             if (blog.slug !== decodeURIComponent(blog.slug)) {
-                console.log(`\n✅ Slug is properly encoded for Thai characters`);
+                console.log(`\nSlug is properly encoded for Thai characters`);
             }
         });
 

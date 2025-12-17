@@ -8,7 +8,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error opening database:', err);
         process.exit(1);
     }
-    console.log('✅ Connected to database\n');
+    console.log('Connected to database\n');
 });
 
 // Check for the specific ID
@@ -38,7 +38,7 @@ db.all(`SELECT id, title, slug, status, published_at, created_at FROM blogs`, []
     );
 
     if (exactMatch) {
-        console.log('✅ Found exact match:');
+        console.log('Found exact match:');
         console.log(JSON.stringify(exactMatch, null, 2));
     } else if (similarMatches.length > 0) {
         console.log('⚠️  Found similar matches:');
@@ -47,7 +47,7 @@ db.all(`SELECT id, title, slug, status, published_at, created_at FROM blogs`, []
             console.log(JSON.stringify(match, null, 2));
         });
     } else {
-        console.log('❌ No blog found with ID containing:', searchId);
+        console.log('No blog found with ID containing:', searchId);
         console.log('\n📝 All blog IDs in database:');
         rows.forEach(r => {
             console.log(`  ID: ${r.id} (type: ${typeof r.id}) | Title: ${r.title} | Status: ${r.status}`);

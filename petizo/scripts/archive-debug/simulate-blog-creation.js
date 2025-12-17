@@ -8,7 +8,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.error('Error opening database:', err);
         process.exit(1);
     }
-    console.log('✅ Connected to database\n');
+    console.log('Connected to database\n');
 });
 
 // Test slugify function (matching server.js)
@@ -48,7 +48,7 @@ const testBlog = {
 // Get next ID
 db.get('SELECT MAX(id) as maxId FROM blogs', [], (err, row) => {
     if (err) {
-        console.error('❌ Error:', err);
+        console.error('Error:', err);
         db.close();
         return;
     }
@@ -74,9 +74,9 @@ db.get('SELECT MAX(id) as maxId FROM blogs', [], (err, row) => {
          testBlog.category, testBlog.tags, testBlog.source_name, testBlog.source_url, testBlog.status, testBlog.published_at],
         function(err) {
             if (err) {
-                console.error('❌ Insert error:', err);
+                console.error('Insert error:', err);
             } else {
-                console.log('✅ Blog inserted! ID:', this.lastID);
+                console.log('Blog inserted! ID:', this.lastID);
             }
             db.close();
         }

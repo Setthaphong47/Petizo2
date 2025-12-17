@@ -133,12 +133,12 @@ const sendPasswordResetEmail = async (recipientEmail, resetToken, userName = '�
             `
         };
 
-        console.log('📧 Sending email via SendGrid HTTP API...');
+        console.log('Sending email via SendGrid HTTP API...');
         const response = await sgMail.send(msg);
-        console.log('✅ ส่งอีเมลสำเร็จ:', response[0].statusCode);
+        console.log('ส่งอีเมลสำเร็จ:', response[0].statusCode);
         return { success: true, messageId: response[0].headers['x-message-id'] };
     } catch (error) {
-        console.error('❌ ส่งอีเมลไม่สำเร็จ:', error.message);
+        console.error('ส่งอีเมลไม่สำเร็จ:', error.message);
         if (error.response) {
             console.error('SendGrid error body:', error.response.body);
         }

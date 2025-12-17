@@ -20,7 +20,7 @@ db.all('SELECT id, name, breed, photo_url FROM pets ORDER BY id', [], (err, rows
     console.log('='.repeat(80) + '\n');
 
     if (rows.length === 0) {
-        console.log('❌ ไม่มีสัตว์เลี้ยง\n');
+        console.log('ไม่มีสัตว์เลี้ยง\n');
     } else {
         rows.forEach((pet, index) => {
             console.log(`${index + 1}. 🐕 ${pet.name}`);
@@ -34,9 +34,9 @@ db.all('SELECT id, name, breed, photo_url FROM pets ORDER BY id', [], (err, rows
 
                 console.log(`   🖼️  ไฟล์รูป: ${filename}`);
                 console.log(`   📁 Path: uploads/${filename}`);
-                console.log(`   ${fileExists ? '✅ มีไฟล์อยู่' : '❌ ไม่พบไฟล์'}`);
+                console.log(`   ${fileExists ? 'มีไฟล์อยู่' : 'ไม่พบไฟล์'}`);
             } else {
-                console.log(`   ❌ ไม่มีรูป`);
+                console.log(`   ไม่มีรูป`);
             }
 
             console.log('');

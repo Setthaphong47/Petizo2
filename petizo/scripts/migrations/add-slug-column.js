@@ -2,10 +2,10 @@ const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('./petizo.db', (err) => {
     if (err) {
-        console.error('❌ Error connecting to database:', err.message);
+        console.error('Error connecting to database:', err.message);
         process.exit(1);
     }
-    console.log('✅ Connected to database\n');
+    console.log('Connected to database\n');
 });
 
 // Function to generate slug from Thai/English text
@@ -28,12 +28,12 @@ db.run("ALTER TABLE blogs ADD COLUMN slug TEXT", (err) => {
             console.log('⚠️  Column slug already exists, skipping creation');
             generateSlugs();
         } else {
-            console.error('❌ Error adding slug column:', err.message);
+            console.error('Error adding slug column:', err.message);
             db.close();
             return;
         }
     } else {
-        console.log('✅ Slug column added successfully\n');
+        console.log('Slug column added successfully\n');
         generateSlugs();
     }
 });
@@ -44,7 +44,7 @@ function generateSlugs() {
     // Get all blogs
     db.all("SELECT id, title FROM blogs", (err, blogs) => {
         if (err) {
-            console.error('❌ Error getting blogs:', err.message);
+            console.error('Error getting blogs:', err.message);
             db.close();
             return;
         }
@@ -70,9 +70,9 @@ function generateSlugs() {
                     completed++;
 
                     if (err) {
-                        console.error(`❌ Error updating blog ${blog.id}:`, err.message);
+                        console.error(`Error updating blog ${blog.id}:`, err.message);
                     } else {
-                        console.log(`✅ Blog ${blog.id}: "${blog.title.substring(0, 40)}..." → slug: "${slug}"`);
+                        console.log(`Blog ${blog.id}: "${blog.title.substring(0, 40)}..." → slug: "${slug}"`);
                     }
 
                     if (completed === total) {

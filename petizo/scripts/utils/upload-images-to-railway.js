@@ -23,7 +23,7 @@ async function login() {
     }
     
     const data = await response.json();
-    console.log('✅ Login successful');
+    console.log('Login successful');
     return data.token;
 }
 
@@ -41,14 +41,14 @@ async function uploadFile(token, filePath, fileName) {
         });
         
         if (response.ok) {
-            console.log(`  ✅ ${fileName}`);
+            console.log(`  ${fileName}`);
             return true;
         } else {
-            console.log(`  ❌ ${fileName} - ${response.statusText}`);
+            console.log(`  ${fileName} - ${response.statusText}`);
             return false;
         }
     } catch (error) {
-        console.log(`  ❌ ${fileName} - ${error.message}`);
+        console.log(`  ${fileName} - ${error.message}`);
         return false;
     }
 }
@@ -81,8 +81,8 @@ async function main() {
     }
     
     console.log(`\n📊 Summary:`);
-    console.log(`  ✅ Success: ${success}`);
-    console.log(`  ❌ Failed: ${failed}`);
+    console.log(`  Success: ${success}`);
+    console.log(`  Failed: ${failed}`);
     console.log(`  📦 Total: ${files.length}`);
 }
 

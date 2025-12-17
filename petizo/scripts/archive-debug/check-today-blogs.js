@@ -23,7 +23,7 @@ db.all(
         }
 
         if (todayBlogs.length > 0) {
-            console.log(`✅ Found ${todayBlogs.length} blog(s) created today:\n`);
+            console.log(`Found ${todayBlogs.length} blog(s) created today:\n`);
             todayBlogs.forEach(blog => {
                 console.log('='.repeat(80));
                 console.log(`ID: ${blog.id}`);
@@ -38,7 +38,7 @@ db.all(
                 console.log('');
             });
         } else {
-            console.log('❌ No blogs created today\n');
+            console.log('No blogs created today\n');
             console.log('📝 Showing most recent blog instead:\n');
             
             db.get(`SELECT id, title, slug, status, created_at, published_at FROM blogs ORDER BY created_at DESC LIMIT 1`, [], (err2, latest) => {

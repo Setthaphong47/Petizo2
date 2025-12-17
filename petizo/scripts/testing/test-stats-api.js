@@ -8,10 +8,10 @@ async function testStatsAPI() {
             }
         });
         const data = await response.json();
-        console.log('✅ Stats API Response:');
+        console.log('Stats API Response:');
         console.log(JSON.stringify(data, null, 2));
     } catch (error) {
-        console.error('❌ Error:', error.message);
+        console.error('Error:', error.message);
     }
 }
 
