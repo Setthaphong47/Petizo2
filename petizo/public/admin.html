@@ -3240,6 +3240,7 @@
 
                             <!-- Pin Icon (Top-Right Corner) -->
                             <div onclick="togglePinBlog(${post.id}, ${post.pinned || 0})"
+                                 title="${post.pinned ? 'คลิกเพื่อยกเลิกรายการแนะนำ' : 'คลิกเพื่อเพิ่มเป็นรายการแนะนำ'}"
                                  style="position: absolute;
                                         top: 16px;
                                         right: 16px;
@@ -3604,7 +3605,6 @@
                     animation: slideInRight 0.3s;
                 `;
                 notification.innerHTML = `
-                    <span style="font-size: 20px;"><img src="/icon/verified copy.png" alt="Correct" style="width:30px;height:30px;"></span>
                     <span>${message}</span>
                 `;
                 

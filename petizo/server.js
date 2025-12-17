@@ -1510,7 +1510,7 @@ app.patch('/api/admin/blog/:id/pin', authenticateToken, isAdmin, (req, res) => {
         }
         res.json({
             success: true,
-            message: pinned ? 'ปักหมุดบทความสำเร็จ' : 'ยกเลิกปักหมุดบทความสำเร็จ',
+            message: pinned ? 'เพิ่มเป็นรายการแนะนำแล้ว' : 'ยกเลิกรายการแนะนำแล้ว',
             pinned: pinned ? 1 : 0
         });
     });
