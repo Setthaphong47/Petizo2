@@ -3629,55 +3629,90 @@
 
             // Show success notification
             function showSuccessNotification(message) {
-                // Create overlay
-                const overlay = document.createElement('div');
-                overlay.style.cssText = `
+                // Create toast notification
+                const toast = document.createElement('div');
+                toast.style.cssText = `
                     position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.5);
+                    top: 20px;
+                    right: -400px;
+                    background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+                    color: white;
+                    padding: 18px 24px;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3);
                     z-index: 10000;
+                    min-width: 320px;
+                    max-width: 400px;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                `;
+
+                // Success icon
+                const icon = document.createElement('div');
+                icon.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+                        <circle cx="12" cy="12" r="10" opacity="0.3" fill="white"></circle>
+                        <polyline points="9 12 11 14 15 10"></polyline>
+                    </svg>
+                `;
+                icon.style.cssText = `
+                    flex-shrink: 0;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    animation: fadeIn 0.2s;
                 `;
 
-                // Create modal
-                const modal = document.createElement('div');
-                modal.style.cssText = `
-                    background: #3a4a5a;
+                // Message text
+                const text = document.createElement('div');
+                text.textContent = message;
+                text.style.cssText = `
+                    flex: 1;
+                    font-size: 15px;
+                    font-weight: 500;
+                    line-height: 1.4;
+                `;
+
+                // Close button
+                const closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '×';
+                closeBtn.style.cssText = `
+                    background: rgba(255, 255, 255, 0.2);
+                    border: none;
                     color: white;
-                    padding: 20px 28px;
-                    border-radius: 8px;
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-                    text-align: left;
-                    min-width: 320px;
-                    animation: scaleIn 0.3s;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    font-size: 20px;
+                    line-height: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    transition: background 0.2s;
                 `;
+                closeBtn.onmouseover = () => closeBtn.style.background = 'rgba(255, 255, 255, 0.3)';
+                closeBtn.onmouseout = () => closeBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+                closeBtn.onclick = () => {
+                    toast.style.right = '-400px';
+                    setTimeout(() => toast.remove(), 400);
+                };
 
-                modal.innerHTML = `
-                    <div style="font-size: 14px; margin-bottom: 12px; color: #e8e8e8;">petizo.up.railway.app บอกว่า</div>
-                    <div style="font-size: 15px; margin-bottom: 20px; line-height: 1.5; color: white;">${message}</div>
-                    <div style="text-align: center;">
-                        <button onclick="this.parentElement.parentElement.parentElement.remove()"
-                                style="background: #6fa8dc; color: white; border: none; padding: 8px 32px;
-                                       border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;
-                                       transition: background 0.2s; min-width: 100px;">
-                            ตกลง
-                        </button>
-                    </div>
-                `;
+                toast.appendChild(icon);
+                toast.appendChild(text);
+                toast.appendChild(closeBtn);
+                document.body.appendChild(toast);
 
-                overlay.appendChild(modal);
-                document.body.appendChild(overlay);
+                // Slide in
+                setTimeout(() => toast.style.right = '20px', 10);
 
-                // Add hover effect to button
-                const button = modal.querySelector('button');
-                button.onmouseover = () => button.style.background = '#5a8fc4';
-                button.onmouseout = () => button.style.background = '#6fa8dc';
+                // Auto dismiss after 3.5 seconds
+                setTimeout(() => {
+                    toast.style.right = '-400px';
+                    setTimeout(() => toast.remove(), 400);
+                }, 3500);
             }
 
             const style = document.createElement('style');
