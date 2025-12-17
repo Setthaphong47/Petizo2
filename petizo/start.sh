@@ -143,6 +143,17 @@ else
   echo "Python packages already installed (using Volume cache, version: $(cat $INSTALL_MARKER))"
 fi
 
+# Initialize database (create tables if not exists)
+echo "Checking database tables..."
+if [ ! -f "/app/petizo/data/petizo.db" ]; then
+  echo "Database not found, initializing..."
+  node scripts/setup/init-database.js
+else
+  echo "Database exists, checking for password_resets table..."
+  # Run migration to ensure password_resets table exists
+  node scripts/migrations/add-password-resets-table.js || echo "Table may already exist"
+fi
+
 # Start the Node.js server
 echo "Starting Node.js server..."
 exec node server.js
