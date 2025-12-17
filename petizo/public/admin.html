@@ -1089,9 +1089,9 @@
         .tooltip-trigger::before {
             content: attr(data-tooltip);
             position: absolute;
-            bottom: calc(100% + 10px);
-            left: 50%;
-            transform: translateX(-50%);
+            right: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
             background: #000;
             color: white;
             padding: 8px 12px;
@@ -1107,11 +1107,11 @@
         .tooltip-trigger::after {
             content: '';
             position: absolute;
-            bottom: calc(100% + 2px);
-            left: 50%;
-            transform: translateX(-50%);
+            right: calc(100% + 2px);
+            top: 50%;
+            transform: translateY(-50%);
             border: 6px solid transparent;
-            border-top-color: #000;
+            border-right-color: #000;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s;
