@@ -1,5 +1,0 @@
-คัดลอกและวางใน Railway Dashboard → Service → Variables
-
-EASYOCR_MODULE_PATH=/app/petizo/data/easyocr_models
-OPENCV_IO_MAX_IMAGE_PIXELS=1000000000
-PYTHONUNBUFFERED=1
