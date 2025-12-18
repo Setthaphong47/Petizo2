@@ -42,7 +42,7 @@ function addPasswordResetsTable() {
                 else console.log('สร้าง index สำหรับ email เสร็จแล้ว');
 
                 console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-                console.log('Migration สำเร็จ! 🎉');
+                console.log('Migration สำเร็จ!');
                 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
                 db.close();

@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔄 Downloading petizo.db from GitHub...\n');
+console.log('Downloading petizo.db from GitHub...\n');
 
 const url = 'https://raw.githubusercontent.com/Setthaphong47/Petizo2/main/petizo/data/petizo.db.backup';
 const outputPath = path.join(__dirname, 'data', 'petizo.db');
@@ -27,11 +27,11 @@ https.get(url, (response) => {
     file.on('finish', () => {
         file.close();
         console.log('Successfully downloaded petizo.db!');
-        console.log(`📁 Saved to: ${outputPath}\n`);
+        console.log(`Saved to: ${outputPath}\n`);
 
         // แสดงขนาดไฟล์
         const stats = fs.statSync(outputPath);
-        console.log(`📊 File size: ${(stats.size / 1024).toFixed(2)} KB\n`);
+        console.log(`File size: ${(stats.size / 1024).toFixed(2)} KB\n`);
 
         process.exit(0);
     });

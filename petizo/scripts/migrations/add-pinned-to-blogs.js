@@ -4,7 +4,7 @@ const path = require('path');
 const dbPath = path.join(__dirname, '../../data/petizo.db');
 const db = new sqlite3.Database(dbPath);
 
-console.log('🔄 Adding pinned column to blogs table...');
+console.log('Adding pinned column to blogs table...');
 
 db.run(`
     ALTER TABLE blogs ADD COLUMN pinned INTEGER DEFAULT 0

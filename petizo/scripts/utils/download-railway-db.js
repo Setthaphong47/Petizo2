@@ -10,11 +10,11 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@petizo.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const OUTPUT_FILE = path.join(__dirname, '../../railway-current.db');
 
-console.log('🚂 Downloading database from Railway...');
+console.log('Downloading database from Railway...');
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-console.log(`📍 Server: ${RAILWAY_URL}`);
-console.log(`👤 Admin: ${ADMIN_EMAIL}`);
-console.log(`💾 Output: ${OUTPUT_FILE}`);
+console.log(`Server: ${RAILWAY_URL}`);
+console.log(`Admin: ${ADMIN_EMAIL}`);
+console.log(`Output: ${OUTPUT_FILE}`);
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
 // Helper function to make HTTP/HTTPS requests
@@ -74,7 +74,7 @@ function makeRequest(urlString, options = {}) {
 async function downloadDatabase() {
     try {
         // Step 1: Login to get JWT token
-        console.log('1️⃣  Logging in as admin...');
+        console.log('1. Logging in as admin...');
         const loginResponse = await makeRequest(`${RAILWAY_URL}/api/auth/login`, {
             method: 'POST',
             headers: {
@@ -91,10 +91,10 @@ async function downloadDatabase() {
         }
 
         const token = loginResponse.data.token;
-        console.log('   ✅ Login successful\n');
+        console.log('Login successful\n');
 
         // Step 2: Download database file
-        console.log('2️⃣  Downloading database file...');
+        console.log('Downloading database file...');
         const downloadResponse = await makeRequest(`${RAILWAY_URL}/api/admin/export-database`, {
             method: 'GET',
             headers: {
@@ -108,21 +108,21 @@ async function downloadDatabase() {
         }
 
         // Step 3: Verify downloaded file
-        console.log('   ✅ Download complete\n');
+        console.log('Download complete\n');
 
         const stats = fs.statSync(OUTPUT_FILE);
         const fileSizeInMB = (stats.size / (1024 * 1024)).toFixed(2);
 
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('✅ Database exported successfully!');
+        console.log('Database exported successfully!');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log(`📁 File: ${OUTPUT_FILE}`);
-        console.log(`📊 Size: ${fileSizeInMB} MB`);
-        console.log(`📅 Date: ${new Date().toLocaleString('th-TH')}`);
+        console.log(`File: ${OUTPUT_FILE}`);
+        console.log(`Size: ${fileSizeInMB} MB`);
+        console.log(`Date: ${new Date().toLocaleString('th-TH')}`);
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
         // Step 4: Show database info
-        console.log('3️⃣  Analyzing database structure...\n');
+        console.log('3. Analyzing database structure...\n');
         const sqlite3 = require('sqlite3').verbose();
         const db = new sqlite3.Database(OUTPUT_FILE, sqlite3.OPEN_READONLY);
 
@@ -133,13 +133,13 @@ async function downloadDatabase() {
                 return;
             }
 
-            console.log('📋 Tables found:');
+            console.log('Tables found:');
             let tableCount = 0;
 
             const checkTable = (index) => {
                 if (index >= tables.length) {
                     console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-                    console.log(`✅ Total tables: ${tableCount}`);
+                    console.log(`Total tables: ${tableCount}`);
                     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
                     db.close();
                     return;
@@ -161,7 +161,7 @@ async function downloadDatabase() {
         });
 
     } catch (error) {
-        console.error('\n❌ Error:', error.message);
+        console.error('\nError:', error.message);
         process.exit(1);
     }
 }
