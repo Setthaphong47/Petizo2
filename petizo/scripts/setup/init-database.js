@@ -176,21 +176,6 @@ function createTables() {
         else console.log('ตาราง blogs สร้างเสร็จแล้ว');
     });
 
-    // ตาราง Chat History (เชื่อมกับ members)
-    db.run(`
-        CREATE TABLE IF NOT EXISTS chat_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            member_id INTEGER,
-            message TEXT NOT NULL,
-            response TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE SET NULL
-        )
-    `, (err) => {
-        if (err) console.error('Error creating chat_history table:', err);
-        else console.log('ตาราง chat_history สร้างเสร็จแล้ว');
-    });
-
     // ตาราง Password Resets (สำหรับระบบรีเซ็ตรหัสผ่าน)
     db.run(`
         CREATE TABLE IF NOT EXISTS password_resets (
@@ -232,7 +217,6 @@ function createTables() {
         db.run('CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON blog_posts(status)');
         db.run('CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug)');
         db.run('CREATE INDEX IF NOT EXISTS idx_blog_posts_admin_id ON blog_posts(admin_id)');
-        db.run('CREATE INDEX IF NOT EXISTS idx_chat_history_member_id ON chat_history(member_id)');
         db.run('CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email)');
         db.run('CREATE INDEX IF NOT EXISTS idx_members_email ON members(email)');
         db.run('CREATE INDEX IF NOT EXISTS idx_password_resets_token ON password_resets(token)');
