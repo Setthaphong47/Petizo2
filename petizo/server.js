@@ -1105,10 +1105,12 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
 });
 
 app.post('/api/pets/:petId/vaccinations', authenticateToken, upload.single('proof'), (req, res) => {
-    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงหรือไม่ (รองรับทั้ง member_id และ user_id)
+    const petColumn = getPetUserColumn();
+
+    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงหรือไม่
     db.get(
-        `SELECT id FROM pets WHERE id = ? AND (member_id = ? OR user_id = ?)`,
-        [req.params.petId, req.user.id, req.user.id],
+        `SELECT id FROM pets WHERE id = ? AND ${petColumn} = ?`,
+        [req.params.petId, req.user.id],
         (err, pet) => {
             if (err) {
                 console.error('Check pet ownership error:', err);
@@ -1168,12 +1170,14 @@ app.get('/api/pets/:petId/vaccinations', authenticateToken, (req, res) => {
 });
 
 app.delete('/api/vaccinations/:id', authenticateToken, (req, res) => {
-    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงที่มีวัคซีนนี้ (รองรับทั้ง member_id และ user_id)
+    const petColumn = getPetUserColumn();
+
+    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงที่มีวัคซีนนี้
     db.get(
         `SELECT v.* FROM vaccinations v
          JOIN pets p ON v.pet_id = p.id
-         WHERE v.id = ? AND (p.member_id = ? OR p.user_id = ?)`,
-        [req.params.id, req.user.id, req.user.id],
+         WHERE v.id = ? AND p.${petColumn} = ?`,
+        [req.params.id, req.user.id],
         (err, vaccination) => {
             if (err) {
                 console.error('Delete vaccination error:', err);
