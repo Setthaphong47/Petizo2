@@ -26,7 +26,12 @@
       "Bash(railway up:*)",
       "Bash(railway run:*)",
       "Bash(timeout 10 railway logs:*)",
-      "Bash(railway variables:*)"
+      "Bash(railway variables:*)",
+      "Bash(findstr:*)",
+      "Bash(git restore:*)",
+      "Bash(rm:*)",
+      "Bash(mv:*)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": []
