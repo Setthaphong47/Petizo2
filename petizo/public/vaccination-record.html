@@ -923,7 +923,7 @@
             }
 
             try {
-                const response = await fetch(`${API_URL}/api/vaccinations/${vaccinationId}`, {
+                const response = await fetch(`${API_URL}/vaccinations/${vaccinationId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
