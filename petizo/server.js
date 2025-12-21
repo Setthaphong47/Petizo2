@@ -1105,36 +1105,57 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
 });
 
 app.post('/api/pets/:petId/vaccinations', authenticateToken, upload.single('proof'), (req, res) => {
-    const { 
-        vaccine_name, 
-        vaccine_type, 
-        vaccination_date, 
-        next_due_date, 
-        veterinarian, 
-        clinic_name, 
-        batch_number, 
-        registration_number,
-        manufacture_date,
-        expiry_date,
-        notes, 
-        schedule_id 
-    } = req.body;
-    const proof_image = req.file ? `/uploads/${req.file.filename}` : null;
-    
-    db.run(
-        `INSERT INTO vaccinations (
-            pet_id, vaccine_name, vaccine_type, vaccination_date, next_due_date, 
-            veterinarian, clinic_name, batch_number, registration_number, 
-            manufacture_date, expiry_date, notes, schedule_id, proof_image, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'completed')`,
-        [
-            req.params.petId, vaccine_name, vaccine_type, vaccination_date, next_due_date, 
-            veterinarian, clinic_name, batch_number, registration_number,
-            manufacture_date, expiry_date, notes, schedule_id, proof_image
-        ],
-        function(err) {
-            if (err) return res.status(500).json({ error: 'ไม่สามารถบันทึกได้' });
-            res.json({ message: 'บันทึกสำเร็จ', vaccinationId: this.lastID });
+    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงหรือไม่ (รองรับทั้ง member_id และ user_id)
+    db.get(
+        `SELECT id FROM pets WHERE id = ? AND (member_id = ? OR user_id = ?)`,
+        [req.params.petId, req.user.id, req.user.id],
+        (err, pet) => {
+            if (err) {
+                console.error('Check pet ownership error:', err);
+                return res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+            }
+            if (!pet) {
+                console.log('Pet not found or user not owner:', req.params.petId, req.user.id);
+                return res.status(404).json({ error: 'ไม่พบสัตว์เลี้ยงหรือคุณไม่มีสิทธิ์' });
+            }
+
+            // ถ้าเป็นเจ้าของ ให้บันทึกวัคซีน
+            const {
+                vaccine_name,
+                vaccine_type,
+                vaccination_date,
+                next_due_date,
+                veterinarian,
+                clinic_name,
+                batch_number,
+                registration_number,
+                manufacture_date,
+                expiry_date,
+                notes,
+                schedule_id
+            } = req.body;
+            const proof_image = req.file ? `/uploads/${req.file.filename}` : null;
+
+            db.run(
+                `INSERT INTO vaccinations (
+                    pet_id, vaccine_name, vaccine_type, vaccination_date, next_due_date,
+                    veterinarian, clinic_name, batch_number, registration_number,
+                    manufacture_date, expiry_date, notes, schedule_id, proof_image, status
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'completed')`,
+                [
+                    req.params.petId, vaccine_name, vaccine_type, vaccination_date, next_due_date,
+                    veterinarian, clinic_name, batch_number, registration_number,
+                    manufacture_date, expiry_date, notes, schedule_id, proof_image
+                ],
+                function(err) {
+                    if (err) {
+                        console.error('Insert vaccination error:', err);
+                        return res.status(500).json({ error: 'ไม่สามารถบันทึกได้' });
+                    }
+                    console.log('Vaccination saved successfully:', this.lastID);
+                    res.json({ message: 'บันทึกสำเร็จ', vaccinationId: this.lastID });
+                }
+            );
         }
     );
 });
