@@ -931,14 +931,8 @@
                 });
 
                 if (response.ok) {
-                    const item = event.target.closest('.vaccination-item');
-                    item.style.transition = 'all 0.5s ease';
-                    item.style.opacity = '0';
-                    item.style.transform = 'translateX(100px)';
-
-                    setTimeout(() => {
-                        loadVaccinationHistory();
-                    }, 500);
+                    // Reload vaccination history after successful deletion
+                    loadVaccinationHistory();
                 } else {
                     alert('เกิดข้อผิดพลาดในการลบข้อมูล');
                 }
