@@ -1147,20 +1147,28 @@ app.get('/api/pets/:petId/vaccinations', authenticateToken, (req, res) => {
 });
 
 app.delete('/api/vaccinations/:id', authenticateToken, (req, res) => {
-    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงที่มีวัคซีนนี้
-    const petColumn = getPetUserColumn();
-    
+    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงที่มีวัคซีนนี้ (รองรับทั้ง member_id และ user_id)
     db.get(
-        `SELECT v.* FROM vaccinations v 
-         JOIN pets p ON v.pet_id = p.id 
-         WHERE v.id = ? AND p.${petColumn} = ?`,
-        [req.params.id, req.user.id],
+        `SELECT v.* FROM vaccinations v
+         JOIN pets p ON v.pet_id = p.id
+         WHERE v.id = ? AND (p.member_id = ? OR p.user_id = ?)`,
+        [req.params.id, req.user.id, req.user.id],
         (err, vaccination) => {
-            if (err) return res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
-            if (!vaccination) return res.status(404).json({ error: 'ไม่พบข้อมูล' });
-            
+            if (err) {
+                console.error('Delete vaccination error:', err);
+                return res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+            }
+            if (!vaccination) {
+                console.log('Vaccination not found or user not owner:', req.params.id, req.user.id);
+                return res.status(404).json({ error: 'ไม่พบข้อมูลหรือคุณไม่มีสิทธิ์ลบ' });
+            }
+
             db.run('DELETE FROM vaccinations WHERE id = ?', [req.params.id], function(err) {
-                if (err) return res.status(500).json({ error: 'ไม่สามารถลบได้' });
+                if (err) {
+                    console.error('Delete query error:', err);
+                    return res.status(500).json({ error: 'ไม่สามารถลบได้' });
+                }
+                console.log('Vaccination deleted successfully:', req.params.id);
                 res.json({ message: 'ลบสำเร็จ' });
             });
         }
