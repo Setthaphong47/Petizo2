@@ -1314,6 +1314,14 @@
                 window.location.href = 'login.html';
                 return;
             }
+
+            // Set minimum date for next appointment to today (prevent selecting past dates)
+            const today = new Date().toISOString().split('T')[0];
+            const nextDueDateInput = document.getElementById('recordNextDueDate');
+            if (nextDueDateInput) {
+                nextDueDateInput.setAttribute('min', today);
+            }
+
             loadPetDetails();
         });
 
