@@ -1,16 +1,40 @@
+// Check if admin is accessing non-admin pages and logout
+function checkAdminAccess() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    if (token && user) {
+        try {
+            const userData = JSON.parse(user);
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+            // If user is admin and NOT on admin.html
+            if (userData.role === 'admin' && currentPage !== 'admin.html') {
+                console.log('Admin trying to access non-admin page. Logging out...');
+                localStorage.clear();
+                window.location.href = 'login.html';
+                return false;
+            }
+        } catch (e) {
+            console.error('Error checking admin access:', e);
+        }
+    }
+    return true;
+}
+
 function checkLoginStatus() {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
-    
+
     const navActionsGuest = document.getElementById('navActionsGuest');
     const navActionsUser = document.getElementById('navActionsUser');
     const userDisplayName = document.getElementById('userDisplayName');
-    
+
     if (token && user) {
         // User Logged In
         if (navActionsGuest) navActionsGuest.classList.add('hidden');
         if (navActionsUser) navActionsUser.classList.remove('hidden');
-        
+
         // Display user
         if (userDisplayName) {
             try {
@@ -73,9 +97,19 @@ function handleYourPetClick(event) {
     }
 }
 
+// Auto-run admin access check on page load
+if (typeof window !== 'undefined') {
+    // Run immediately
+    checkAdminAccess();
+
+    // Also run on DOMContentLoaded for safety
+    document.addEventListener('DOMContentLoaded', checkAdminAccess);
+}
+
 // Export
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+        checkAdminAccess,
         checkLoginStatus,
         logout,
         goToLogin,
