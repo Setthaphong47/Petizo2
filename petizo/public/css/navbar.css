@@ -490,6 +490,7 @@
     cursor: pointer;
     padding: 8px;
     z-index: 101;
+    transition: opacity 0.3s, visibility 0.3s;
 }
 
 .hamburger-btn span {
@@ -498,6 +499,11 @@
     background: #333;
     border-radius: 3px;
     transition: all 0.3s;
+}
+
+.hamburger-btn.active {
+    opacity: 0;
+    visibility: hidden;
 }
 
 .hamburger-btn.active span:nth-child(1) {
