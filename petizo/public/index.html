@@ -548,29 +548,19 @@
                     if (!historyResponse.ok) continue;
                     const vaccinations = await historyResponse.json();
 
-                    // Check overdue/due soon vaccines
+                    // Check vaccines - only notify 2 days before due date
                     for (const vaccination of vaccinations) {
                         if (vaccination.next_due_date) {
                             const daysLeft = daysUntil(vaccination.next_due_date);
-                            
-                            if (daysLeft < 0) {
-                                allNotifications.push({
-                                    type: 'urgent',
-                                    petName: pet.name,
-                                    petId: pet.id,
-                                    vaccineName: vaccination.vaccine_name,
-                                    message: `วัคซีนเลยกำหนดฉีดแล้ว ${Math.abs(daysLeft)} วัน`,
-                                    dueDate: vaccination.next_due_date,
-                                    daysLeft: daysLeft,
-                                    icon: '<img src="/icon/alert.png" alt="Urgent" style="width:30px;height:30px;">'
-                                });
-                            } else if (daysLeft <= 30) {
+
+                            // Only notify when exactly 2 days before due date
+                            if (daysLeft === 2) {
                                 allNotifications.push({
                                     type: 'warning',
                                     petName: pet.name,
                                     petId: pet.id,
                                     vaccineName: vaccination.vaccine_name,
-                                    message: `ใกล้ถึงกำหนดฉีดวัคซีนในอีก ${daysLeft} วัน`,
+                                    message: `กำลังจะถึงกำหนดฉีดวัคซีน ในอีก 2 วัน`,
                                     dueDate: vaccination.next_due_date,
                                     daysLeft: daysLeft,
                                     icon: '<img src="/icon/warning.png" alt="Warning" style="width:30px;height:30px;">'
