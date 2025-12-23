@@ -220,9 +220,43 @@
                     const ageInWeeks = birthDateVal ? calculateAgeInWeeks(birthDateVal) : null;
                     logDebug(`pet ${pet.id} ageInWeeks:`, ageInWeeks);
 
-                    // Recommended vaccines notifications disabled - only show 2-day advance notifications
-                    // Users can still view recommended vaccines in pet details page
-                    logDebug('Skipping recommended vaccine notifications (only showing 2-day advance)');
+                    // Check recommended vaccines - only notify 2 days before due
+                    try {
+                        const recommendedUrl = `${API_URL}/pets/${pet.id}/recommended-vaccines`;
+                        logDebug('Fetching recommended vaccines for pet', pet.id, 'url:', recommendedUrl);
+                        const recommendedResp = await fetch(recommendedUrl, { headers: { 'Authorization': `Bearer ${token}` } });
+                        logDebug(`recommendedResp for pet ${pet.id} status:`, recommendedResp.status);
+
+                        if (recommendedResp.ok) {
+                            const recommendedData = await recommendedResp.json();
+                            const recommendedVaccines = recommendedData.vaccines || [];
+                            logDebug(`Recommended vaccines for pet ${pet.id} (count):`, recommendedVaccines.length, recommendedVaccines);
+
+                            // Only notify for vaccines that are exactly 2 days away
+                            recommendedVaccines.forEach(vaccine => {
+                                const daysUntilDue = vaccine.days_until_due;
+                                logDebug(`Recommended vaccine ${vaccine.vaccine_name} days_until_due:`, daysUntilDue);
+
+                                if (daysUntilDue === 2) {
+                                    allNotifications.push({
+                                        type: 'warning',
+                                        petName: pet.name,
+                                        petId: pet.id,
+                                        vaccineName: vaccine.vaccine_name,
+                                        description: vaccine.description || '',
+                                        message: `กำลังจะถึงกำหนดฉีดวัคซีน ในอีก 2 วัน`,
+                                        dueDate: vaccine.due_date,
+                                        daysLeft: daysUntilDue,
+                                        age_weeks_min: vaccine.age_weeks_min,
+                                        age_weeks_max: vaccine.age_weeks_max
+                                    });
+                                    logDebug(`Added notification for recommended vaccine ${vaccine.vaccine_name} (2 days)`);
+                                }
+                            });
+                        }
+                    } catch (recommendedErr) {
+                        logDebug('Error fetching recommended vaccines for pet', pet.id, recommendedErr);
+                    }
 
                     logDebug('--- END processing pet ---', pet.id, pet.name);
                 } catch (errPet) {
