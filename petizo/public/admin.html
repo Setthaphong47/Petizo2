@@ -23,6 +23,9 @@
         const isMobile = mobileRegex.test(userAgent) || window.innerWidth <= 768;
 
         if (isMobile) {
+            // Clear admin session immediately
+            localStorage.clear();
+
             // Immediately redirect before page loads
             document.write(`
                 <!DOCTYPE html>
@@ -109,8 +112,8 @@
                             Admin Panel ไม่รองรับการเข้าถึงจากอุปกรณ์มือถือ<br>
                             กรุณาเข้าใช้งานผ่านคอมพิวเตอร์
                         </p>
-                        <button class="btn" onclick="window.location.href='/index.html'">
-                            กลับหน้าหลัก
+                        <button class="btn" onclick="localStorage.clear(); window.location.href='/login.html';">
+                            กลับหน้า Login
                         </button>
                     </div>
                 </body>
