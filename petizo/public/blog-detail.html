@@ -177,7 +177,15 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .references a { display:inline-block; max-width: 72ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+        .references a {
+            display: inline;
+            max-width: none;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: unset;
+            vertical-align: middle;
+            word-break: break-all;
+        }
         .ref-copy-btn { margin-left:8px; } 
 
         .related-grid {
