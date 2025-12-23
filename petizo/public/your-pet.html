@@ -967,8 +967,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label>วันเกิด (เช่น 10 ต.ค. 2568)</label>
-                            <input type="date" id="petBirthDate">
+                            <label>วันเกิด</label>
+                            <input type="text" id="petBirthDateDisplay" placeholder="เช่น 23 ธ.ค. 2568" readonly style="cursor: pointer;">
+                            <input type="date" id="petBirthDate" style="display: none;">
                         </div>
 
                         <div class="form-row-2col">
@@ -1044,6 +1045,37 @@
         let currentPetId = null;
         let cropper = null;
         let currentCroppedBlob = null;
+
+        // Thai date handling
+        const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+        function formatDateToThai(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const month = thaiMonths[date.getMonth()];
+            const year = date.getFullYear() + 543;
+            return `${day} ${month} ${year}`;
+        }
+
+        function setupDatePicker() {
+            const dateInput = document.getElementById('petBirthDate');
+            const displayInput = document.getElementById('petBirthDateDisplay');
+
+            if (displayInput && dateInput) {
+                // Click on display opens hidden date picker
+                displayInput.addEventListener('click', () => {
+                    dateInput.showPicker ? dateInput.showPicker() : dateInput.click();
+                });
+
+                // When date changes, update display
+                dateInput.addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        displayInput.value = formatDateToThai(e.target.value);
+                    }
+                });
+            }
+        }
 
         function checkAuth() {
             const token = localStorage.getItem('token');
@@ -1292,6 +1324,7 @@
 
                 if (pet.birth_date) {
                     document.getElementById('petBirthDate').value = pet.birth_date;
+                    document.getElementById('petBirthDateDisplay').value = formatDateToThai(pet.birth_date);
                 }
                 
                 if (pet.photo_url) {
@@ -1414,6 +1447,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            setupDatePicker();
             loadPets();
             checkLoginStatus();
             checkAuth();
