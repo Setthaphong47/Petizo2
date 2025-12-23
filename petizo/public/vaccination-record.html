@@ -1023,12 +1023,15 @@
 
                     <div class="edit-form-group">
                         <label>ชื่อวัคซีน <span class="required">*</span></label>
-                        <input type="text" id="editVaccineName" required>
+                        <input type="text" id="editVaccineName" required readonly style="background: #f5f5f5; cursor: not-allowed;">
                     </div>
 
                     <div class="edit-form-group">
                         <label>วันที่ฉีดวัคซีน <span class="required">*</span></label>
-                        <input type="date" id="editVaccinationDate" required>
+                        <div class="date-picker-wrapper">
+                            <input type="date" id="editVaccinationDate" required>
+                            <input type="text" id="editVaccinationDateDisplay" placeholder="เลือกวันที่" readonly required>
+                        </div>
                     </div>
 
                     <div class="edit-form-group">
@@ -1448,7 +1451,12 @@
 
                 // Populate form fields
                 document.getElementById('editVaccineName').value = vaccination.vaccine_name || '';
-                document.getElementById('editVaccinationDate').value = vaccination.vaccination_date ? vaccination.vaccination_date.split('T')[0] : '';
+
+                // Vaccination date
+                const vaccinationDate = vaccination.vaccination_date ? vaccination.vaccination_date.split('T')[0] : '';
+                document.getElementById('editVaccinationDate').value = vaccinationDate;
+                document.getElementById('editVaccinationDateDisplay').value = vaccinationDate ? formatDateToThai(vaccinationDate) : '';
+
                 document.getElementById('editBatchNumber').value = vaccination.batch_number || '';
                 document.getElementById('editRegNo').value = vaccination.registration_number || '';
 
@@ -1489,6 +1497,7 @@
 
                 // Setup date pickers
                 setTimeout(() => {
+                    setupDatePicker('editVaccinationDate', 'editVaccinationDateDisplay');
                     setupDatePicker('editManufactureDate', 'editManufactureDateDisplay');
                     setupDatePicker('editExpiryDate', 'editExpiryDateDisplay');
                     setupDatePicker('editNextDueDate', 'editNextDueDateDisplay');
