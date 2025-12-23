@@ -191,17 +191,25 @@
                     const vaccinations = historyResp.ok ? await historyResp.json() : [];
                     logDebug(`Vaccinations for pet ${pet.id} (count):`, Array.isArray(vaccinations) ? vaccinations.length : 0, vaccinations);
 
-                    // push urgent/warning from vaccination history
+                    // Check vaccinations - only notify 2 days before due date
                     if (Array.isArray(vaccinations)) {
                         for (const vaccination of vaccinations) {
                             if (!vaccination) continue;
                             if (vaccination.next_due_date) {
                                 const daysLeft = daysUntil(vaccination.next_due_date);
                                 logDebug(`pet ${pet.id} vacc ${vaccination.vaccine_name} next_due_date ${vaccination.next_due_date} daysLeft:`, daysLeft);
-                                if (daysLeft < 0) {
-                                    allNotifications.push({ type:'urgent', petName:pet.name, petId:pet.id, vaccineName:vaccination.vaccine_name, message:`วัคซีนเลยกำหนดฉีดแล้ว ${Math.abs(daysLeft)} วัน`, dueDate:vaccination.next_due_date, daysLeft});
-                                } else if (daysLeft <= 30) {
-                                    allNotifications.push({ type:'warning', petName:pet.name, petId:pet.id, vaccineName:vaccination.vaccine_name, message:`ใกล้ถึงกำหนดฉีดวัคซีนในอีก ${daysLeft} วัน`, dueDate:vaccination.next_due_date, daysLeft});
+
+                                // Only notify when exactly 2 days before due date
+                                if (daysLeft === 2) {
+                                    allNotifications.push({
+                                        type:'warning',
+                                        petName:pet.name,
+                                        petId:pet.id,
+                                        vaccineName:vaccination.vaccine_name,
+                                        message:`กำลังจะถึงกำหนดฉีดวัคซีน ในอีก 2 วัน`,
+                                        dueDate:vaccination.next_due_date,
+                                        daysLeft
+                                    });
                                 }
                             }
                         }
@@ -212,53 +220,9 @@
                     const ageInWeeks = birthDateVal ? calculateAgeInWeeks(birthDateVal) : null;
                     logDebug(`pet ${pet.id} ageInWeeks:`, ageInWeeks);
 
-                    try {
-                        const recommendedUrl = `${API_URL}/pets/${pet.id}/recommended-vaccines`;
-                        logDebug('Fetching recommended vaccines for pet', pet.id, 'url:', recommendedUrl);
-                        const recommendedResp = await fetch(recommendedUrl, { headers: { 'Authorization': `Bearer ${token}` } });
-                        logDebug(`recommendedResp for pet ${pet.id} status:`, recommendedResp.status);
-                        
-                        if (recommendedResp.ok) {
-                            const recommendedData = await recommendedResp.json();
-                            const recommendedVaccines = recommendedData.vaccines || [];
-                            logDebug(`Recommended vaccines for pet ${pet.id} (count):`, recommendedVaccines.length, recommendedVaccines);
-                            // เพิ่มเฉพาะวัคซีนที่ status เป็น 'due' หรือ 'overdue' เข้าการแจ้งเตือน
-                            recommendedVaccines.forEach(vaccine => {
-                                if (vaccine.status === 'overdue') {
-                                    const daysLate = vaccine.days_until_due !== null ? Math.abs(vaccine.days_until_due) : 0;
-                                    allNotifications.push({
-                                        type: 'urgent',
-                                        petName: pet.name,
-                                        petId: pet.id,
-                                        vaccineName: vaccine.vaccine_name,
-                                        description: vaccine.description || '',
-                                        message: `เกินกำหนดแล้ว ${daysLate} วัน`,
-                                        dueDate: vaccine.due_date,
-                                        daysLeft: vaccine.days_until_due,
-                                        age_weeks_min: vaccine.age_weeks_min,
-                                        age_weeks_max: vaccine.age_weeks_max
-                                    });
-                                } else if (vaccine.status === 'due') {
-                                    const daysLeft = vaccine.days_until_due || 0;
-                                    allNotifications.push({
-                                        type: 'warning',
-                                        petName: pet.name,
-                                        petId: pet.id,
-                                        vaccineName: vaccine.vaccine_name,
-                                        description: vaccine.description || '',
-                                        message: daysLeft >= 0 ? `ใกล้ถึงกำหนดฉีดในอีก ${daysLeft} วัน` : `ถึงกำหนดฉีดแล้ว`,
-                                        dueDate: vaccine.due_date,
-                                        daysLeft: vaccine.days_until_due,
-                                        age_weeks_min: vaccine.age_weeks_min,
-                                        age_weeks_max: vaccine.age_weeks_max
-                                    });
-                                }
-                                // ไม่แสดง 'upcoming' และ 'completed' ในการแจ้งเตือน
-                            });
-                        }
-                    } catch (recommendedErr) {
-                        logDebug('Error fetching recommended vaccines for pet', pet.id, recommendedErr);
-                    }
+                    // Recommended vaccines notifications disabled - only show 2-day advance notifications
+                    // Users can still view recommended vaccines in pet details page
+                    logDebug('Skipping recommended vaccine notifications (only showing 2-day advance)');
 
                     logDebug('--- END processing pet ---', pet.id, pet.name);
                 } catch (errPet) {
