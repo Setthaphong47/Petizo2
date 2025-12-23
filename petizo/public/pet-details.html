@@ -739,6 +739,29 @@
                 height: 32px !important;
             }
         }
+
+        /* Date picker wrapper for Thai date format */
+        .date-picker-wrapper {
+            position: relative;
+        }
+
+        .date-picker-wrapper input[type="date"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .date-picker-wrapper input[type="text"] {
+            position: relative;
+            z-index: 2;
+            background: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -809,7 +832,10 @@
 
                             <div class="form-group">
                                 <label>วันที่ฉีดจริง *</label>
-                                <input type="date" id="recordVaccinationDate" value="" required>
+                                <div class="date-picker-wrapper">
+                                    <input type="date" id="recordVaccinationDate" value="" required>
+                                    <input type="text" id="recordVaccinationDateDisplay" placeholder="เลือกวันที่" readonly required>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -824,12 +850,18 @@
 
                             <div class="form-group">
                                 <label>วันที่ผลิต</label>
-                                <input type="date" id="recordManufactureDate">
+                                <div class="date-picker-wrapper">
+                                    <input type="date" id="recordManufactureDate">
+                                    <input type="text" id="recordManufactureDateDisplay" placeholder="เลือกวันที่" readonly>
+                                </div>
                             </div>
 
                             <div class="form-group">
                                 <label>วันหมดอายุ</label>
-                                <input type="date" id="recordExpiryDate">
+                                <div class="date-picker-wrapper">
+                                    <input type="date" id="recordExpiryDate">
+                                    <input type="text" id="recordExpiryDateDisplay" placeholder="เลือกวันที่" readonly>
+                                </div>
                             </div>
                         </div>
 
@@ -885,7 +917,10 @@
                             <div class="section-subtitle">การนัดครั้งถัดไป</div>
                             <div class="form-group">
                                 <label>วันนัดครั้งถัดไป</label>
-                                <input type="date" id="recordNextDueDate">
+                                <div class="date-picker-wrapper">
+                                    <input type="date" id="recordNextDueDate">
+                                    <input type="text" id="recordNextDueDateDisplay" placeholder="เลือกวันที่" readonly>
+                                </div>
                                 <small style="display:block;color:#666;margin-top:6px;font-size:13px;">ระบบจะเตือนวันฉีดวัคซีนครั้งถัดไปตามวันที่ระบุ</small>
                             </div>
                         </div>
@@ -911,6 +946,39 @@
         let currentPetId = null;
         let currentPet = null;
         let recommendedVaccines = [];
+
+        // Thai date format functions
+        function formatDateToThai(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const day = date.getDate();
+            const month = thaiMonths[date.getMonth()];
+            const year = date.getFullYear() + 543;
+            return `${day} ${month} ${year}`;
+        }
+
+        function setupDatePicker(hiddenInputId, displayInputId) {
+            const hiddenInput = document.getElementById(hiddenInputId);
+            const displayInput = document.getElementById(displayInputId);
+
+            if (!hiddenInput || !displayInput) return;
+
+            displayInput.addEventListener('click', () => {
+                hiddenInput.style.pointerEvents = 'auto';
+                if (hiddenInput.showPicker) {
+                    hiddenInput.showPicker();
+                } else {
+                    hiddenInput.click();
+                }
+            });
+
+            hiddenInput.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    displayInput.value = formatDateToThai(e.target.value);
+                }
+            });
+        }
 
         // Get pet ID from URL
         function getPetIdFromURL() {
@@ -1177,16 +1245,24 @@
             const imagePreviewContainer = document.getElementById('imagePreviewContainer');
             const scanningLoader = document.getElementById('scanningLoader');
             const modal = document.getElementById('recordVaccineModal');
-            
+
             if (scheduleIdInput) scheduleIdInput.value = scheduleId;
             if (vaccineNameInput) vaccineNameInput.value = vaccineName;
-            
+
             // Reset image preview state
             if (uploadArea) uploadArea.style.display = 'flex';
             if (imagePreviewContainer) imagePreviewContainer.style.display = 'none';
             if (scanningLoader) scanningLoader.style.display = 'none';
-            
+
             if (modal) modal.classList.add('active');
+
+            // Setup Thai date pickers
+            setTimeout(() => {
+                setupDatePicker('recordVaccinationDate', 'recordVaccinationDateDisplay');
+                setupDatePicker('recordManufactureDate', 'recordManufactureDateDisplay');
+                setupDatePicker('recordExpiryDate', 'recordExpiryDateDisplay');
+                setupDatePicker('recordNextDueDate', 'recordNextDueDateDisplay');
+            }, 100);
         }
 
         // Handle image preview

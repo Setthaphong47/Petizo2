@@ -126,19 +126,29 @@ function fillVaccineData(data) {
     if (data.mfg_date) {
         const mfgDate = convertDateFormat(data.mfg_date);
         const mfgInput = document.getElementById('recordManufactureDate');
+        const mfgDisplayInput = document.getElementById('recordManufactureDateDisplay');
         if (mfgInput && mfgDate) {
             mfgInput.value = mfgDate;
-            highlightField(mfgInput);
+            // Update Thai display if exists
+            if (mfgDisplayInput && typeof formatDateToThai === 'function') {
+                mfgDisplayInput.value = formatDateToThai(mfgDate);
+            }
+            highlightField(mfgDisplayInput || mfgInput);
         }
     }
-    
+
     // 5. วันหมดอายุ (EXP Date)
     if (data.exp_date) {
         const expDate = convertDateFormat(data.exp_date);
         const expInput = document.getElementById('recordExpiryDate');
+        const expDisplayInput = document.getElementById('recordExpiryDateDisplay');
         if (expInput && expDate) {
             expInput.value = expDate;
-            highlightField(expInput);
+            // Update Thai display if exists
+            if (expDisplayInput && typeof formatDateToThai === 'function') {
+                expDisplayInput.value = formatDateToThai(expDate);
+            }
+            highlightField(expDisplayInput || expInput);
         }
     }
     
@@ -191,7 +201,12 @@ function clearVaccineFields() {
         'recordManufactureDate',
         'recordExpiryDate'
     ];
-    
+
+    const displayFields = [
+        'recordManufactureDateDisplay',
+        'recordExpiryDateDisplay'
+    ];
+
     fields.forEach(fieldId => {
         const field = document.getElementById(fieldId);
         if (field) {
@@ -200,7 +215,17 @@ function clearVaccineFields() {
             field.style.borderColor = '';
         }
     });
-    
+
+    // Clear Thai display fields too
+    displayFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = '';
+            field.style.backgroundColor = '';
+            field.style.borderColor = '';
+        }
+    });
+
     console.log('Cleared all vaccine fields before auto-fill');
 }
 
