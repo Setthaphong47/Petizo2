@@ -116,7 +116,7 @@
                 .status-badge { display:inline-flex; align-items:center; justify-content:center; padding:3px 8px; border-radius:8px; font-size:9px; font-weight:600; letter-spacing:0.2px; flex-shrink:0; min-width:52px; text-align:center; }
                 .status-overdue { background:#ffebee; color:#d32f2f; border:1px solid #ffcdd2; }
                 .status-due { background:#fff8e1; color:#f57c00; border:1px solid #ffe0b2; }
-                .status-upcoming { background:#eceff1; color:#546e7a; border:1px solid #cfd8dc; }
+                .status-upcoming { background:#fff8e1; color:#f57c00; border:1px solid #ffe0b2; }
                 .pet-name { font-size:12px; font-weight:700; color:#111; margin-bottom:2px; }
                 .vaccine-name { font-size:12px; font-weight:600; color:#333; margin-bottom:2px; }
                 .notification-info { font-size:11px; color:#666; }
