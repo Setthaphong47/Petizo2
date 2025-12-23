@@ -15,6 +15,64 @@
     function getThaiBreed(breed) {
         return breedMap[breed] || breed;
     }
+
+    // Mobile device detection and blocking
+    function isMobileDevice() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+        const maxWidth = window.innerWidth <= 768;
+        return mobileRegex.test(userAgent) || maxWidth;
+    }
+
+    // Block admin access on mobile devices
+    if (isMobileDevice()) {
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.innerHTML = `
+                <div style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100vh;
+                    padding: 20px;
+                    text-align: center;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                ">
+                    <div style="
+                        background: white;
+                        padding: 40px;
+                        border-radius: 20px;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                        max-width: 400px;
+                    ">
+                        <div style="font-size: 64px; margin-bottom: 20px;">🔒</div>
+                        <h1 style="color: #1a1a1a; font-size: 24px; margin-bottom: 16px;">
+                            ไม่สามารถเข้าถึงได้
+                        </h1>
+                        <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+                            Admin Panel ไม่รองรับการเข้าถึงจากอุปกรณ์มือถือ<br>
+                            กรุณาเข้าใช้งานผ่านคอมพิวเตอร์
+                        </p>
+                        <button onclick="window.location.href='/index.html'" style="
+                            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+                            color: white;
+                            border: none;
+                            padding: 12px 32px;
+                            border-radius: 8px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: transform 0.2s;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            กลับหน้าหลัก
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    }
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
