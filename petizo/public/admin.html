@@ -2210,7 +2210,7 @@
                                 </div>` : ''}
                                 ${vac.next_due_date ? `<div class="vaccination-detail-item">
                                     <img src="/icon/midnight.png" alt="Next Due Date" style="width:20px;height:20px;">
-                                    <strong>นัดครั้งถัดไป:</strong> ${new Date(vac.next_due_date).toLocaleDateString('th-TH')}
+                                    <strong>นัดถัดไป:</strong> ${new Date(vac.next_due_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}
                                 </div>` : ''}
                             </div>
 
