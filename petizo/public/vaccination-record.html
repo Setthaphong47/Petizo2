@@ -573,6 +573,237 @@
             60%, 100% { content: '...'; }
         }
 
+        /* Edit Modal Styles */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .edit-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .edit-modal-content {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .edit-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 30px;
+            border-bottom: 2px solid #f0f0f0;
+            background: linear-gradient(135deg, #00bcd4 0%, #00acc1 100%);
+        }
+
+        .edit-modal-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .edit-modal-close {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00bcd4;
+            transition: all 0.3s;
+        }
+
+        .edit-modal-close:hover {
+            background: #f0f0f0;
+            transform: rotate(90deg);
+        }
+
+        .edit-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .edit-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00bcd4;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+
+        .edit-form-group {
+            margin-bottom: 20px;
+        }
+
+        .edit-form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .edit-form-group input[type="text"],
+        .edit-form-group input[type="date"],
+        .edit-form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .edit-form-group input:focus,
+        .edit-form-group textarea:focus {
+            outline: none;
+            border-color: #00bcd4;
+            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+        }
+
+        .edit-form-group textarea {
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .edit-image-preview {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px;
+            background: #f8f9fa;
+        }
+
+        .edit-image-preview img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            margin-bottom: 12px;
+        }
+
+        .edit-image-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-change-image,
+        .btn-view-image,
+        .btn-upload-image {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid #00bcd4;
+            background: white;
+            color: #00bcd4;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-change-image:hover,
+        .btn-view-image:hover,
+        .btn-upload-image:hover {
+            background: #00bcd4;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+        }
+
+        .edit-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 30px;
+            border-top: 2px solid #f0f0f0;
+            background: #fafafa;
+        }
+
+        .btn-cancel {
+            padding: 12px 24px;
+            background: white;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #f0f0f0;
+            border-color: #999;
+        }
+
+        .btn-save-edit {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00acc1 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+        }
+
+        .btn-save-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.4);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .navbar {
@@ -629,6 +860,70 @@
                 width: 48px;
                 height: 48px;
             }
+
+            /* Edit Modal Responsive */
+            .edit-modal {
+                padding: 0;
+                align-items: flex-end;
+            }
+
+            .edit-modal-content {
+                max-width: 100%;
+                max-height: 95vh;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .edit-modal-header {
+                padding: 20px;
+            }
+
+            .edit-modal-header h2 {
+                font-size: 20px;
+            }
+
+            .edit-modal-close {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+
+            .edit-form-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .edit-section-title {
+                font-size: 16px;
+                margin-bottom: 16px;
+            }
+
+            .edit-form-group {
+                margin-bottom: 16px;
+            }
+
+            .edit-image-preview img {
+                height: 150px;
+            }
+
+            .edit-image-actions {
+                flex-direction: column;
+            }
+
+            .btn-change-image,
+            .btn-view-image {
+                width: 100%;
+            }
+
+            .edit-modal-footer {
+                padding: 16px 20px;
+                flex-direction: column-reverse;
+            }
+
+            .btn-cancel,
+            .btn-save-edit {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -679,6 +974,110 @@
     <div id="imageModal" class="modal" onclick="closeImageModal()">
         <button class="modal-close" onclick="closeImageModal(); event.stopPropagation()">×</button>
         <img id="modalImage" class="modal-image" src="" alt="Proof Image">
+    </div>
+
+    <!-- Edit Vaccination Modal -->
+    <div id="editVaccinationModal" class="edit-modal" style="display: none;">
+        <div class="edit-modal-overlay" onclick="closeEditModal()"></div>
+        <div class="edit-modal-content" onclick="event.stopPropagation()">
+            <div class="edit-modal-header">
+                <h2>แก้ไขข้อมูลวัคซีน</h2>
+                <button class="edit-modal-close" onclick="closeEditModal()">×</button>
+            </div>
+            <form id="editVaccinationForm" onsubmit="saveEditVaccination(event)">
+                <div class="edit-form-grid">
+                    <!-- Left Column -->
+                    <div>
+                        <div class="edit-section-title">ข้อมูลวัคซีน</div>
+
+                        <div class="edit-form-group">
+                            <label>ชื่อวัคซีน <span class="required">*</span></label>
+                            <input type="text" id="editVaccineName" required>
+                        </div>
+
+                        <div class="edit-form-group">
+                            <label>วันที่ฉีดวัคซีน <span class="required">*</span></label>
+                            <input type="date" id="editVaccinationDate" required>
+                        </div>
+
+                        <div class="edit-form-group">
+                            <label>Batch Number</label>
+                            <input type="text" id="editBatchNumber" placeholder="หมายเลข Batch">
+                        </div>
+
+                        <div class="edit-form-group">
+                            <label>REG NO</label>
+                            <input type="text" id="editRegNo" placeholder="เลขทะเบียนวัคซีน">
+                        </div>
+
+                        <div class="edit-form-group">
+                            <label>วันที่ผลิต</label>
+                            <input type="date" id="editManufactureDate">
+                        </div>
+
+                        <div class="edit-form-group">
+                            <label>วันหมดอายุ</label>
+                            <input type="date" id="editExpiryDate">
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <div class="edit-section-title">ผู้ให้บริการ</div>
+
+                        <div class="edit-form-group">
+                            <label>สัตวแพทย์</label>
+                            <input type="text" id="editVeterinarian" placeholder="ชื่อสัตวแพทย์">
+                        </div>
+
+                        <div class="edit-form-group">
+                            <label>คลินิก/โรงพยาบาล</label>
+                            <input type="text" id="editClinicName" placeholder="ชื่อคลินิก">
+                        </div>
+
+                        <div class="edit-section-title">รูปฉลากวัคซีน</div>
+
+                        <div class="edit-form-group">
+                            <input type="file" id="editProofImage" accept="image/jpeg,image/jpg,image/png" onchange="handleEditImageSelect(event)" style="display: none;">
+
+                            <div id="editImagePreview" class="edit-image-preview" style="display: none;">
+                                <img id="editPreviewImg" src="" alt="Preview">
+                                <div class="edit-image-actions">
+                                    <button type="button" class="btn-change-image" onclick="document.getElementById('editProofImage').click()">
+                                        เปลี่ยนรูป
+                                    </button>
+                                    <button type="button" class="btn-view-image" onclick="viewEditImage()">
+                                        ดูรูป
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="button" id="editUploadButton" class="btn-upload-image" onclick="document.getElementById('editProofImage').click()" style="display: none;">
+                                <img src="/icon/upload.png" alt="Upload" style="width:20px;height:20px;">
+                                อัปโหลดรูปใหม่
+                            </button>
+                        </div>
+
+                        <div class="edit-section-title">การนัดครั้งถัดไป</div>
+                        <div class="edit-form-group">
+                            <label>วันนัดครั้งถัดไป</label>
+                            <input type="date" id="editNextDueDate">
+                            <small style="display:block;color:#666;margin-top:6px;font-size:13px;">ระบบจะเตือนวันฉีดวัคซีนครั้งถัดไปตามวันที่ระบุ</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edit-form-group">
+                    <label>หมายเหตุ</label>
+                    <textarea id="editNotes" placeholder="บันทึกเพิ่มเติม" rows="3"></textarea>
+                </div>
+
+                <div class="edit-modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeEditModal()">ยกเลิก</button>
+                    <button type="submit" class="btn-save-edit">บันทึกการแก้ไข</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="/js/config.js"></script>
@@ -934,6 +1333,151 @@
                     loadVaccinationHistory();
                 } else {
                     alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+            }
+        }
+
+        // Edit vaccination functions
+        let currentEditVaccinationId = null;
+        let currentEditImageFile = null;
+        let originalImagePath = null;
+
+        async function openEditVaccinationModal(vaccinationId) {
+            currentEditVaccinationId = vaccinationId;
+            currentEditImageFile = null;
+
+            try {
+                // Fetch vaccination details
+                const response = await fetch(`${API_URL}/vaccinations/${vaccinationId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load vaccination');
+
+                const vaccination = await response.json();
+
+                // Populate form fields
+                document.getElementById('editVaccineName').value = vaccination.vaccine_name || '';
+                document.getElementById('editVaccinationDate').value = vaccination.vaccination_date ? vaccination.vaccination_date.split('T')[0] : '';
+                document.getElementById('editBatchNumber').value = vaccination.batch_number || '';
+                document.getElementById('editRegNo').value = vaccination.reg_no || '';
+                document.getElementById('editManufactureDate').value = vaccination.manufacture_date ? vaccination.manufacture_date.split('T')[0] : '';
+                document.getElementById('editExpiryDate').value = vaccination.expiry_date ? vaccination.expiry_date.split('T')[0] : '';
+                document.getElementById('editVeterinarian').value = vaccination.veterinarian || '';
+                document.getElementById('editClinicName').value = vaccination.clinic_name || '';
+                document.getElementById('editNextDueDate').value = vaccination.next_due_date ? vaccination.next_due_date.split('T')[0] : '';
+                document.getElementById('editNotes').value = vaccination.notes || '';
+
+                // Handle proof image
+                originalImagePath = vaccination.proof_image;
+                if (vaccination.proof_image) {
+                    document.getElementById('editPreviewImg').src = vaccination.proof_image;
+                    document.getElementById('editImagePreview').style.display = 'block';
+                    document.getElementById('editUploadButton').style.display = 'none';
+                } else {
+                    document.getElementById('editImagePreview').style.display = 'none';
+                    document.getElementById('editUploadButton').style.display = 'block';
+                }
+
+                // Show modal
+                document.getElementById('editVaccinationModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถโหลดข้อมูลวัคซีนได้');
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editVaccinationModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            currentEditVaccinationId = null;
+            currentEditImageFile = null;
+            originalImagePath = null;
+            document.getElementById('editVaccinationForm').reset();
+        }
+
+        function handleEditImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+                alert('กรุณาเลือกไฟล์รูปภาพ (JPG, PNG)');
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB');
+                return;
+            }
+
+            currentEditImageFile = file;
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('editPreviewImg').src = e.target.result;
+                document.getElementById('editImagePreview').style.display = 'block';
+                document.getElementById('editUploadButton').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function viewEditImage() {
+            const imgSrc = document.getElementById('editPreviewImg').src;
+            if (imgSrc) {
+                document.getElementById('modalImage').src = imgSrc;
+                document.getElementById('imageModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        async function saveEditVaccination(event) {
+            event.preventDefault();
+
+            try {
+                const formData = new FormData();
+
+                // Add all form fields
+                formData.append('vaccine_name', document.getElementById('editVaccineName').value);
+                formData.append('vaccination_date', document.getElementById('editVaccinationDate').value);
+                formData.append('batch_number', document.getElementById('editBatchNumber').value || '');
+                formData.append('reg_no', document.getElementById('editRegNo').value || '');
+                formData.append('manufacture_date', document.getElementById('editManufactureDate').value || '');
+                formData.append('expiry_date', document.getElementById('editExpiryDate').value || '');
+                formData.append('veterinarian', document.getElementById('editVeterinarian').value || '');
+                formData.append('clinic_name', document.getElementById('editClinicName').value || '');
+                formData.append('next_due_date', document.getElementById('editNextDueDate').value || '');
+                formData.append('notes', document.getElementById('editNotes').value || '');
+
+                // Add image file if changed
+                if (currentEditImageFile) {
+                    formData.append('proof_image', currentEditImageFile);
+                }
+
+                const response = await fetch(`${API_URL}/vaccinations/${currentEditVaccinationId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    closeEditModal();
+                    loadVaccinationHistory();
+                    alert('แก้ไขข้อมูลวัคซีนสำเร็จ');
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'เกิดข้อผิดพลาดในการแก้ไขข้อมูล');
                 }
             } catch (error) {
                 console.error('Error:', error);

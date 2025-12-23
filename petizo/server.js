@@ -1217,6 +1217,107 @@ app.delete('/api/vaccinations/:id', authenticateToken, (req, res) => {
     );
 });
 
+// GET single vaccination by ID
+app.get('/api/vaccinations/:id', authenticateToken, (req, res) => {
+    const petColumn = getPetUserColumn();
+
+    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงที่มีวัคซีนนี้
+    db.get(
+        `SELECT v.* FROM vaccinations v
+         JOIN pets p ON v.pet_id = p.id
+         WHERE v.id = ? AND p.${petColumn} = ?`,
+        [req.params.id, req.user.id],
+        (err, vaccination) => {
+            if (err) {
+                console.error('Get vaccination error:', err);
+                return res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+            }
+            if (!vaccination) {
+                return res.status(404).json({ error: 'ไม่พบข้อมูลหรือคุณไม่มีสิทธิ์' });
+            }
+            res.json(vaccination);
+        }
+    );
+});
+
+// UPDATE vaccination
+app.put('/api/vaccinations/:id', authenticateToken, upload.single('proof_image'), (req, res) => {
+    const petColumn = getPetUserColumn();
+
+    // ตรวจสอบว่าผู้ใช้เป็นเจ้าของสัตว์เลี้ยงที่มีวัคซีนนี้
+    db.get(
+        `SELECT v.* FROM vaccinations v
+         JOIN pets p ON v.pet_id = p.id
+         WHERE v.id = ? AND p.${petColumn} = ?`,
+        [req.params.id, req.user.id],
+        (err, vaccination) => {
+            if (err) {
+                console.error('Update vaccination error:', err);
+                return res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+            }
+            if (!vaccination) {
+                console.log('Vaccination not found or user not owner:', req.params.id, req.user.id);
+                return res.status(404).json({ error: 'ไม่พบข้อมูลหรือคุณไม่มีสิทธิ์แก้ไข' });
+            }
+
+            // ถ้าเป็นเจ้าของ ให้อัปเดตข้อมูล
+            const {
+                vaccine_name,
+                vaccination_date,
+                next_due_date,
+                veterinarian,
+                clinic_name,
+                batch_number,
+                reg_no,
+                manufacture_date,
+                expiry_date,
+                notes
+            } = req.body;
+
+            // ใช้รูปใหม่ถ้ามี, ไม่เช่นนั้นใช้รูปเดิม
+            const proof_image = req.file ? `/uploads/${req.file.filename}` : vaccination.proof_image;
+
+            db.run(
+                `UPDATE vaccinations SET
+                    vaccine_name = ?,
+                    vaccination_date = ?,
+                    next_due_date = ?,
+                    veterinarian = ?,
+                    clinic_name = ?,
+                    batch_number = ?,
+                    registration_number = ?,
+                    manufacture_date = ?,
+                    expiry_date = ?,
+                    notes = ?,
+                    proof_image = ?
+                 WHERE id = ?`,
+                [
+                    vaccine_name,
+                    vaccination_date,
+                    next_due_date || null,
+                    veterinarian || null,
+                    clinic_name || null,
+                    batch_number || null,
+                    reg_no || null,
+                    manufacture_date || null,
+                    expiry_date || null,
+                    notes || null,
+                    proof_image,
+                    req.params.id
+                ],
+                function(err) {
+                    if (err) {
+                        console.error('Update query error:', err);
+                        return res.status(500).json({ error: 'ไม่สามารถอัปเดตได้' });
+                    }
+                    console.log('Vaccination updated successfully:', req.params.id);
+                    res.json({ message: 'อัปเดตสำเร็จ' });
+                }
+            );
+        }
+    );
+});
+
 app.get('/api/vaccinations', authenticateToken, (req, res) => {
     const petColumn = getPetUserColumn();
     
