@@ -1258,7 +1258,7 @@
                 const nextDueDate = vaccination.next_due_date
                     ? new Date(vaccination.next_due_date).toLocaleDateString('th-TH', {
                         day: 'numeric',
-                        month: 'long',
+                        month: 'short',
                         year: 'numeric'
                     })
                     : '-';
@@ -1300,7 +1300,7 @@
                             ${vaccination.next_due_date ? `
                                 <div class="vaccination-detail-item">
                                     <img src="/icon/midnight.png" alt="Next Due Date" style="width:20px;height:20px;">
-                                    <strong>นัดครั้งถัดไป:</strong> ${nextDueDate}
+                                    <strong>นัดถัดไป:</strong> ${nextDueDate}
                                 </div>
                             ` : ''}
                         </div>
