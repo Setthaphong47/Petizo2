@@ -303,7 +303,7 @@
         // Render notifications - New compact design
         container.innerHTML = notifications.map((notif, idx) => {
             const statusBadge = notif.type === 'urgent' ? '<span class="status-badge status-overdue">เกินกำหนด</span>' :
-                               notif.type === 'warning' ? '<span class="status-badge status-due">ถึงกำหนด</span>' :
+                               notif.type === 'warning' ? '<span class="status-badge status-upcoming">กำลังจะถึง</span>' :
                                '<span class="status-badge status-upcoming">กำลังจะถึง</span>';
 
             let message = notif.message || '';
