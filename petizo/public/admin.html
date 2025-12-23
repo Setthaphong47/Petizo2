@@ -16,63 +16,110 @@
         return breedMap[breed] || breed;
     }
 
-    // Mobile device detection and blocking
-    function isMobileDevice() {
+    // Mobile device detection and blocking (immediate execution for speed)
+    (function() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-        const maxWidth = window.innerWidth <= 768;
-        return mobileRegex.test(userAgent) || maxWidth;
-    }
+        const isMobile = mobileRegex.test(userAgent) || window.innerWidth <= 768;
 
-    // Block admin access on mobile devices
-    if (isMobileDevice()) {
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.innerHTML = `
-                <div style="
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100vh;
-                    padding: 20px;
-                    text-align: center;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                ">
-                    <div style="
-                        background: white;
-                        padding: 40px;
-                        border-radius: 20px;
-                        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                        max-width: 400px;
-                    ">
-                        <div style="font-size: 64px; margin-bottom: 20px;">🔒</div>
-                        <h1 style="color: #1a1a1a; font-size: 24px; margin-bottom: 16px;">
-                            ไม่สามารถเข้าถึงได้
-                        </h1>
-                        <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+        if (isMobile) {
+            // Immediately redirect before page loads
+            document.write(`
+                <!DOCTYPE html>
+                <html lang="th">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>ไม่สามารถเข้าถึงได้ - Petizo Admin</title>
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+                            min-height: 100vh;
+                            background: #2c3e50;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 20px;
+                            position: relative;
+                            overflow: hidden;
+                        }
+                        body::before {
+                            content: '';
+                            position: fixed;
+                            top: -20px;
+                            left: -20px;
+                            right: -20px;
+                            bottom: -20px;
+                            background: url('/images/login1.jpg') center/cover;
+                            filter: blur(20px);
+                            opacity: 0.5;
+                            z-index: 0;
+                        }
+                        .container {
+                            width: 90vw;
+                            max-width: 500px;
+                            background: white;
+                            border-radius: 24px;
+                            padding: 60px 45px;
+                            position: relative;
+                            z-index: 1;
+                            text-align: center;
+                            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                        }
+                        h1 {
+                            font-size: 28px;
+                            font-weight: 800;
+                            color: #1a1a1a;
+                            margin-bottom: 16px;
+                        }
+                        p {
+                            color: #6c757d;
+                            font-size: 15px;
+                            line-height: 1.6;
+                            margin-bottom: 32px;
+                        }
+                        .btn {
+                            width: 100%;
+                            padding: 15px;
+                            background: linear-gradient(135deg, #00d4ff 0%, #00bdeb 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 8px;
+                            font-size: 15px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+                        }
+                        .btn:hover {
+                            transform: translateY(-2px);
+                            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h1>ไม่สามารถเข้าถึงได้</h1>
+                        <p>
                             Admin Panel ไม่รองรับการเข้าถึงจากอุปกรณ์มือถือ<br>
                             กรุณาเข้าใช้งานผ่านคอมพิวเตอร์
                         </p>
-                        <button onclick="window.location.href='/index.html'" style="
-                            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
-                            color: white;
-                            border: none;
-                            padding: 12px 32px;
-                            border-radius: 8px;
-                            font-size: 16px;
-                            font-weight: 600;
-                            cursor: pointer;
-                            transition: transform 0.2s;
-                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <button class="btn" onclick="window.location.href='/index.html'">
                             กลับหน้าหลัก
                         </button>
                     </div>
-                </div>
-            `;
-        });
-    }
+                </body>
+                </html>
+            `);
+            document.close();
+            throw new Error('Mobile access blocked');
+        }
+    })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
