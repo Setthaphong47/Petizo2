@@ -600,13 +600,20 @@
         .edit-modal-content {
             position: relative;
             background: white;
-            border-radius: 16px;
-            max-width: 900px;
+            border-radius: 12px;
+            max-width: 680px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .edit-modal-content::-webkit-scrollbar {
+            display: none;
         }
 
         @keyframes slideUp {
@@ -624,9 +631,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 24px 30px;
-            border-bottom: 2px solid #f0f0f0;
-            background: linear-gradient(135deg, #00bcd4 0%, #00acc1 100%);
+            padding: 24px;
+            background: linear-gradient(135deg, #00bcd4 0%, #00e5ff 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            margin: 0;
         }
 
         .edit-modal-header h2 {
@@ -637,39 +646,41 @@
         }
 
         .edit-modal-close {
-            background: white;
+            width: 36px;
+            height: 36px;
             border: none;
-            width: 40px;
-            height: 40px;
+            background: rgba(255,255,255,0.2);
             border-radius: 50%;
-            font-size: 24px;
             cursor: pointer;
+            font-size: 24px;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #00bcd4;
             transition: all 0.3s;
         }
 
         .edit-modal-close:hover {
-            background: #f0f0f0;
+            background: rgba(255,255,255,0.3);
             transform: rotate(90deg);
         }
 
         .edit-form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: 1fr;
+            gap: 20px;
             padding: 30px;
         }
 
         .edit-section-title {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 700;
-            color: #00bcd4;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e0f7fa;
+            color: #333;
+            margin: 8px 0 12px 0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(0, 188, 212, 0.06);
+            border-left: 3px solid rgba(0,188,212,0.15);
         }
 
         .edit-form-group {
@@ -697,6 +708,29 @@
             border-radius: 8px;
             font-size: 14px;
             transition: all 0.3s;
+        }
+
+        /* Date picker wrapper */
+        .date-picker-wrapper {
+            position: relative;
+        }
+
+        .date-picker-wrapper input[type="date"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .date-picker-wrapper input[type="text"] {
+            position: relative;
+            z-index: 2;
+            background: white;
+            cursor: pointer;
         }
 
         .edit-form-group input:focus,
@@ -888,8 +922,7 @@
             }
 
             .edit-form-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 16px;
                 padding: 20px;
             }
 
@@ -986,90 +1019,90 @@
             </div>
             <form id="editVaccinationForm" onsubmit="saveEditVaccination(event)">
                 <div class="edit-form-grid">
-                    <!-- Left Column -->
-                    <div>
-                        <div class="edit-section-title">ข้อมูลวัคซีน</div>
+                    <div class="edit-section-title">ข้อมูลวัคซีน</div>
 
-                        <div class="edit-form-group">
-                            <label>ชื่อวัคซีน <span class="required">*</span></label>
-                            <input type="text" id="editVaccineName" required>
-                        </div>
+                    <div class="edit-form-group">
+                        <label>ชื่อวัคซีน <span class="required">*</span></label>
+                        <input type="text" id="editVaccineName" required>
+                    </div>
 
-                        <div class="edit-form-group">
-                            <label>วันที่ฉีดวัคซีน <span class="required">*</span></label>
-                            <input type="date" id="editVaccinationDate" required>
-                        </div>
+                    <div class="edit-form-group">
+                        <label>วันที่ฉีดวัคซีน <span class="required">*</span></label>
+                        <input type="date" id="editVaccinationDate" required>
+                    </div>
 
-                        <div class="edit-form-group">
-                            <label>Batch Number</label>
-                            <input type="text" id="editBatchNumber" placeholder="หมายเลข Batch">
-                        </div>
+                    <div class="edit-form-group">
+                        <label>Batch Number</label>
+                        <input type="text" id="editBatchNumber" placeholder="หมายเลข Batch">
+                    </div>
 
-                        <div class="edit-form-group">
-                            <label>REG NO</label>
-                            <input type="text" id="editRegNo" placeholder="เลขทะเบียนวัคซีน">
-                        </div>
+                    <div class="edit-form-group">
+                        <label>REG NO</label>
+                        <input type="text" id="editRegNo" placeholder="เลขทะเบียนวัคซีน">
+                    </div>
 
-                        <div class="edit-form-group">
-                            <label>วันที่ผลิต</label>
+                    <div class="edit-form-group">
+                        <label>วันที่ผลิต</label>
+                        <div class="date-picker-wrapper">
                             <input type="date" id="editManufactureDate">
+                            <input type="text" id="editManufactureDateDisplay" placeholder="เลือกวันที่" readonly>
                         </div>
+                    </div>
 
-                        <div class="edit-form-group">
-                            <label>วันหมดอายุ</label>
+                    <div class="edit-form-group">
+                        <label>วันหมดอายุ</label>
+                        <div class="date-picker-wrapper">
                             <input type="date" id="editExpiryDate">
+                            <input type="text" id="editExpiryDateDisplay" placeholder="เลือกวันที่" readonly>
                         </div>
                     </div>
 
-                    <!-- Right Column -->
-                    <div>
-                        <div class="edit-section-title">ผู้ให้บริการ</div>
+                    <div class="edit-section-title">ผู้ให้บริการ</div>
 
-                        <div class="edit-form-group">
-                            <label>สัตวแพทย์</label>
-                            <input type="text" id="editVeterinarian" placeholder="ชื่อสัตวแพทย์">
-                        </div>
+                    <div class="edit-form-group">
+                        <label>สัตวแพทย์</label>
+                        <input type="text" id="editVeterinarian" placeholder="ชื่อสัตวแพทย์">
+                    </div>
 
-                        <div class="edit-form-group">
-                            <label>คลินิก/โรงพยาบาล</label>
-                            <input type="text" id="editClinicName" placeholder="ชื่อคลินิก">
-                        </div>
+                    <div class="edit-form-group">
+                        <label>คลินิก/โรงพยาบาล</label>
+                        <input type="text" id="editClinicName" placeholder="ชื่อคลินิก">
+                    </div>
 
-                        <div class="edit-section-title">รูปฉลากวัคซีน</div>
+                    <div class="edit-section-title">รูปฉลากวัคซีน</div>
 
-                        <div class="edit-form-group">
-                            <input type="file" id="editProofImage" accept="image/jpeg,image/jpg,image/png" onchange="handleEditImageSelect(event)" style="display: none;">
+                    <div class="edit-form-group">
+                        <input type="file" id="editProofImage" accept="image/jpeg,image/jpg,image/png" onchange="handleEditImageSelect(event)" style="display: none;">
 
-                            <div id="editImagePreview" class="edit-image-preview" style="display: none;">
-                                <img id="editPreviewImg" src="" alt="Preview">
-                                <div class="edit-image-actions">
-                                    <button type="button" class="btn-change-image" onclick="document.getElementById('editProofImage').click()">
-                                        เปลี่ยนรูป
-                                    </button>
-                                    <button type="button" class="btn-view-image" onclick="viewEditImage()">
-                                        ดูรูป
-                                    </button>
-                                </div>
+                        <div id="editImagePreview" class="edit-image-preview" style="display: none;">
+                            <img id="editPreviewImg" src="" alt="Preview">
+                            <div class="edit-image-actions">
+                                <button type="button" class="btn-change-image" onclick="document.getElementById('editProofImage').click()">
+                                    เปลี่ยนรูป
+                                </button>
                             </div>
-
-                            <button type="button" id="editUploadButton" class="btn-upload-image" onclick="document.getElementById('editProofImage').click()" style="display: none;">
-                                <img src="/icon/upload.png" alt="Upload" style="width:20px;height:20px;">
-                                อัปโหลดรูปใหม่
-                            </button>
                         </div>
 
-                        <div class="edit-section-title">การนัดครั้งถัดไป</div>
-                        <div class="edit-form-group">
-                            <label>วันนัดครั้งถัดไป</label>
-                            <input type="date" id="editNextDueDate">
-                            <small style="display:block;color:#666;margin-top:6px;font-size:13px;">ระบบจะเตือนวันฉีดวัคซีนครั้งถัดไปตามวันที่ระบุ</small>
-                        </div>
+                        <button type="button" id="editUploadButton" class="btn-upload-image" onclick="document.getElementById('editProofImage').click()" style="display: none;">
+                            <img src="/icon/upload.png" alt="Upload" style="width:20px;height:20px;">
+                            อัปโหลดรูปใหม่
+                        </button>
                     </div>
-                </div>
 
-                <div class="edit-form-group">
-                    <label>หมายเหตุ</label>
-                    <textarea id="editNotes" placeholder="บันทึกเพิ่มเติม" rows="3"></textarea>
+                    <div class="edit-section-title">การนัดครั้งถัดไป</div>
+                    <div class="edit-form-group">
+                        <label>วันนัดครั้งถัดไป</label>
+                        <div class="date-picker-wrapper">
+                            <input type="date" id="editNextDueDate">
+                            <input type="text" id="editNextDueDateDisplay" placeholder="เลือกวันที่" readonly>
+                        </div>
+                        <small style="display:block;color:#666;margin-top:6px;font-size:13px;">ระบบจะเตือนวันฉีดวัคซีนครั้งถัดไปตามวันที่ระบุ</small>
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label>หมายเหตุ</label>
+                        <textarea id="editNotes" placeholder="บันทึกเพิ่มเติม" rows="3"></textarea>
+                    </div>
                 </div>
 
                 <div class="edit-modal-footer">
@@ -1345,6 +1378,58 @@
         let currentEditImageFile = null;
         let originalImagePath = null;
 
+        // Thai date formatting functions
+        function formatDateToThai(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const day = date.getDate();
+            const month = thaiMonths[date.getMonth()];
+            const year = date.getFullYear() + 543;
+            return `${day} ${month} ${year}`;
+        }
+
+        function parseDateFromThai(thaiDateString) {
+            if (!thaiDateString) return '';
+            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const parts = thaiDateString.split(' ');
+            if (parts.length !== 3) return '';
+
+            const day = parseInt(parts[0]);
+            const monthIndex = thaiMonths.indexOf(parts[1]);
+            const year = parseInt(parts[2]) - 543;
+
+            if (monthIndex === -1) return '';
+
+            const date = new Date(year, monthIndex, day);
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function setupDatePicker(hiddenInputId, displayInputId) {
+            const hiddenInput = document.getElementById(hiddenInputId);
+            const displayInput = document.getElementById(displayInputId);
+
+            if (!hiddenInput || !displayInput) return;
+
+            displayInput.addEventListener('click', () => {
+                hiddenInput.style.pointerEvents = 'auto';
+                if (hiddenInput.showPicker) {
+                    hiddenInput.showPicker();
+                } else {
+                    hiddenInput.click();
+                }
+            });
+
+            hiddenInput.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    displayInput.value = formatDateToThai(e.target.value);
+                }
+            });
+        }
+
         async function openEditVaccinationModal(vaccinationId) {
             currentEditVaccinationId = vaccinationId;
             currentEditImageFile = null;
@@ -1365,12 +1450,26 @@
                 document.getElementById('editVaccineName').value = vaccination.vaccine_name || '';
                 document.getElementById('editVaccinationDate').value = vaccination.vaccination_date ? vaccination.vaccination_date.split('T')[0] : '';
                 document.getElementById('editBatchNumber').value = vaccination.batch_number || '';
-                document.getElementById('editRegNo').value = vaccination.reg_no || '';
-                document.getElementById('editManufactureDate').value = vaccination.manufacture_date ? vaccination.manufacture_date.split('T')[0] : '';
-                document.getElementById('editExpiryDate').value = vaccination.expiry_date ? vaccination.expiry_date.split('T')[0] : '';
+                document.getElementById('editRegNo').value = vaccination.registration_number || '';
+
+                // Manufacture date
+                const manufactureDate = vaccination.manufacture_date ? vaccination.manufacture_date.split('T')[0] : '';
+                document.getElementById('editManufactureDate').value = manufactureDate;
+                document.getElementById('editManufactureDateDisplay').value = manufactureDate ? formatDateToThai(manufactureDate) : '';
+
+                // Expiry date
+                const expiryDate = vaccination.expiry_date ? vaccination.expiry_date.split('T')[0] : '';
+                document.getElementById('editExpiryDate').value = expiryDate;
+                document.getElementById('editExpiryDateDisplay').value = expiryDate ? formatDateToThai(expiryDate) : '';
+
                 document.getElementById('editVeterinarian').value = vaccination.veterinarian || '';
                 document.getElementById('editClinicName').value = vaccination.clinic_name || '';
-                document.getElementById('editNextDueDate').value = vaccination.next_due_date ? vaccination.next_due_date.split('T')[0] : '';
+
+                // Next due date
+                const nextDueDate = vaccination.next_due_date ? vaccination.next_due_date.split('T')[0] : '';
+                document.getElementById('editNextDueDate').value = nextDueDate;
+                document.getElementById('editNextDueDateDisplay').value = nextDueDate ? formatDateToThai(nextDueDate) : '';
+
                 document.getElementById('editNotes').value = vaccination.notes || '';
 
                 // Handle proof image
@@ -1387,6 +1486,13 @@
                 // Show modal
                 document.getElementById('editVaccinationModal').style.display = 'flex';
                 document.body.style.overflow = 'hidden';
+
+                // Setup date pickers
+                setTimeout(() => {
+                    setupDatePicker('editManufactureDate', 'editManufactureDateDisplay');
+                    setupDatePicker('editExpiryDate', 'editExpiryDateDisplay');
+                    setupDatePicker('editNextDueDate', 'editNextDueDateDisplay');
+                }, 100);
 
             } catch (error) {
                 console.error('Error:', error);
