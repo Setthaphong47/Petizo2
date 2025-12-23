@@ -825,7 +825,9 @@ app.get('/api/notifications/all', authenticateToken, async (req, res) => {
                     if (!vaccination) continue;
                     if (vaccination.next_due_date) {
                         const today = new Date();
+                        today.setHours(0, 0, 0, 0);
                         const dueDate = new Date(vaccination.next_due_date);
+                        dueDate.setHours(0, 0, 0, 0);
                         const diffTime = dueDate - today;
                         const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -995,7 +997,9 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
         }
         
         const birthDate = new Date(pet.birth_date);
+        birthDate.setHours(0, 0, 0, 0);
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
         const ageInWeeks = Math.floor((today - birthDate) / (7 * 24 * 60 * 60 * 1000));
         const ageInYears = ageInWeeks / 52;
         
@@ -1060,16 +1064,19 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
                             const related = completed.filter(v => v.vaccine_name.includes(baseName) || baseName.includes(v.vaccine_name));
                             if (related.length > 0) {
                                 const lastDate = new Date(related[0].vaccination_date);
+                                lastDate.setHours(0, 0, 0, 0);
                                 dueDate = new Date(lastDate);
                                 dueDate.setFullYear(dueDate.getFullYear() + (schedule.frequency_years || 1));
-                                daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
+                                dueDate.setHours(0, 0, 0, 0);
+                                daysUntilDue = Math.ceil((dueDate - today) / (24 * 60 * 60 * 1000));
                                 if (daysUntilDue < -30) status = 'overdue';
                                 else if (daysUntilDue <= 30) status = 'due';
                                 else shouldShow = false;
                             } else {
                                 dueDate = new Date(birthDate);
                                 dueDate.setDate(dueDate.getDate() + (schedule.age_weeks_min * 7));
-                                daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
+                                dueDate.setHours(0, 0, 0, 0);
+                                daysUntilDue = Math.ceil((dueDate - today) / (24 * 60 * 60 * 1000));
                                 if (daysUntilDue < -30) status = 'overdue';
                                 else if (daysUntilDue <= 30) status = 'due';
                             }
@@ -1080,7 +1087,8 @@ app.get('/api/pets/:petId/recommended-vaccines', authenticateToken, (req, res) =
                         } else {
                             dueDate = new Date(birthDate);
                             dueDate.setDate(dueDate.getDate() + (schedule.age_weeks_min * 7));
-                            daysUntilDue = Math.floor((dueDate - today) / (24 * 60 * 60 * 1000));
+                            dueDate.setHours(0, 0, 0, 0);
+                            daysUntilDue = Math.ceil((dueDate - today) / (24 * 60 * 60 * 1000));
                             if (isCompleted) status = 'completed';
                             else if (ageInWeeks < schedule.age_weeks_min) status = 'upcoming';
                             else if (!schedule.age_weeks_max || ageInWeeks <= schedule.age_weeks_max) status = 'due';
