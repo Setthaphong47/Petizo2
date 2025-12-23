@@ -23,6 +23,13 @@
         const isMobile = mobileRegex.test(userAgent) || window.innerWidth <= 768;
 
         if (isMobile) {
+            // Stop page loading immediately
+            if (window.stop) {
+                window.stop();
+            } else if (document.execCommand) {
+                document.execCommand('Stop');
+            }
+
             // Clear admin session
             localStorage.clear();
 
