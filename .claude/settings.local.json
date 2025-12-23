@@ -31,7 +31,8 @@
       "Bash(git restore:*)",
       "Bash(rm:*)",
       "Bash(mv:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

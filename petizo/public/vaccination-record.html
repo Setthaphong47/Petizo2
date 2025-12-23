@@ -394,11 +394,11 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .btn-delete {
+        .btn-edit {
             padding: 8px 16px;
-            background: #e74c3c;
-            color: white;
-            border: none;
+            background: white;
+            color: black;
+            border: 2px solid black;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
@@ -408,8 +408,8 @@
             gap: 8px;
         }
 
-        .btn-delete:hover {
-            background: #c0392b;
+        .btn-edit:hover {
+            background: #f0f0f0;
         }
 
         .vaccination-actions {
@@ -887,9 +887,8 @@
                         ` : ''}
 
                         <div class="vaccination-actions">
-                            <button class="btn-delete" onclick="deleteVaccination(${vaccination.id}, '${vaccination.vaccine_name}'); event.stopPropagation();">
-                                <img src="/icon/bin.png" alt="Delete" style="width:20px;height:20px;">
-                                ลบ
+                            <button class="btn-edit" onclick="openEditVaccinationModal(${vaccination.id}); event.stopPropagation();">
+                                แก้ไข
                             </button>
                         </div>
                     </div>

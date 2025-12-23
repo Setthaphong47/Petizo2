@@ -357,26 +357,12 @@
                 references = String(article.source || "").split(/[,;]/).map(t=>t.trim()).filter(Boolean);
             }
             
-            // Function to shorten URL display
-            function shortenUrl(url) {
-                try {
-                    const urlObj = new URL(url);
-                    let display = urlObj.hostname.replace('www.', '');
-                    if (urlObj.pathname !== '/' && urlObj.pathname !== '') {
-                        display += urlObj.pathname.substring(0, 20) + (urlObj.pathname.length > 20 ? '...' : '');
-                    }
-                    return display;
-                } catch {
-                    // If not a valid URL, return truncated text
-                    return url.length > 50 ? url.substring(0, 50) + '...' : url;
-                }
-            }
-            
+            // Show full URL for references (no shortening)
             const refsHtml = references.length
                 ? references.map((r,i)=> {
                     const isUrl = r.match(/^https?:\/\//i);
                     if (isUrl) {
-                        return `<li><strong>[${i+1}]</strong> <a href="${r}" target="_blank" rel="noopener noreferrer" title="${r}">${shortenUrl(r)}</a></li>`;
+                        return `<li><strong>[${i+1}]</strong> <a href="${r}" target="_blank" rel="noopener noreferrer" title="${r}">${r}</a></li>`;
                     } else {
                         return `<li><strong>[${i+1}]</strong> ${r}</li>`;
                     }
