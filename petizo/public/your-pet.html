@@ -955,21 +955,15 @@
                             <input type="text" id="petName" required>
                         </div>
 
-                        <div class="form-row-2col">
-                            <div class="form-group">
-                                <label>ชนิด</label>
-                                <select id="petType">
-                                    <option value="แมว">แมว</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>เพศ</label>
-                                <select id="petGender">
-                                    <option value="">เลือกเพศ </option>
-                                    <option value="male">เพศผู้</option>
-                                    <option value="female">เพศเมีย</option>
-                                </select>
-                            </div>
+                        <input type="hidden" id="petType" value="แมว">
+
+                        <div class="form-group">
+                            <label>เพศ</label>
+                            <select id="petGender">
+                                <option value="">เลือกเพศ </option>
+                                <option value="male">เพศผู้</option>
+                                <option value="female">เพศเมีย</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
@@ -1009,11 +1003,6 @@
                                 <label>สี</label>
                                 <input type="text" id="petColor" placeholder="">
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>น้ำหนัก (กิโลกรัม)</label>
-                            <input type="number" id="petWeight" step="0.1" min="0" placeholder="2.0">
                         </div>
 
                         <div class="form-actions">
@@ -1170,12 +1159,6 @@
                                         <span class="detail-icon"><img src="/icon/birthday.png" alt="Birth Date"></span>
                                         <span>${birthDate}</span>
                                     </div>
-                                    ${pet.weight ? `
-                                        <div class="detail-item">
-                                            <span class="detail-icon"><img src="/icon/scale.png" alt="Weight"></span>
-                                            <span>${pet.weight} กก.</span>
-                                        </div>
-                                    ` : ''}
                                 </div>
                             </div>
                         </div>
@@ -1306,8 +1289,7 @@
                 document.getElementById('petGender').value = pet.gender || '';
                 document.getElementById('petBreed').value = pet.breed || '';
                 document.getElementById('petColor').value = pet.color || '';
-                document.getElementById('petWeight').value = pet.weight || '';
-                
+
                 if (pet.birth_date) {
                     document.getElementById('petBirthDate').value = pet.birth_date;
                 }
@@ -1332,14 +1314,12 @@
             const gender = document.getElementById('petGender').value;
             const birthDate = document.getElementById('petBirthDate').value;
             const color = document.getElementById('petColor').value;
-            const weight = document.getElementById('petWeight').value;
-            
+
             formData.append('name', name);
             formData.append('breed', breed);
             formData.append('gender', gender);
             formData.append('birth_date', birthDate);
             formData.append('color', color);
-            formData.append('weight', weight);
             formData.append('microchip_id', '');
             formData.append('notes', '');
 
@@ -1362,7 +1342,7 @@
                 console.log('URL:', url);
                 console.log('Method:', method);
                 console.log('Pet ID:', petId);
-                console.log('Data:', { name, breed, gender, birthDate, color, weight });
+                console.log('Data:', { name, breed, gender, birthDate, color });
 
                 const response = await fetch(url, {
                     method: method,
