@@ -191,7 +191,7 @@
                     const vaccinations = historyResp.ok ? await historyResp.json() : [];
                     logDebug(`Vaccinations for pet ${pet.id} (count):`, Array.isArray(vaccinations) ? vaccinations.length : 0, vaccinations);
 
-                    // Check vaccinations - only notify 2 days before due date
+                    // Check vaccinations - notify 1-3 days before due date
                     if (Array.isArray(vaccinations)) {
                         for (const vaccination of vaccinations) {
                             if (!vaccination) continue;
@@ -199,14 +199,15 @@
                                 const daysLeft = daysUntil(vaccination.next_due_date);
                                 logDebug(`pet ${pet.id} vacc ${vaccination.vaccine_name} next_due_date ${vaccination.next_due_date} daysLeft:`, daysLeft);
 
-                                // Only notify when exactly 2 days before due date
-                                if (daysLeft === 2) {
+                                // Only notify when 1-3 days before due date
+                                if (daysLeft >= 1 && daysLeft <= 3) {
+                                    const dayText = daysLeft === 1 ? '1 วัน' : `${daysLeft} วัน`;
                                     allNotifications.push({
                                         type:'warning',
                                         petName:pet.name,
                                         petId:pet.id,
                                         vaccineName:vaccination.vaccine_name,
-                                        message:`กำลังจะถึงกำหนดฉีดวัคซีน ในอีก 2 วัน`,
+                                        message:`กำลังจะถึงกำหนดฉีดวัคซีน ในอีก ${dayText}`,
                                         dueDate:vaccination.next_due_date,
                                         daysLeft
                                     });
@@ -232,25 +233,26 @@
                             const recommendedVaccines = recommendedData.vaccines || [];
                             logDebug(`Recommended vaccines for pet ${pet.id} (count):`, recommendedVaccines.length, recommendedVaccines);
 
-                            // Only notify for vaccines that are exactly 2 days away
+                            // Only notify for vaccines that are 1-3 days away (to account for calculation variations)
                             recommendedVaccines.forEach(vaccine => {
                                 const daysUntilDue = vaccine.days_until_due;
                                 logDebug(`Recommended vaccine ${vaccine.vaccine_name} days_until_due:`, daysUntilDue);
 
-                                if (daysUntilDue === 2) {
+                                if (daysUntilDue >= 1 && daysUntilDue <= 3) {
+                                    const dayText = daysUntilDue === 1 ? '1 วัน' : `${daysUntilDue} วัน`;
                                     allNotifications.push({
                                         type: 'warning',
                                         petName: pet.name,
                                         petId: pet.id,
                                         vaccineName: vaccine.vaccine_name,
                                         description: vaccine.description || '',
-                                        message: `กำลังจะถึงกำหนดฉีดวัคซีน ในอีก 2 วัน`,
+                                        message: `กำลังจะถึงกำหนดฉีดวัคซีน ในอีก ${dayText}`,
                                         dueDate: vaccine.due_date,
                                         daysLeft: daysUntilDue,
                                         age_weeks_min: vaccine.age_weeks_min,
                                         age_weeks_max: vaccine.age_weeks_max
                                     });
-                                    logDebug(`Added notification for recommended vaccine ${vaccine.vaccine_name} (2 days)`);
+                                    logDebug(`Added notification for recommended vaccine ${vaccine.vaccine_name} (${daysUntilDue} days)`);
                                 }
                             });
                         }

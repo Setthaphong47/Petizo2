@@ -819,7 +819,7 @@ app.get('/api/notifications/all', authenticateToken, async (req, res) => {
                 });
             });
 
-            // Notification logic (only notify 2 days before due date)
+            // Notification logic (notify 1-3 days before due date)
             if (Array.isArray(vaccinations)) {
                 for (const vaccination of vaccinations) {
                     if (!vaccination) continue;
@@ -829,14 +829,15 @@ app.get('/api/notifications/all', authenticateToken, async (req, res) => {
                         const diffTime = dueDate - today;
                         const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                        // Only notify when exactly 2 days before due date
-                        if (daysLeft === 2) {
+                        // Only notify when 1-3 days before due date
+                        if (daysLeft >= 1 && daysLeft <= 3) {
+                            const dayText = daysLeft === 1 ? '1 วัน' : `${daysLeft} วัน`;
                             notifications.push({
                                 type:'warning',
                                 petName:pet.name,
                                 petId:pet.id,
                                 vaccineName:vaccination.vaccine_name,
-                                message:`กำลังจะถึงกำหนดฉีดวัคซีน ในอีก 2 วัน`,
+                                message:`กำลังจะถึงกำหนดฉีดวัคซีน ในอีก ${dayText}`,
                                 dueDate:vaccination.next_due_date,
                                 daysLeft
                             });

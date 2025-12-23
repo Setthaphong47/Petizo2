@@ -548,19 +548,20 @@
                     if (!historyResponse.ok) continue;
                     const vaccinations = await historyResponse.json();
 
-                    // Check vaccines - only notify 2 days before due date
+                    // Check vaccines - notify 1-3 days before due date
                     for (const vaccination of vaccinations) {
                         if (vaccination.next_due_date) {
                             const daysLeft = daysUntil(vaccination.next_due_date);
 
-                            // Only notify when exactly 2 days before due date
-                            if (daysLeft === 2) {
+                            // Only notify when 1-3 days before due date
+                            if (daysLeft >= 1 && daysLeft <= 3) {
+                                const dayText = daysLeft === 1 ? '1 วัน' : `${daysLeft} วัน`;
                                 allNotifications.push({
                                     type: 'warning',
                                     petName: pet.name,
                                     petId: pet.id,
                                     vaccineName: vaccination.vaccine_name,
-                                    message: `กำลังจะถึงกำหนดฉีดวัคซีน ในอีก 2 วัน`,
+                                    message: `กำลังจะถึงกำหนดฉีดวัคซีน ในอีก ${dayText}`,
                                     dueDate: vaccination.next_due_date,
                                     daysLeft: daysLeft,
                                     icon: '<img src="/icon/warning.png" alt="Warning" style="width:30px;height:30px;">'
