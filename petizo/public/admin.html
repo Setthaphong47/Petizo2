@@ -155,11 +155,9 @@
             document.close();
             throw new Error('Mobile access blocked');
         } else {
-            // Not mobile - show the page
-            document.addEventListener('DOMContentLoaded', function() {
-                document.body.style.display = '';
-                document.body.style.opacity = '';
-            });
+            // Not mobile - show the page (must use !important to override inline CSS)
+            document.body.style.setProperty('display', 'flex', 'important');
+            document.body.style.setProperty('opacity', '1', 'important');
         }
     })();
 
