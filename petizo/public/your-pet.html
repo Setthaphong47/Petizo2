@@ -1006,6 +1006,11 @@
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <label>น้ำหนัก (กก.)</label>
+                            <input type="number" id="petWeight" placeholder="เช่น 3.5" step="0.1" min="0">
+                        </div>
+
                         <div class="form-actions">
                             <button type="button" class="btn-cancel" onclick="closePetModal()">ยกเลิก</button>
                             <button type="submit" class="btn-save">บันทึก</button>
@@ -1206,6 +1211,12 @@
                                             <span>${pet.color}</span>
                                         </div>
                                     ` : ''}
+                                    ${pet.weight ? `
+                                        <div class="detail-item">
+                                            <span class="detail-icon"><img src="/icon/weight.png" alt="Weight"></span>
+                                            <span>${pet.weight} กก.</span>
+                                        </div>
+                                    ` : ''}
                                     <div class="detail-item">
                                         <span class="detail-icon"><img src="/icon/birthday.png" alt="Birth Date"></span>
                                         <span>${birthDate}</span>
@@ -1340,6 +1351,7 @@
                 document.getElementById('petGender').value = pet.gender || '';
                 document.getElementById('petBreed').value = pet.breed || '';
                 document.getElementById('petColor').value = pet.color || '';
+                document.getElementById('petWeight').value = pet.weight || '';
 
                 if (pet.birth_date) {
                     document.getElementById('petBirthDate').value = pet.birth_date;
@@ -1366,12 +1378,14 @@
             const gender = document.getElementById('petGender').value;
             const birthDate = document.getElementById('petBirthDate').value;
             const color = document.getElementById('petColor').value;
+            const weight = document.getElementById('petWeight').value;
 
             formData.append('name', name);
             formData.append('breed', breed);
             formData.append('gender', gender);
             formData.append('birth_date', birthDate);
             formData.append('color', color);
+            formData.append('weight', weight);
             formData.append('microchip_id', '');
             formData.append('notes', '');
 

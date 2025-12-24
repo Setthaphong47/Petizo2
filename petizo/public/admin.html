@@ -2156,6 +2156,10 @@
                                 <div class="pet-info-label">สี</div>
                                 <div class="pet-info-value">${pet.color || 'ไม่ระบุ'}</div>
                             </div>
+                            <div class="pet-info-item">
+                                <div class="pet-info-label">น้ำหนัก</div>
+                                <div class="pet-info-value">${pet.weight ? pet.weight + ' กก.' : 'ไม่ระบุ'}</div>
+                            </div>
                             ${pet.notes ? `
                             <div class="pet-info-item" style="grid-column: 1 / -1;">
                                 <div class="pet-info-label">หมายเหตุ</div>

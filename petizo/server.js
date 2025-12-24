@@ -732,16 +732,16 @@ app.get('/api/pets/:id', authenticateToken, (req, res) => {
 
 app.post('/api/pets', authenticateToken, upload.single('photo'), (req, res) => {
     const petColumn = getPetUserColumn();
-    const { name, breed, gender, birth_date, color, microchip_id, notes } = req.body;
+    const { name, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
     const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
 
     db.run(
-        `INSERT INTO pets (${petColumn}, name, breed, gender, birth_date, color, microchip_id, photo_url, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [req.user.id, name, breed, gender, birth_date, color, microchip_id, photo_url, notes],
+        `INSERT INTO pets (${petColumn}, name, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [req.user.id, name, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes],
         function(err) {
             if (err) {
                 console.error('Error creating pet:', err);
-                console.error('Params:', [req.user.id, name, breed, gender, birth_date, color, microchip_id, photo_url, notes]);
+                console.error('Params:', [req.user.id, name, breed, gender, birth_date, color, weight, microchip_id, photo_url, notes]);
                 return res.status(500).json({ error: 'ไม่สามารถสร้างข้อมูลได้', details: err.message });
             }
             res.json({ message: 'สร้างข้อมูลสำเร็จ', petId: this.lastID });
@@ -751,10 +751,10 @@ app.post('/api/pets', authenticateToken, upload.single('photo'), (req, res) => {
 
 app.put('/api/pets/:id', authenticateToken, upload.single('photo'), (req, res) => {
     const petColumn = getPetUserColumn();
-    const { name, breed, gender, birth_date, color, microchip_id, notes } = req.body;
+    const { name, breed, gender, birth_date, color, weight, microchip_id, notes } = req.body;
 
-    let query = `UPDATE pets SET name = ?, breed = ?, gender = ?, birth_date = ?, color = ?, microchip_id = ?, notes = ?, updated_at = CURRENT_TIMESTAMP`;
-    let params = [name, breed || null, gender || null, birth_date || null, color || null, microchip_id || null, notes || null];
+    let query = `UPDATE pets SET name = ?, breed = ?, gender = ?, birth_date = ?, color = ?, weight = ?, microchip_id = ?, notes = ?, updated_at = CURRENT_TIMESTAMP`;
+    let params = [name, breed || null, gender || null, birth_date || null, color || null, weight || null, microchip_id || null, notes || null];
     
     if (req.file) {
         query += ', photo_url = ?';
