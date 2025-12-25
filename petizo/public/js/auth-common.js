@@ -88,12 +88,12 @@ function requireLogin() {
 function handleYourPetClick(event) {
     event.preventDefault();
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
         alert('กรุณาเข้าสู่ระบบก่อนเพื่อเข้าถึงหน้า Your Pet');
         window.location.href = 'login.html';
     } else {
-        window.location.href = 'dashboard.html';
+        window.location.href = 'your-pet.html';
     }
 }
 
